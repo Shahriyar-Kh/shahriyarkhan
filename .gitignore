@@ -7,14 +7,23 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-.output
-.vinxi
+# Frontend dependencies and build
+frontend/node_modules/
+frontend/dist/
+frontend/dist-ssr/
+frontend/.output/
+frontend/.vinxi/
+frontend/.tanstack/**
+frontend/.nitro/
+frontend/*.local
+frontend/.wrangler/
+
+# Root-level build artifacts (if any)
+dist/
+.output/
 .tanstack/**
-.nitro
-*.local
+
+# Python
 __pycache__/
 *.pyc
 backend/.env
@@ -23,6 +32,9 @@ backend/db.sqlite3
 # Wrangler / Cloudflare
 .wrangler/
 .dev.vars
+
+# Virtual environments
+.venv/
 
 # Editor directories and files
 .vscode/*
@@ -34,3 +46,4 @@ backend/db.sqlite3
 *.njsproj
 *.sln
 *.sw?
+node_modules
