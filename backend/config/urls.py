@@ -19,6 +19,10 @@ def api_root(_request):
     )
 
 
+def healthz(_request):
+    return JsonResponse({"status": "ok"})
+
+
 def robots_txt(_request):
     lines = [
         "User-agent: *",
@@ -52,6 +56,7 @@ def sitemap_xml(_request):
 
 urlpatterns = [
     path("", api_root, name="api_root"),
+    path("healthz", healthz, name="healthz"),
     path(f"{settings.ADMIN_URL_PATH.strip('/')}/dashboard/", admin_dashboard_view, name="admin_dashboard_summary"),
     path(f"{settings.ADMIN_URL_PATH.strip('/')}/", admin.site.urls),
     path("api/v1/auth/", include("apps.accounts.api.urls")),
