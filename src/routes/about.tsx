@@ -1,7 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { SectionHeading } from "@/components/SectionHeading";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { Award, Target, Rocket, BookOpen } from "lucide-react";
+import { applySeo } from "@/lib/seo";
+import { fetchJson } from "@/lib/api";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -31,11 +34,44 @@ const highlights = [
 
 function AboutPage() {
   const { ref, isVisible } = useScrollAnimation();
+  const [backendEmpty, setBackendEmpty] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+
+    Promise.allSettled([
+      fetchJson<{ title_tag?: string; meta_description?: string; keywords?: string; og_title?: string; og_description?: string; og_image_alt_text?: string }>("/api/v1/public/seo/pages/about/"),
+    ]).then(([seoResult]) => {
+      if (!active) return;
+
+      setBackendEmpty(seoResult.status !== "fulfilled");
+
+      const seo = seoResult.status === "fulfilled" ? seoResult.value : null;
+      applySeo({
+        title: seo?.title_tag ?? "About — Shahriyar Khan | Software Engineer",
+        description: seo?.meta_description ?? "About Shahriyar Khan (Shary): Software Engineer, Python Developer, Django Developer, and Backend Developer with production experience building scalable systems.",
+        keywords: seo?.keywords ?? "About Shahriyar Khan, Shary, Software Engineer, Python Developer, Django Developer, Backend Developer",
+        ogTitle: seo?.og_title ?? "About Shahriyar Khan",
+        ogDescription: seo?.og_description ?? "Shahriyar Khan is a Software Engineer with strong Python, Django, FastAPI, and backend architecture expertise.",
+        ogImageAlt: seo?.og_image_alt_text ?? "Shahriyar Khan standing portrait",
+      });
+    });
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   return (
     <section className="section-shell py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionHeading title="About Me" subtitle="A brief introduction to who I am and what I do" />
+
+        {backendEmpty && (
+          <div className="mb-6 rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-700 dark:text-amber-300">
+            About page SEO is using static fallback content because the Django SEO record is missing or unpublished.
+          </div>
+        )}
 
         <div
           ref={ref}

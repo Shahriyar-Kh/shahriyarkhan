@@ -33,7 +33,7 @@ export function Footer() {
         </div>
         <div className="mt-10 pt-6 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} Shahriyar Khan. All rights reserved.</p>
-          <p className="text-xs text-muted-foreground flex items-center gap-1">Built with <Heart size={12} className="text-primary" /> by Shahriyar Khan</p>
+          <p className="text-xs text-muted-foreground flex items-center gap-1">Built with by Shahriyar Khan</p>
         </div>
       </div>
     </footer>

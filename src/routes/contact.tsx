@@ -1,7 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SectionHeading } from "@/components/SectionHeading";
 import { Mail, Phone, MapPin, Github, Linkedin, MessageCircle, Send } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { applySeo } from "@/lib/seo";
+import { fetchJson, fetchListJson, postJson } from "@/lib/api";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -37,7 +39,21 @@ const serviceOptions = [
   "Other",
 ];
 
+type SiteSettings = {
+  public_email?: string;
+  public_phone?: string;
+  public_location?: string;
+  site_name?: string;
+};
+
+type ServiceApi = {
+  id: number;
+  title: string;
+};
+
 function ContactPage() {
+  const [siteSettings, setSiteSettings] = useState<SiteSettings | null>(null);
+  const [services, setServices] = useState<ServiceApi[]>([]);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -46,13 +62,71 @@ function ContactPage() {
     service: "",
   });
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    let active = true;
+
+    Promise.allSettled([
+      fetchJson<SiteSettings>("/api/v1/public/site/settings/"),
+      fetchListJson<ServiceApi>("/api/v1/public/portfolio/services/"),
+      fetchJson<{ title_tag?: string; meta_description?: string; keywords?: string; og_title?: string; og_description?: string }>("/api/v1/public/seo/pages/contact/"),
+    ]).then(([settingsResult, servicesResult, seoResult]) => {
+      if (!active) return;
+
+      if (settingsResult.status === "fulfilled") {
+        setSiteSettings(settingsResult.value);
+      }
+
+      if (servicesResult.status === "fulfilled") {
+        setServices(servicesResult.value);
+      }
+
+      const seo = seoResult.status === "fulfilled" ? seoResult.value : null;
+      applySeo({
+        title: seo?.title_tag ?? "Contact — Shahriyar Khan | Get in Touch",
+        description: seo?.meta_description ?? "Contact Shahriyar Khan (Shary) for web development, backend engineering, freelance projects, and software engineering opportunities.",
+        keywords: seo?.keywords ?? "Contact Shahriyar Khan, hire Python developer, Django developer contact, backend developer Pakistan",
+        ogTitle: seo?.og_title ?? "Contact Shahriyar Khan",
+        ogDescription: seo?.og_description ?? "Reach out for web development services, freelance work, or employment opportunities.",
+      });
+    });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
-    setFormData({ name: "", email: "", subject: "", message: "", service: "" });
-    setTimeout(() => setSubmitted(false), 5000);
+    setLoading(true);
+    setError("");
+
+    try {
+      await postJson("/api/v1/public/inquiries/contact/", {
+        sender_name: formData.name,
+        email: formData.email,
+        subject: formData.subject,
+        message: formData.message,
+        service_type_text: formData.service,
+      });
+      setSubmitted(true);
+      setFormData({ name: "", email: "", subject: "", message: "", service: "" });
+      setTimeout(() => setSubmitted(false), 5000);
+    } catch (submitError) {
+      setError(submitError instanceof Error ? submitError.message : "Something went wrong while sending your message.");
+    } finally {
+      setLoading(false);
+    }
   };
+
+  const resolvedContactInfo = [
+    { icon: Mail, label: "Email", value: siteSettings?.public_email ?? contactInfo[0].value, href: `mailto:${siteSettings?.public_email ?? "shahriyarkhanpk1@gmail.com"}` },
+    { icon: Phone, label: "Phone", value: siteSettings?.public_phone ?? contactInfo[1].value, href: `tel:${(siteSettings?.public_phone ?? "+923110924560").replace(/\s+/g, "")}` },
+    { icon: MapPin, label: "Location", value: siteSettings?.public_location ?? contactInfo[2].value, href: null },
+  ];
+  const contactServiceOptions = services.length ? services.map((service) => service.title) : serviceOptions;
 
   return (
     <section className="section-shell py-20">
@@ -62,7 +136,7 @@ function ContactPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Contact Info */}
           <div className="space-y-5">
-            {contactInfo.map((item) => (
+            {resolvedContactInfo.map((item) => (
               <div key={item.label} className="premium-card rounded-xl p-5 flex items-start gap-4">
                 <div className="p-2.5 rounded-lg gradient-primary">
                   <item.icon size={18} className="text-primary-foreground" />
@@ -148,7 +222,7 @@ function ContactPage() {
                       className="w-full rounded-lg bg-input border border-border px-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
                     >
                       <option value="">Select (optional)</option>
-                      {serviceOptions.map((s) => (
+                      {contactServiceOptions.map((s) => (
                         <option key={s} value={s}>{s}</option>
                       ))}
                     </select>
@@ -167,10 +241,12 @@ function ContactPage() {
                 </div>
                 <button
                   type="submit"
+                  disabled={loading}
                   className="w-full inline-flex items-center justify-center gap-2 rounded-xl gradient-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:shadow-lg transition-all hover:scale-[1.02]"
                 >
-                  <Send size={16} /> Send Message
+                  <Send size={16} /> {loading ? "Sending..." : "Send Message"}
                 </button>
+                {error && <p className="text-sm text-destructive">{error}</p>}
               </form>
             )}
           </div>

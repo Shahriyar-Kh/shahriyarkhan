@@ -1,6 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useMemo, useState } from "react";
 import { SectionHeading } from "@/components/SectionHeading";
 import { Download, FileText } from "lucide-react";
+import { applySeo } from "@/lib/seo";
+import { fetchJson } from "@/lib/api";
 
 export const Route = createFileRoute("/resume")({
   head: () => ({
@@ -20,10 +23,71 @@ export const Route = createFileRoute("/resume")({
 });
 
 function ResumePage() {
+  const [resume, setResume] = useState<ResumeApi | null>(null);
+  const [backendEmpty, setBackendEmpty] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+
+    Promise.allSettled([
+      fetchJson<ResumeApi>("/api/v1/public/resume/default/"),
+      fetchJson<{ title_tag?: string; meta_description?: string; keywords?: string; og_title?: string; og_description?: string }>("/api/v1/public/seo/pages/resume/"),
+    ]).then(([resumeResult, seoResult]) => {
+      if (!active) return;
+
+      if (resumeResult.status === "fulfilled") {
+        setResume(resumeResult.value);
+        setBackendEmpty(!resumeResult.value);
+      }
+
+      const seo = seoResult.status === "fulfilled" ? seoResult.value : null;
+      applySeo({
+        title: seo?.title_tag ?? "Resume — Shahriyar Khan | Software Engineer CV",
+        description: seo?.meta_description ?? "Download Shahriyar Khan's ATS-optimized resume. Software Engineer, Python Developer, Django Developer, and Backend Developer.",
+        keywords: seo?.keywords ?? "Shahriyar resume, software engineer CV, python developer resume, django developer resume",
+        ogTitle: seo?.og_title ?? "Resume — Shahriyar Khan",
+        ogDescription: seo?.og_description ?? "ATS-friendly CV of a Python & Django developer.",
+      });
+    });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const experienceItems = resume?.experiences ?? [];
+  const skillGroups = useMemo(() => {
+    if (!resume?.skills?.length) {
+      return {
+        Backend: ["Python", "Django", "DRF", "FastAPI"],
+        Frontend: ["React.js", "JavaScript", "HTML5", "CSS3"],
+        Databases: ["PostgreSQL", "MongoDB", "MySQL", "Redis"],
+        Tools: ["Git", "GitHub", "Postman", "Docker"],
+        Deployment: ["Render", "Vercel", "Supabase", "Cloudflare"],
+        AI: ["OpenAI API", "Groq", "Machine Learning"],
+      };
+    }
+
+    return resume.skills.reduce<Record<string, string[]>>((groups, skill) => {
+      const category = skill.category?.name ?? "Skills";
+      if (!groups[category]) groups[category] = [];
+      groups[category].push(skill.name);
+      return groups;
+    }, {});
+  }, [resume]);
+
+  const educationItems = resume?.education ?? [];
+
   return (
     <section className="section-shell py-20">
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
         <SectionHeading title="Resume / CV" subtitle="ATS-optimized professional resume" />
+
+        {backendEmpty && (
+          <div className="mb-6 rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-700 dark:text-amber-300">
+            No published resume version is set as default in Django admin yet, so a local sample resume is being shown.
+          </div>
+        )}
 
         {/* Download Button */}
         <div className="flex justify-center mb-12">
@@ -39,8 +103,8 @@ function ResumePage() {
         {/* Inline Resume Preview */}
         <div className="premium-card rounded-xl p-8 sm:p-10 space-y-8">
           <div className="text-center border-b border-border pb-6">
-            <h2 className="text-2xl font-bold text-foreground">SHAHRIYAR KHAN</h2>
-            <p className="text-primary font-medium mt-1">Software Engineer | Python • Django • FastAPI</p>
+            <h2 className="text-2xl font-bold text-foreground">{resume?.title?.toUpperCase() ?? "SHAHRIYAR KHAN"}</h2>
+            <p className="text-primary font-medium mt-1">{resume?.target_role ?? "Software Engineer | Python • Django • FastAPI"}</p>
             <p className="text-sm text-muted-foreground mt-2">
               Islamabad, Pakistan • shahriyarkhanpk1@gmail.com • +92 311 0924560
             </p>
@@ -51,61 +115,93 @@ function ResumePage() {
 
           <ResumeSection title="Summary">
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Software Engineer with experience designing and developing scalable web applications and backend systems using Python, Django, and FastAPI. Strong understanding of SDLC, system design, and API-driven architectures. Experienced in building production-ready systems, integrating AI-powered features, and delivering reliable solutions in agile environments.
+              {resume?.custom_summary ?? "Software Engineer with experience designing and developing scalable web applications and backend systems using Python, Django, and FastAPI. Strong understanding of SDLC, system design, and API-driven architectures. Experienced in building production-ready systems, integrating AI-powered features, and delivering reliable solutions in agile environments."}
             </p>
           </ResumeSection>
 
           <ResumeSection title="Experience">
-            <ExperienceItem
-              title="Software Developer"
-              company="HA Technologies (Pvt) Ltd"
-              period="June 2025 — Present"
-              location="Islamabad"
-              points={[
-                "Developed scalable full-stack web applications using Django, DRF, FastAPI, and React.js",
-                "Designed secure backend architectures with JWT authentication and RBAC",
-                "Implemented PostgreSQL, MongoDB, and Redis for data and caching",
-                "Integrated AI-powered modules for intelligent application features",
-                "Deployed applications using Render and Vercel in agile environments",
-              ]}
-            />
-            <ExperienceItem
-              title="Python Developer Intern"
-              company="CodeAlpha"
-              period="Feb 2025 — May 2025"
-              location="Remote"
-              points={[
-                "Developed desktop applications using Python, PyQt5, and Tkinter",
-                "Implemented event-driven architecture and API integrations",
-              ]}
-            />
-            <ExperienceItem
-              title="Web Developer Intern (Team Lead)"
-              company="Abasyn University Incubation Center"
-              period="Sep 2024 — Feb 2025"
-              location="Peshawar"
-              points={[
-                "Built full-stack applications using Django, PyQt5, and REST APIs",
-                "Led development team and managed task execution",
-              ]}
-            />
+            {experienceItems.length ? experienceItems.map((experience) => (
+              <ExperienceItem
+                key={`${experience.company_name}-${experience.role_title}`}
+                title={experience.role_title}
+                company={experience.company_name}
+                period={`${experience.start_date}${experience.end_date ? ` — ${experience.end_date}` : experience.current_role ? " — Present" : ""}`}
+                location={experience.location || "Remote"}
+                points={experience.achievements?.length ? experience.achievements : [experience.description]}
+              />
+            )) : (
+              <>
+                <ExperienceItem
+                  title="Software Developer"
+                  company="HA Technologies (Pvt) Ltd"
+                  period="June 2025 — Present"
+                  location="Islamabad"
+                  points={[
+                    "Developed scalable full-stack web applications using Django, DRF, FastAPI, and React.js",
+                    "Designed secure backend architectures with JWT authentication and RBAC",
+                    "Implemented PostgreSQL, MongoDB, and Redis for data and caching",
+                    "Integrated AI-powered modules for intelligent application features",
+                    "Deployed applications using Render and Vercel in agile environments",
+                  ]}
+                />
+                <ExperienceItem
+                  title="Python Developer Intern"
+                  company="CodeAlpha"
+                  period="Feb 2025 — May 2025"
+                  location="Remote"
+                  points={[
+                    "Developed desktop applications using Python, PyQt5, and Tkinter",
+                    "Implemented event-driven architecture and API integrations",
+                  ]}
+                />
+                <ExperienceItem
+                  title="Web Developer Intern (Team Lead)"
+                  company="Abasyn University Incubation Center"
+                  period="Sep 2024 — Feb 2025"
+                  location="Peshawar"
+                  points={[
+                    "Built full-stack applications using Django, PyQt5, and REST APIs",
+                    "Led development team and managed task execution",
+                  ]}
+                />
+              </>
+            )}
           </ResumeSection>
 
           <ResumeSection title="Skills">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-muted-foreground">
-              <p><span className="text-foreground font-medium">Backend:</span> Python, Django, DRF, FastAPI</p>
-              <p><span className="text-foreground font-medium">Frontend:</span> React.js, JavaScript, HTML5, CSS3</p>
-              <p><span className="text-foreground font-medium">Databases:</span> PostgreSQL, MongoDB, MySQL, Redis</p>
-              <p><span className="text-foreground font-medium">Tools:</span> Git, GitHub, Postman, Docker (basic)</p>
-              <p><span className="text-foreground font-medium">Deployment:</span> Render, Vercel, Supabase, Cloudflare</p>
-              <p><span className="text-foreground font-medium">AI:</span> OpenAI API, Groq, Machine Learning</p>
+              {Object.entries(skillGroups).map(([category, items]) => (
+                <p key={category}><span className="text-foreground font-medium">{category}:</span> {items.join(", ")}</p>
+              ))}
             </div>
           </ResumeSection>
 
           <ResumeSection title="Education">
-            <p className="text-sm text-foreground font-medium">BS Software Engineering — Abasyn University, Peshawar</p>
-            <p className="text-sm text-muted-foreground">Graduated 2025 • CGPA 3.67</p>
+            {educationItems.length ? educationItems.map((education) => (
+              <div key={`${education.institution}-${education.degree}`} className="mb-3 last:mb-0">
+                <p className="text-sm text-foreground font-medium">{education.degree} — {education.institution}</p>
+                <p className="text-sm text-muted-foreground">
+                  {education.start_date} {education.end_date ? `• ${education.end_date}` : ""}
+                </p>
+                {education.description && <p className="text-sm text-muted-foreground mt-1">{education.description}</p>}
+              </div>
+            )) : (
+              <>
+                <p className="text-sm text-foreground font-medium">BS Software Engineering — Abasyn University, Peshawar</p>
+                <p className="text-sm text-muted-foreground">Graduated 2025 • CGPA 3.67</p>
+              </>
+            )}
           </ResumeSection>
+
+          {resume?.projects?.length ? (
+            <ResumeSection title="Featured Projects">
+              <ul className="text-sm text-muted-foreground space-y-1">
+                {resume.projects.slice(0, 4).map((project) => (
+                  <li key={project.slug}>• {project.title} — {project.description}</li>
+                ))}
+              </ul>
+            </ResumeSection>
+          ) : null}
 
           <ResumeSection title="Certifications">
             <ul className="text-sm text-muted-foreground space-y-1">
@@ -121,6 +217,36 @@ function ResumePage() {
     </section>
   );
 }
+
+type ResumeApi = {
+  id: number;
+  title: string;
+  slug: string;
+  target_role?: string;
+  custom_summary?: string;
+  projects?: { title: string; slug: string; description: string }[];
+  experiences?: {
+    company_name: string;
+    role_title: string;
+    start_date: string;
+    end_date?: string | null;
+    current_role?: boolean;
+    location?: string;
+    description: string;
+    achievements?: string[];
+  }[];
+  skills?: {
+    name: string;
+    category?: { name: string };
+  }[];
+  education?: {
+    institution: string;
+    degree: string;
+    start_date: string;
+    end_date?: string | null;
+    description?: string;
+  }[];
+};
 
 function ResumeSection({ title, children }: { title: string; children: React.ReactNode }) {
   return (

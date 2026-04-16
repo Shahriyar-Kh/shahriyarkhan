@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { ArrowRight, Download, Mail, Code2, Server, Database, Sparkles } from "lucide-react";
+import { fetchJson } from "@/lib/api";
+import { applySeo } from "@/lib/seo";
 
 const roles = [
   "Software Engineer",
@@ -56,6 +58,21 @@ const highlights = [
   { icon: Sparkles, label: "AI Integration", value: "OpenAI & Groq" },
 ];
 
+type SiteSettings = {
+  site_name?: string;
+  hero_title?: string;
+  hero_subtitle?: string;
+};
+
+type PageSeo = {
+  title_tag?: string;
+  meta_description?: string;
+  keywords?: string;
+  og_title?: string;
+  og_description?: string;
+  image_alt_text?: string;
+};
+
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
@@ -76,6 +93,45 @@ export const Route = createFileRoute("/")({
 });
 
 function HomePage() {
+  const [siteSettings, setSiteSettings] = useState<SiteSettings | null>(null);
+  const [backendEmpty, setBackendEmpty] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+
+    Promise.allSettled([
+      fetchJson<SiteSettings>("/api/v1/public/site/settings/"),
+      fetchJson<PageSeo>("/api/v1/public/seo/pages/home/"),
+    ]).then(([settingsResult, seoResult]) => {
+      if (!active) return;
+
+      if (settingsResult.status === "fulfilled") {
+        setSiteSettings(settingsResult.value);
+      }
+
+      setBackendEmpty(settingsResult.status !== "fulfilled" || seoResult.status !== "fulfilled");
+
+      const seo = seoResult.status === "fulfilled" ? seoResult.value : null;
+      applySeo({
+        title: seo?.title_tag ?? "Shahriyar Khan — Software Engineer | Python & Django Developer",
+        description: seo?.meta_description ?? "Premium portfolio of Shahriyar Khan (Shary), Software Engineer specializing in Python, Django, FastAPI, scalable backend systems, and modern full-stack development.",
+        keywords: seo?.keywords ?? "Shahriyar, Shahriyar Khan, Shary, Python Developer, Django Developer, Backend Developer, Junior Full Stack Developer",
+        ogTitle: seo?.og_title ?? "Shahriyar Khan — Software Engineer",
+        ogDescription: seo?.og_description ?? "Shahriyar Khan (Shary) is a Software Engineer focused on Python, Django, FastAPI, and high-quality backend architecture.",
+        ogImageAlt: seo?.image_alt_text ?? "Portrait of Shahriyar Khan, Software Engineer",
+        twitterTitle: seo?.title_tag ?? "Shahriyar Khan — Software Engineer | Python & Django Developer",
+        twitterDescription: seo?.meta_description ?? "Premium portfolio of Shahriyar Khan (Shary), Software Engineer specializing in Python, Django, FastAPI, scalable backend systems, and modern full-stack development.",
+      });
+    });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const heroTitle = siteSettings?.hero_title ?? "Hi, I'm Shahriyar Khan";
+  const heroSubtitle = siteSettings?.hero_subtitle ?? "Software Engineer crafting scalable products with Python, Django, FastAPI, and modern frontend technologies.";
+
   return (
     <>
       {/* Hero Section */}
@@ -84,10 +140,15 @@ function HomePage() {
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-1/4 -left-32 w-96 h-96 rounded-full bg-primary/10 blur-3xl animate-soft-pan" />
           <div className="absolute bottom-1/4 -right-32 w-96 h-96 rounded-full bg-accent/12 blur-3xl animate-soft-pan" style={{ animationDelay: "0.8s" }} />
-          <div className="absolute top-10 right-1/3 h-36 w-36 rounded-full border border-primary/20" />
         </div>
 
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-20 sm:py-32">
+          {backendEmpty && (
+            <div className="mb-8 rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-700 dark:text-amber-300">
+              Home content is using local fallback text because the Django site settings or SEO record is missing or unpublished.
+            </div>
+          )}
+
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Text Content */}
             <div className="reveal-in">
@@ -95,14 +156,13 @@ function HomePage() {
                 Welcome to my portfolio
               </p>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-foreground leading-tight tracking-tight">
-                Hi, I'm{" "}
-                <span className="gradient-text">Shahriyar Khan</span>
+                <span className="gradient-text">{heroTitle}</span>
               </h1>
               <div className="mt-4 text-xl sm:text-2xl font-semibold text-foreground min-h-10">
                 <TypewriterText />
               </div>
               <h2 className="mt-4 text-sm sm:text-base text-muted-foreground leading-relaxed max-w-xl">
-                Software Engineer crafting scalable products with Python, Django, FastAPI, and modern frontend technologies.
+                {heroSubtitle}
               </h2>
               <p className="mt-6 text-base sm:text-lg text-muted-foreground max-w-lg leading-relaxed">
                 Building scalable web applications and backend systems with Python, Django, and modern technologies. Passionate about clean architecture and AI-powered solutions.

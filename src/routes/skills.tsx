@@ -1,6 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useMemo, useState } from "react";
 import { SectionHeading } from "@/components/SectionHeading";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import { applySeo } from "@/lib/seo";
+import { fetchJson, fetchListJson } from "@/lib/api";
 
 export const Route = createFileRoute("/skills")({
   head: () => ({
@@ -24,7 +27,16 @@ interface SkillCategory {
   skills: { name: string; level: number }[];
 }
 
-const categories: SkillCategory[] = [
+type SkillApi = {
+  id: number;
+  name: string;
+  level: number;
+  category: { id: number; name: string; slug: string };
+  display_order: number;
+  published: boolean;
+};
+
+const fallbackCategories: SkillCategory[] = [
   {
     title: "Backend",
     skills: [
@@ -84,20 +96,88 @@ function SkillBar({ name, level, delay }: { name: string; level: number; delay: 
         <span className="text-muted-foreground">{level}%</span>
       </div>
       <div className="skill-bar h-2">
-        <div
-          className="skill-bar-fill"
-          style={{ width: isVisible ? `${level}%` : "0%" }}
-        />
+        <div className="skill-bar-fill" style={{ width: isVisible ? `${level}%` : "0%" }} />
       </div>
     </div>
   );
 }
 
 function SkillsPage() {
+  const [skillsData, setSkillsData] = useState<SkillApi[]>([]);
+  const [backendEmpty, setBackendEmpty] = useState(false);
+  const [backendAttempted, setBackendAttempted] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+
+    Promise.allSettled([
+      fetchListJson<SkillApi>("/api/v1/public/portfolio/skills/"),
+      fetchJson<{ title_tag?: string; meta_description?: string; keywords?: string; og_title?: string; og_description?: string }>("/api/v1/public/seo/pages/skills/"),
+    ]).then(([skillsResult, seoResult]) => {
+      if (!active) return;
+
+      setBackendAttempted(true);
+      if (skillsResult.status === "fulfilled") {
+        setSkillsData(skillsResult.value);
+        setBackendEmpty(skillsResult.value.length === 0);
+      }
+
+      const seo = seoResult.status === "fulfilled" ? seoResult.value : null;
+      applySeo({
+        title: seo?.title_tag ?? "Skills — Shahriyar Khan | Technical Expertise",
+        description: seo?.meta_description ?? "Technical skills of Shahriyar Khan (Shary), Software Engineer specializing in Python, Django, FastAPI, React, and scalable backend development.",
+        keywords: seo?.keywords ?? "Shahriyar skills, Python Developer, Django Developer, Backend Developer, Junior Full Stack Developer",
+        ogTitle: seo?.og_title ?? "Skills — Shahriyar Khan",
+        ogDescription: seo?.og_description ?? "Frontend, Backend, Database, Tools, and Deployment expertise.",
+      });
+    });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const categories = useMemo<SkillCategory[]>(() => {
+    // Always use backend data if available (even after attempted)
+    if (skillsData.length > 0 && backendAttempted) {
+      const grouped = new Map<string, SkillCategory>();
+
+      skillsData
+        .filter((skill) => skill.published)
+        .sort((left, right) => left.display_order - right.display_order)
+        .forEach((skill) => {
+          const categoryTitle = skill.category.name;
+          const normalizedLevel = skill.level <= 4 ? skill.level * 25 : skill.level;
+          const existing = grouped.get(categoryTitle);
+
+          if (existing) {
+            existing.skills.push({ name: skill.name, level: normalizedLevel });
+            return;
+          }
+
+          grouped.set(categoryTitle, {
+            title: categoryTitle,
+            skills: [{ name: skill.name, level: normalizedLevel }],
+          });
+        });
+
+      return Array.from(grouped.values());
+    }
+
+    // Return fallback categories if no backend data
+    return fallbackCategories;
+  }, [skillsData, backendAttempted]);
+
   return (
     <section className="section-shell py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionHeading title="Technical Skills" subtitle="Technologies and tools I work with" />
+
+        {backendEmpty && (
+          <div className="mb-6 rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-700 dark:text-amber-300">
+            No published skills are available in Django admin yet, so sample skill groups are being shown.
+          </div>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {categories.map((cat) => (
