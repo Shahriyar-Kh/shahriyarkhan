@@ -17,3 +17,5 @@ services:
         value: "3.11"
       - key: DJANGO_DEBUG
         value: "false"
+      - key: MEDIA_ROOT
+        value: /var/data/media
