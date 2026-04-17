@@ -1,7 +1,10 @@
+import mimetypes
+
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.http import HttpResponse, JsonResponse
+from django.contrib.staticfiles import finders
+from django.http import FileResponse, Http404, HttpResponse, JsonResponse
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
@@ -21,6 +24,15 @@ def api_root(_request):
 
 def healthz(_request):
     return JsonResponse({"status": "ok"})
+
+
+def serve_static_file(_request, path):
+    file_path = finders.find(path)
+    if not file_path:
+        raise Http404()
+
+    content_type, _ = mimetypes.guess_type(file_path)
+    return FileResponse(open(file_path, "rb"), content_type=content_type or "application/octet-stream")
 
 
 def robots_txt(_request):
@@ -57,6 +69,7 @@ def sitemap_xml(_request):
 urlpatterns = [
     path("", api_root, name="api_root"),
     path("healthz", healthz, name="healthz"),
+    path("static/<path:path>", serve_static_file, name="static_serve"),
     path(f"{settings.ADMIN_URL_PATH.strip('/')}/dashboard/", admin_dashboard_view, name="admin_dashboard_summary"),
     path(f"{settings.ADMIN_URL_PATH.strip('/')}/", admin.site.urls),
     path("api/v1/auth/", include("apps.accounts.api.urls")),
