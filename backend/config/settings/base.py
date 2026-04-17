@@ -15,6 +15,18 @@ def env_list(name: str, default: str = "") -> list[str]:
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 load_dotenv(BASE_DIR / ".env")
 
+CLOUDINARY_URL = os.getenv("CLOUDINARY_URL", "").strip()
+CLOUDINARY_CLOUD_NAME = os.getenv("CLOUDINARY_CLOUD_NAME", "").strip()
+CLOUDINARY_API_KEY = os.getenv("CLOUDINARY_API_KEY", "").strip()
+CLOUDINARY_API_SECRET = os.getenv("CLOUDINARY_API_SECRET", "").strip()
+
+if CLOUDINARY_URL and (not CLOUDINARY_CLOUD_NAME or not CLOUDINARY_API_KEY or not CLOUDINARY_API_SECRET):
+    parsed_cloudinary_url = urlparse(CLOUDINARY_URL)
+    if parsed_cloudinary_url.scheme == "cloudinary":
+        CLOUDINARY_API_KEY = CLOUDINARY_API_KEY or unquote(parsed_cloudinary_url.username or "")
+        CLOUDINARY_API_SECRET = CLOUDINARY_API_SECRET or unquote(parsed_cloudinary_url.password or "")
+        CLOUDINARY_CLOUD_NAME = CLOUDINARY_CLOUD_NAME or (parsed_cloudinary_url.hostname or "")
+
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "dev-secret-key-change-me")
 DEBUG = env_bool("DJANGO_DEBUG", False)
 ALLOWED_HOSTS = env_list("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost")
@@ -46,6 +58,13 @@ INSTALLED_APPS = [
     "apps.seo",
     "apps.site_config",
 ]
+
+USE_CLOUDINARY = env_bool("USE_CLOUDINARY", False) or bool(
+    CLOUDINARY_CLOUD_NAME and CLOUDINARY_API_KEY and CLOUDINARY_API_SECRET
+)
+
+if USE_CLOUDINARY:
+    INSTALLED_APPS += ["cloudinary_storage", "cloudinary"]
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
@@ -143,6 +162,15 @@ STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 MEDIA_URL = "/media/"
 MEDIA_ROOT = Path(os.getenv("MEDIA_ROOT", str(BASE_DIR / "media")))
+
+if USE_CLOUDINARY:
+    CLOUDINARY_STORAGE = {
+        "CLOUD_NAME": CLOUDINARY_CLOUD_NAME,
+        "API_KEY": CLOUDINARY_API_KEY,
+        "API_SECRET": CLOUDINARY_API_SECRET,
+        "SECURE": env_bool("CLOUDINARY_SECURE", True),
+    }
+    DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 

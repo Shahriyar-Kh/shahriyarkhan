@@ -27,7 +27,13 @@ SECURE_SSL_REDIRECT=True
 SESSION_COOKIE_SECURE=True
 CSRF_COOKIE_SECURE=True
 CSRF_COOKIE_HTTPONLY=True
+USE_CLOUDINARY=True
+CLOUDINARY_CLOUD_NAME=<your-cloud-name>
+CLOUDINARY_API_KEY=<your-api-key>
+CLOUDINARY_API_SECRET=<your-api-secret>
 ```
+
+If you prefer, you can set a single `CLOUDINARY_URL=cloudinary://<api_key>:<api_secret>@<cloud_name>` instead of the three separate values.
 
 **Important**: For `DJANGO_SECRET_KEY`, generate a secure random string:
 - Linux/Mac: `openssl rand -base64 32`
@@ -77,6 +83,7 @@ VITE_API_BASE_URL=https://shahriyarkhan.onrender.com
 | Problem | Solution | Impact |
 |---------|----------|--------|
 | Input fields frozen | Frontend now knows backend URL (`VITE_API_BASE_URL`) | Forms become responsive |
+| Project images 404 | Media uploads move to Cloudinary free storage | Uploaded images stay available after deploys |
 | No DB data shown | API calls now reach correct endpoint | Data displays properly |
 | CORS blocks requests | Backend allows both domains in `CORS_ALLOWED_ORIGINS` | Requests succeed |
 | Production security | CSRF tokens properly exchanged with secure cookies | Forms work securely |
@@ -96,6 +103,8 @@ VITE_API_BASE_URL=https://shahriyarkhan.onrender.com
 - `CSRF_TRUSTED_ORIGINS`: Domains trusted for CSRF token validation
 - `SESSION_COOKIE_SECURE=True`: Cookies only sent over HTTPS
 - `CSRF_COOKIE_SECURE=True`: CSRF tokens only sent over HTTPS
+- `USE_CLOUDINARY=True`: Switch Django image uploads to Cloudinary storage
+- `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`: Cloudinary account credentials for the free plan
 
 ---
 
