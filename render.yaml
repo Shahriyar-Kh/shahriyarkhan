@@ -7,6 +7,7 @@ services:
       pip install --upgrade pip setuptools wheel
       pip install -r backend/requirements/prod.txt
       python backend/manage.py migrate --settings=config.settings.production
+      python backend/manage.py seed_insightboard_project --settings=config.settings.production
       python backend/manage.py collectstatic --noinput --clear --settings=config.settings.production
     startCommand: gunicorn config.wsgi:application --chdir backend --bind 0.0.0.0:$PORT
     envVars:
