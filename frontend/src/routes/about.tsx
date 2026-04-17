@@ -1,29 +1,9 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { SectionHeading } from "@/components/SectionHeading";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { Award, Target, Rocket, BookOpen } from "lucide-react";
 import { applySeo } from "@/lib/seo";
 import { fetchJson } from "@/lib/api";
-
-export const Route = createFileRoute("/about")({
-  head: () => ({
-    meta: [
-      { title: "About — Shahriyar Khan | Software Engineer" },
-      { name: "description", content: "About Shahriyar Khan (Shary): Software Engineer, Python Developer, Django Developer, and Backend Developer with production experience building scalable systems." },
-      { name: "keywords", content: "About Shahriyar Khan, Shary, Software Engineer, Python Developer, Django Developer, Backend Developer" },
-      { property: "og:title", content: "About Shahriyar Khan" },
-      { property: "og:description", content: "Shahriyar Khan is a Software Engineer with strong Python, Django, FastAPI, and backend architecture expertise." },
-      { property: "og:image", content: "/images/shary%20photo.jpeg" },
-      { property: "og:image:alt", content: "Shahriyar Khan standing portrait" },
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "About Shahriyar Khan | Software Engineer" },
-      { name: "twitter:description", content: "Python Developer and Django Developer focused on scalable backend systems and clean engineering practices." },
-      { name: "twitter:image", content: "/images/shary%20photo.jpeg" },
-    ],
-  }),
-  component: AboutPage,
-});
 
 const highlights = [
   { icon: Award, title: "BS Software Engineering", desc: "Abasyn University, Peshawar — CGPA 3.67" },
@@ -32,7 +12,7 @@ const highlights = [
   { icon: BookOpen, title: "Continuous Learner", desc: "AWS, Docker, CI/CD — always growing" },
 ];
 
-function AboutPage() {
+export function AboutPage() {
   const { ref, isVisible } = useScrollAnimation();
   const [backendEmpty, setBackendEmpty] = useState(false);
 

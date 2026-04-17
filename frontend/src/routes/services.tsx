@@ -1,26 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState, type ComponentType } from "react";
 import { SectionHeading } from "@/components/SectionHeading";
 import { Globe, ShoppingCart, Layers, Briefcase, Code, Server, Settings } from "lucide-react";
 import { applySeo } from "@/lib/seo";
 import { fetchJson, fetchListJson, postJson } from "@/lib/api";
-
-export const Route = createFileRoute("/services")({
-  head: () => ({
-    meta: [
-      { title: "Services — Shahriyar Khan | Web Development Services" },
-      { name: "description", content: "Professional services by Shahriyar Khan (Shary): website development, ecommerce, SaaS products, backend engineering, and custom web applications." },
-      { name: "keywords", content: "Shahriyar services, web development services, Django developer for hire, backend developer services" },
-      { property: "og:title", content: "Services — Shahriyar Khan" },
-      { property: "og:description", content: "Hire Shahriyar Khan for web development, backend engineering, and custom applications." },
-      { property: "og:image", content: "/images/profile.png" },
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Services — Shahriyar Khan" },
-      { name: "twitter:description", content: "Premium web and backend development services by Shahriyar Khan." },
-    ],
-  }),
-  component: ServicesPage,
-});
 
 type ServiceCard = {
   id: number;
@@ -53,9 +35,8 @@ const iconByTitle: Record<string, ComponentType<{ size?: number; className?: str
   "Custom Web Application": Settings,
 };
 
-function ServicesPage() {
+export function ServicesPage() {
   const [servicesData, setServicesData] = useState<ServiceCard[]>([]);
-  const [backendAttempted, setBackendAttempted] = useState(false);
   const [formData, setFormData] = useState({ name: "", email: "", service: "", budgetRange: "", timeline: "", details: "" });
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -79,7 +60,6 @@ function ServicesPage() {
     ]).then(([servicesResult, seoResult]) => {
       if (!active) return;
 
-      setBackendAttempted(true);
       if (servicesResult.status === "fulfilled" && servicesResult.value.length) {
         setServicesData(servicesResult.value);
       }

@@ -1,26 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { SectionHeading } from "@/components/SectionHeading";
 import { Mail, Phone, MapPin, Github, Linkedin, MessageCircle, Send } from "lucide-react";
 import { useEffect, useState } from "react";
 import { applySeo } from "@/lib/seo";
 import { fetchJson, fetchListJson, postJson } from "@/lib/api";
-
-export const Route = createFileRoute("/contact")({
-  head: () => ({
-    meta: [
-      { title: "Contact — Shahriyar Khan | Get in Touch" },
-      { name: "description", content: "Contact Shahriyar Khan (Shary) for web development, backend engineering, freelance projects, and software engineering opportunities." },
-      { name: "keywords", content: "Contact Shahriyar Khan, hire Python developer, Django developer contact, backend developer Pakistan" },
-      { property: "og:title", content: "Contact Shahriyar Khan" },
-      { property: "og:description", content: "Reach out for web development services, freelance work, or employment opportunities." },
-      { property: "og:image", content: "/images/profile.png" },
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Contact — Shahriyar Khan" },
-      { name: "twitter:description", content: "Get in touch with Shahriyar Khan for development projects and opportunities." },
-    ],
-  }),
-  component: ContactPage,
-});
 
 const contactInfo = [
   { icon: Mail, label: "Email", value: "shahriyarkhanpk1@gmail.com", href: "mailto:shahriyarkhanpk1@gmail.com" },
@@ -51,7 +33,7 @@ type ServiceApi = {
   title: string;
 };
 
-function ContactPage() {
+export function ContactPage() {
   const [siteSettings, setSiteSettings] = useState<SiteSettings | null>(null);
   const [services, setServices] = useState<ServiceApi[]>([]);
   const [formData, setFormData] = useState({

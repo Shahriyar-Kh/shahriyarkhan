@@ -1,27 +1,9 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { SectionHeading } from "@/components/SectionHeading";
 import { ExternalLink, Github } from "lucide-react";
 import { applySeo } from "@/lib/seo";
 import { assetUrl, fetchJson, fetchListJson } from "@/lib/api";
-
-export const Route = createFileRoute("/projects")({
-  head: () => ({
-    meta: [
-      { title: "Projects — Shahriyar Khan | Portfolio" },
-      { name: "description", content: "Explore projects by Shahriyar Khan (Shary), including AI platforms, full-stack systems, and scalable backend solutions built with Python, Django, and FastAPI." },
-      { name: "keywords", content: "Shahriyar projects, Python projects, Django projects, backend portfolio, software engineer projects" },
-      { property: "og:title", content: "Projects — Shahriyar Khan" },
-      { property: "og:description", content: "Real-world portfolio projects showcasing Python, Django, FastAPI, React, and production-ready architecture." },
-      { property: "og:image", content: "/images/profile.png" },
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Projects — Shahriyar Khan" },
-      { name: "twitter:description", content: "Modern full-stack and backend projects by Shahriyar Khan." },
-    ],
-  }),
-  component: ProjectsPage,
-});
+import { Link } from "@/lib/navigation";
 
 const projects = [
   {
@@ -78,9 +60,8 @@ function normalizeProjectData(projects: ProjectApi[]): ProjectApi[] {
   }));
 }
 
-function ProjectsPage() {
+export function ProjectsPage() {
   const [projectsData, setProjectsData] = useState<ProjectApi[]>([]);
-  const [backendAttempted, setBackendAttempted] = useState(false);
   const [backendEmpty, setBackendEmpty] = useState(false);
 
   useEffect(() => {
@@ -92,7 +73,6 @@ function ProjectsPage() {
     ]).then(([projectsResult, seoResult]) => {
       if (!active) return;
 
-      setBackendAttempted(true);
       if (projectsResult.status === "fulfilled" && projectsResult.value.length) {
         setProjectsData(normalizeProjectData(projectsResult.value));
         setBackendEmpty(false);

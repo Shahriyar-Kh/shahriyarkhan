@@ -20,7 +20,7 @@ Primary goals:
 - Icons: lucide-react
 - Validation/Form utilities available: zod, react-hook-form, @hookform/resolvers
 - Charts/UI extras available: recharts, sonner, embla-carousel-react, date-fns
-- Deployment target: Cloudflare Workers (wrangler.jsonc)
+- Deployment target: Vercel frontend + Render backend
 
 ## 3) Package Scripts
 
@@ -187,13 +187,13 @@ TanStack file-based routes are defined in src/routes and reflected in src/routeT
 
 ## 8) SEO and Metadata
 
-- Global SEO defaults are in src/routes/__root.tsx (title, description, author, keywords, Open Graph, robots, Twitter card).
-- Each page route defines route-specific head metadata to improve discoverability and sharing previews.
+- Global SEO defaults are applied from src/lib/seo.ts inside each page component.
+- Each page component sets route-specific metadata when it mounts to improve discoverability and sharing previews.
 
 ## 9) Deployment and Runtime Notes
 
-- wrangler.jsonc defines Cloudflare compatibility and uses @tanstack/react-start/server-entry as main server entry.
-- vite.config.ts uses @lovable.dev/vite-tanstack-config wrapper; additional core plugins are intentionally managed by that package.
+- vite.config.ts is a plain Vite + React + Tailwind setup for a client-only build.
+- Navigation is handled by src/lib/navigation.tsx instead of a TanStack router runtime.
 
 ## 10) Quick Start
 
@@ -215,11 +215,10 @@ TanStack file-based routes are defined in src/routes and reflected in src/routeT
 ## 11) Important Files At a Glance
 
 - package.json: scripts and dependencies
-- vite.config.ts: Vite/TanStack config bridge
-- wrangler.jsonc: Cloudflare runtime config
-- src/router.tsx: router creation + global error handling
-- src/routeTree.gen.ts: generated route registry
-- src/routes/__root.tsx: app shell, global metadata, shared layout
+- vite.config.ts: Vite client build config
+- src/App.tsx: client-side route switch and app shell
+- src/lib/navigation.tsx: lightweight browser-history navigation helper
+- src/routes/*.tsx: page components and page-level SEO/data fetching
 - src/styles.css: design tokens, motion, and core UI utilities
 
 ## 12) Notes

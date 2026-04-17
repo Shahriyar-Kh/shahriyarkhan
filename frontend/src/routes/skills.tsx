@@ -1,26 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { SectionHeading } from "@/components/SectionHeading";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { applySeo } from "@/lib/seo";
 import { fetchJson, fetchListJson } from "@/lib/api";
-
-export const Route = createFileRoute("/skills")({
-  head: () => ({
-    meta: [
-      { title: "Skills — Shahriyar Khan | Technical Expertise" },
-      { name: "description", content: "Technical skills of Shahriyar Khan (Shary), Software Engineer specializing in Python, Django, FastAPI, React, and scalable backend development." },
-      { name: "keywords", content: "Shahriyar skills, Python Developer, Django Developer, Backend Developer, Junior Full Stack Developer" },
-      { property: "og:title", content: "Skills — Shahriyar Khan" },
-      { property: "og:description", content: "Frontend, Backend, Database, Tools, and Deployment expertise." },
-      { property: "og:image", content: "/images/profile.png" },
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Skills — Shahriyar Khan" },
-      { name: "twitter:description", content: "Explore technical expertise in Python, Django, FastAPI, and modern web development." },
-    ],
-  }),
-  component: SkillsPage,
-});
 
 interface SkillCategory {
   title: string;
@@ -102,10 +84,9 @@ function SkillBar({ name, level, delay }: { name: string; level: number; delay: 
   );
 }
 
-function SkillsPage() {
+export function SkillsPage() {
   const [skillsData, setSkillsData] = useState<SkillApi[]>([]);
   const [backendEmpty, setBackendEmpty] = useState(false);
-  const [backendAttempted, setBackendAttempted] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -116,7 +97,6 @@ function SkillsPage() {
     ]).then(([skillsResult, seoResult]) => {
       if (!active) return;
 
-      setBackendAttempted(true);
       if (skillsResult.status === "fulfilled") {
         setSkillsData(skillsResult.value);
         setBackendEmpty(skillsResult.value.length === 0);
@@ -139,7 +119,7 @@ function SkillsPage() {
 
   const categories = useMemo<SkillCategory[]>(() => {
     // Always use backend data if available (even after attempted)
-    if (skillsData.length > 0 && backendAttempted) {
+    if (skillsData.length > 0) {
       const grouped = new Map<string, SkillCategory>();
 
       skillsData
@@ -166,7 +146,7 @@ function SkillsPage() {
 
     // Return fallback categories if no backend data
     return fallbackCategories;
-  }, [skillsData, backendAttempted]);
+  }, [skillsData]);
 
   return (
     <section className="section-shell py-20">

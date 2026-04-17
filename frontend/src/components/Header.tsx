@@ -1,6 +1,6 @@
-import { Link, useLocation } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { Menu, X, Github, Linkedin, MessageCircle } from "lucide-react";
+import { Link, useLocation } from "@/lib/navigation";
 
 const navLinks = [
   { to: "/", label: "Home" },
@@ -45,8 +45,8 @@ export function Header() {
               key={link.to}
               to={link.to}
               className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-all duration-300 rounded-lg hover:bg-secondary/50 hover:-translate-y-0.5"
-              activeProps={{ className: "!text-primary bg-primary/10" }}
-              activeOptions={{ exact: true }}
+              activeClassName="!text-primary bg-primary/10"
+              exact
             >
               {link.label}
             </Link>
@@ -103,8 +103,8 @@ export function Header() {
               key={link.to}
               to={link.to}
               className="block px-4 py-3 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-lg hover:bg-secondary/50"
-              activeProps={{ className: "!text-primary" }}
-              activeOptions={{ exact: true }}
+              activeClassName="!text-primary"
+              exact
             >
               {link.label}
             </Link>

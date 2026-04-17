@@ -1,28 +1,10 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { SectionHeading } from "@/components/SectionHeading";
 import { Download, FileText } from "lucide-react";
 import { applySeo } from "@/lib/seo";
 import { fetchJson } from "@/lib/api";
 
-export const Route = createFileRoute("/resume")({
-  head: () => ({
-    meta: [
-      { title: "Resume — Shahriyar Khan | Software Engineer CV" },
-      { name: "description", content: "Download Shahriyar Khan's ATS-optimized resume. Software Engineer, Python Developer, Django Developer, and Backend Developer." },
-      { name: "keywords", content: "Shahriyar resume, software engineer CV, python developer resume, django developer resume" },
-      { property: "og:title", content: "Resume — Shahriyar Khan" },
-      { property: "og:description", content: "ATS-friendly CV of a Python & Django developer." },
-      { property: "og:image", content: "/images/profile.png" },
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Resume — Shahriyar Khan" },
-      { name: "twitter:description", content: "ATS-optimized resume for Shahriyar Khan, Software Engineer." },
-    ],
-  }),
-  component: ResumePage,
-});
-
-function ResumePage() {
+export function ResumePage() {
   const [resume, setResume] = useState<ResumeApi | null>(null);
   const [backendEmpty, setBackendEmpty] = useState(false);
 

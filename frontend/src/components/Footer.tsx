@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link } from "@/lib/navigation";
 import { Github, Linkedin, MessageCircle, Heart } from "lucide-react";
 
 export function Footer() {

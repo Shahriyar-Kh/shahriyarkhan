@@ -1,8 +1,8 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ExternalLink, Github, ArrowLeft } from "lucide-react";
 import { applySeo } from "@/lib/seo";
 import { assetUrl, fetchJson } from "@/lib/api";
+import { Link } from "@/lib/navigation";
 
 type ProjectDetail = {
   title: string;
@@ -22,12 +22,7 @@ type ProjectDetail = {
   technologies?: { name: string; slug: string }[];
 };
 
-export const Route = createFileRoute("/projects/$slug")({
-  component: ProjectDetailPage,
-});
-
-function ProjectDetailPage() {
-  const { slug } = Route.useParams();
+export function ProjectDetailPage({ slug }: { slug: string }) {
   const [project, setProject] = useState<ProjectDetail | null>(null);
 
   useEffect(() => {

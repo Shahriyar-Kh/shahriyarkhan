@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Link } from "@/lib/navigation";
 import { useState, useEffect } from "react";
 import { ArrowRight, Download, Mail, Code2, Server, Database, Sparkles } from "lucide-react";
 import { fetchJson } from "@/lib/api";
@@ -73,26 +73,7 @@ type PageSeo = {
   image_alt_text?: string;
 };
 
-export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "Shahriyar Khan — Software Engineer | Python & Django Developer" },
-      { name: "description", content: "Shahriyar Khan (Shary) is a Software Engineer, Python Developer, Django Developer, and Backend Developer building scalable, production-grade web applications." },
-      { name: "keywords", content: "Shahriyar, Shahriyar Khan, Shary, Software Engineer, Python Developer, Django Developer, Backend Developer, Junior Full Stack Developer" },
-      { property: "og:title", content: "Shahriyar Khan — Software Engineer" },
-      { property: "og:description", content: "Portfolio of Shahriyar Khan (Shary), a Python, Django, and FastAPI developer focused on scalable backend architecture." },
-      { property: "og:image", content: "/images/profile.png" },
-      { property: "og:image:alt", content: "Professional profile photo of Shahriyar Khan" },
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Shahriyar Khan — Software Engineer" },
-      { name: "twitter:description", content: "Python Developer, Django Developer, Backend Developer, and Junior Full Stack Developer portfolio." },
-      { name: "twitter:image", content: "/images/profile.png" },
-    ],
-  }),
-  component: HomePage,
-});
-
-function HomePage() {
+export function HomePage() {
   const [siteSettings, setSiteSettings] = useState<SiteSettings | null>(null);
   const [backendEmpty, setBackendEmpty] = useState(false);
 
