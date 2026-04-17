@@ -2,7 +2,10 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import date
+from pathlib import Path
+from urllib.request import urlopen
 
+from django.core.files.base import ContentFile
 from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.utils import timezone
@@ -23,6 +26,16 @@ class SeedProject:
     live_url: str
     github_url: str
     featured: bool = False
+    preview_image_url: str = ""
+    featured_image_url: str = ""
+
+
+def _download_remote_image(url: str, filename: str):
+    if not url:
+        return None
+
+    with urlopen(url) as response:  # nosec: trusted public image source for seed content
+        return ContentFile(response.read(), name=Path(filename).name)
 
 
 class Command(BaseCommand):
@@ -225,6 +238,16 @@ class Command(BaseCommand):
                 live_url="",
                 github_url="https://github.com/Shahriyar-Kh",
             ),
+            SeedProject(
+                title="InsightBoard CRM - Sales Intelligence Dashboard",
+                description="A polished CRM and analytics dashboard with lead management, sales forecasting, reporting widgets, and role-based access for growing teams.",
+                tools=["Django", "DRF", "React", "PostgreSQL", "Chart.js", "Tailwind CSS"],
+                live_url="https://insightboard-crm.vercel.app",
+                github_url="https://github.com/Shahriyar-Kh",
+                featured=True,
+                preview_image_url="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80",
+                featured_image_url="https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=1600&q=80",
+            ),
         ]
 
         project_instances: list[Project] = []
@@ -255,6 +278,18 @@ class Command(BaseCommand):
                 technology, _ = Technology.objects.get_or_create(name=tool, defaults={"slug": slugify(tool)})
                 technologies.append(technology)
             project.technologies.set(technologies)
+
+            preview_file = _download_remote_image(item.preview_image_url, f"{slugify(item.title)}-preview.jpg")
+            if preview_file:
+                project.preview_image.save(preview_file.name, preview_file, save=False)
+
+            featured_file = _download_remote_image(item.featured_image_url, f"{slugify(item.title)}-featured.jpg")
+            if featured_file:
+                project.featured_image.save(featured_file.name, featured_file, save=False)
+
+            if preview_file or featured_file:
+                project.save()
+
             project_instances.append(project)
 
         services = [
