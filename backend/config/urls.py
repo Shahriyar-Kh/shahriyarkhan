@@ -2,7 +2,6 @@ import mimetypes
 
 from django.conf import settings
 from django.conf.urls.static import static
-from django.contrib.auth import get_user_model
 from django.contrib import admin
 from django.contrib.staticfiles import finders
 from django.http import FileResponse, Http404, HttpResponse, JsonResponse
@@ -25,50 +24,6 @@ def api_root(_request):
 
 def healthz(_request):
     return JsonResponse({"status": "ok"})
-
-
-def bootstrap_superuser(request):
-    if not settings.SUPERUSER_BOOTSTRAP_ENABLED:
-        raise Http404()
-
-    token = request.GET.get("token", "")
-    if not token or token != settings.SUPERUSER_BOOTSTRAP_TOKEN:
-        return HttpResponse("Invalid bootstrap token.", status=403)
-
-    username = (settings.SUPERUSER_BOOTSTRAP_USERNAME or "").strip()
-    email = (settings.SUPERUSER_BOOTSTRAP_EMAIL or "").strip()
-    password = settings.SUPERUSER_BOOTSTRAP_PASSWORD or ""
-
-    if not (username and email and password):
-        return HttpResponse("Bootstrap env vars are missing.", status=500)
-
-    User = get_user_model()
-
-    if settings.SUPERUSER_BOOTSTRAP_DELETE_OTHERS:
-        User.objects.exclude(username=username).filter(is_superuser=True).delete()
-
-    user, created = User.objects.get_or_create(
-        username=username,
-        defaults={
-            "email": email,
-            "is_staff": True,
-            "is_superuser": True,
-        },
-    )
-    user.email = email
-    user.is_staff = True
-    user.is_superuser = True
-    user.set_password(password)
-    user.save()
-
-    payload = {
-        "status": "ok",
-        "created": created,
-        "username": user.username,
-        "admin_url": f"/{settings.ADMIN_URL_PATH.strip('/')}/",
-        "next_step": "Disable SUPERUSER_BOOTSTRAP_ENABLED and redeploy.",
-    }
-    return JsonResponse(payload)
 
 
 def serve_static_file(_request, path):
@@ -114,7 +69,6 @@ def sitemap_xml(_request):
 urlpatterns = [
     path("", api_root, name="api_root"),
     path("healthz", healthz, name="healthz"),
-    path("_ops/bootstrap-superuser/", bootstrap_superuser, name="bootstrap_superuser"),
     path("static/<path:path>", serve_static_file, name="static_serve"),
     path(f"{settings.ADMIN_URL_PATH.strip('/')}/dashboard/", admin_dashboard_view, name="admin_dashboard_summary"),
     path(f"{settings.ADMIN_URL_PATH.strip('/')}/", admin.site.urls),
