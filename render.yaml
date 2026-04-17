@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: shahriyarkhan-backend
+    runtime: python
+    pythonVersion: 3.11
+    buildCommand: |
+      pip install --upgrade pip setuptools wheel
+      pip install -r backend/requirements/prod.txt
+      python backend/manage.py migrate --settings=config.settings.production
+      python backend/manage.py collectstatic --noinput --clear --settings=config.settings.production
+    startCommand: gunicorn config.wsgi:application --chdir backend --bind 0.0.0.0:$PORT
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: config.settings.production
+      - key: PYTHON_VERSION
+        value: "3.11"
+      - key: DJANGO_DEBUG
+        value: "false"
