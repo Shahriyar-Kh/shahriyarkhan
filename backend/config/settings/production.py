@@ -24,7 +24,7 @@ SECURE_HSTS_PRELOAD = env_bool("SECURE_HSTS_PRELOAD", True)
 MIDDLEWARE.insert(1, "whitenoise.middleware.WhiteNoiseMiddleware")
 WHITENOISE_USE_FINDERS = True
 WHITENOISE_MANIFEST_STRICT = False
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 STORAGES["staticfiles"] = {
-	"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+	"BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
 }
