@@ -17,6 +17,7 @@ function AppRoutes() {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "auto" });
   }, [pathname]);
+  // Scroll to top on route change
 
   if (pathname === "/") return <HomePage />;
   if (pathname === "/about") return <AboutPage />;
