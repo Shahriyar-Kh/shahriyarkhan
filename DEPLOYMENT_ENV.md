@@ -41,10 +41,7 @@ GMAIL_API_REFRESH_TOKEN=<your-gmail-refresh-token>
 DEFAULT_FROM_EMAIL=shahriyarkhanpk3@gmail.com
 ADMIN_NOTIFICATION_EMAIL=shahriyarkhanpk1@gmail.com
 USE_CLOUDINARY=True
-CLOUDINARY_CLOUD_NAME=<your-cloud-name>
-CLOUDINARY_API_KEY=<your-api-key>
-CLOUDINARY_API_SECRET=<your-api-secret>
-# Optional alternative: CLOUDINARY_URL=cloudinary://<api_key>:<api_secret>@<cloud_name>
+CLOUDINARY_URL=cloudinary://<your_api_key>:<your_api_secret>@dotohcse9
 ```
 
 ### Vercel Frontend (React)

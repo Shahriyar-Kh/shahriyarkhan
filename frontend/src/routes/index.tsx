@@ -1,5 +1,5 @@
 import { Link } from "@/lib/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ArrowRight, Download, Mail, Code2, Server, Database, Sparkles } from "lucide-react";
 import { fetchJson } from "@/lib/api";
 import { applySeo } from "@/lib/seo";
@@ -76,6 +76,7 @@ type PageSeo = {
 export function HomePage() {
   const [siteSettings, setSiteSettings] = useState<SiteSettings | null>(null);
   const [backendEmpty, setBackendEmpty] = useState(false);
+  const highlightsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let active = true;
@@ -112,6 +113,10 @@ export function HomePage() {
 
   const heroTitle = siteSettings?.hero_title ?? "Hi, I'm Shahriyar Khan";
   const heroSubtitle = siteSettings?.hero_subtitle ?? "Software Engineer crafting scalable products with Python, Django, FastAPI, and modern frontend technologies.";
+
+  const scrollToHighlights = () => {
+    highlightsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   return (
     <>
@@ -176,7 +181,10 @@ export function HomePage() {
             <div className="flex justify-center lg:justify-end reveal-in" style={{ animationDelay: "0.15s" }}>
               <div className="profile-luxury-card profile-float w-72 h-80 sm:w-[24rem] sm:h-108">
                 <div className="orbit-frame h-full w-full">
-                  <div className="profile-swap h-full w-full">
+                  <div
+                    className="profile-swap h-full w-full"
+                    onMouseEnter={scrollToHighlights}
+                  >
                     <img
                       src="/images/profile.png"
                       alt="Shahriyar Khan professional profile portrait"
@@ -199,7 +207,7 @@ export function HomePage() {
           </div>
 
           {/* Highlights */}
-          <div className="mt-20 grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div ref={highlightsRef} className="mt-20 grid grid-cols-2 sm:grid-cols-4 gap-4">
             {highlights.map((item, i) => (
               <div
                 key={item.label}

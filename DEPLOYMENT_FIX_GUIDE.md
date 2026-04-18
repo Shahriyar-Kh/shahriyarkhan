@@ -28,12 +28,8 @@ SESSION_COOKIE_SECURE=True
 CSRF_COOKIE_SECURE=True
 CSRF_COOKIE_HTTPONLY=True
 USE_CLOUDINARY=True
-CLOUDINARY_CLOUD_NAME=<your-cloud-name>
-CLOUDINARY_API_KEY=<your-api-key>
-CLOUDINARY_API_SECRET=<your-api-secret>
+CLOUDINARY_URL=cloudinary://<your_api_key>:<your_api_secret>@dotohcse9
 ```
-
-If you prefer, you can set a single `CLOUDINARY_URL=cloudinary://<api_key>:<api_secret>@<cloud_name>` instead of the three separate values.
 
 **Important**: For `DJANGO_SECRET_KEY`, generate a secure random string:
 - Linux/Mac: `openssl rand -base64 32`
