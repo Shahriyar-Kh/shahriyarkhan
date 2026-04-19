@@ -6,7 +6,7 @@ import { HomePage } from "@/routes/index";
 import { AboutPage } from "@/routes/about";
 import { SkillsPage } from "@/routes/skills";
 import { ServicesPage } from "@/routes/services";
-import { ProjectsPage } from "@/routes/projects";
+import { ProjectsPage } from "@/routes/projects.tsx";
 import { ProjectDetailPage } from "@/routes/projects.$slug";
 import { ResumePage } from "@/routes/resume";
 import { ContactPage } from "@/routes/contact";
