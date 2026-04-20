@@ -71,8 +71,8 @@ const projectFallbacks: Record<string, ProjectFallback> = {
     description: "Full-stack application with secure REST APIs, JWT authentication, RBAC, PostgreSQL database, and Redis caching for high performance.",
     live_url: "https://noteassistai.vercel.app",
     github_url: "https://github.com/Shahriyar-Kh",
-    preview_image: "/images/noteassistai_homepage.png",
-    featured_image: "/images/noteassistai_homepage.png",
+    preview_image: "/images/noteassisstai_homepage.png",
+    featured_image: "/images/noteassistai.landingpage.jpeg",
     ai_summary: "A productivity platform that turns note creation, content improvement, and AI assistance into one smooth workflow.",
     technologies: [
       { name: "Django", slug: "django" },
