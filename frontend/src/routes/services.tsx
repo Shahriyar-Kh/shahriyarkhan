@@ -3,6 +3,7 @@ import { SectionHeading } from "@/components/SectionHeading";
 import { Globe, ShoppingCart, Layers, Briefcase, Code, Server, Settings } from "lucide-react";
 import { applySeo } from "@/lib/seo";
 import { fetchJson, fetchListJson, postJson } from "@/lib/api";
+import { useLiveDataRefresh } from "@/hooks/useLiveDataRefresh";
 
 type ServiceCard = {
   id: number;
@@ -41,6 +42,7 @@ export function ServicesPage() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const refreshKey = useLiveDataRefresh(12000);
 
   const budgetOptions = [
     "Under $500",
@@ -77,7 +79,7 @@ export function ServicesPage() {
     return () => {
       active = false;
     };
-  }, []);
+  }, [refreshKey]);
 
   const displayServices = servicesData.length > 0 ? servicesData : fallbackServices;
   const serviceTitles = displayServices.map((service) => service.title);

@@ -4,6 +4,7 @@ import { ExternalLink, Github, Monitor } from "lucide-react";
 import { applySeo } from "@/lib/seo";
 import { assetUrl, fetchJson, fetchListJson } from "@/lib/api";
 import { Link } from "@/lib/navigation";
+import { useLiveDataRefresh } from "@/hooks/useLiveDataRefresh";
 
 const projects: ProjectApi[] = [
   {
@@ -55,6 +56,7 @@ type ProjectApi = {
   featured_image?: string | null;
   technologies?: { id: number; name: string; slug: string }[];
   featured?: boolean;
+  display_order?: number;
   tools?: string[];
   live?: string | null;
   github?: string;
@@ -68,14 +70,29 @@ function normalizeProjectData(projects: ProjectApi[]): ProjectApi[] {
   }));
 }
 
+function sortProjects(projects: ProjectApi[]) {
+  return [...projects].sort((left, right) => {
+    if (left.featured !== right.featured) {
+      return left.featured ? -1 : 1;
+    }
+
+    const orderDelta = (left.display_order ?? 0) - (right.display_order ?? 0);
+    if (orderDelta !== 0) {
+      return orderDelta;
+    }
+
+    return left.title.localeCompare(right.title);
+  });
+}
+
 function LivePreviewPanel({ url, isVisible }: { url: string; isVisible: boolean }) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const animFrameRef = useRef<number>(0);
   const posRef = useRef(0);
   const phaseRef = useRef<"scrolling" | "resetting">("scrolling");
   const pauseUntilRef = useRef(0);
-  const SCROLL_SPEED = 3.4;
-  const FOOTER_STOP_RATIO = 0.86;
+  const lastFrameRef = useRef<number | null>(null);
+  const SCROLL_SPEED = 2.8;
 
   useEffect(() => {
     if (!isVisible) {
@@ -83,6 +100,7 @@ function LivePreviewPanel({ url, isVisible }: { url: string; isVisible: boolean 
       posRef.current = 0;
       phaseRef.current = "scrolling";
       pauseUntilRef.current = 0;
+      lastFrameRef.current = null;
       if (scrollRef.current) scrollRef.current.scrollTop = 0;
       return;
     }
@@ -92,7 +110,13 @@ function LivePreviewPanel({ url, isVisible }: { url: string; isVisible: boolean 
       if (!el) return;
       const maxScroll = el.scrollHeight - el.clientHeight;
       if (maxScroll <= 0) return;
-      const stopAt = maxScroll * FOOTER_STOP_RATIO;
+
+      if (lastFrameRef.current === null) {
+        lastFrameRef.current = now;
+      }
+
+      const delta = now - lastFrameRef.current;
+      lastFrameRef.current = now;
 
       if (now < pauseUntilRef.current) {
         animFrameRef.current = requestAnimationFrame(tick);
@@ -103,16 +127,15 @@ function LivePreviewPanel({ url, isVisible }: { url: string; isVisible: boolean 
         posRef.current = 0;
         el.scrollTop = 0;
         phaseRef.current = "scrolling";
-        pauseUntilRef.current = now + 520;
+        pauseUntilRef.current = now + 360;
         animFrameRef.current = requestAnimationFrame(tick);
         return;
       }
 
-      let next = posRef.current + SCROLL_SPEED;
-      if (next >= stopAt) {
-        next = stopAt;
+      const next = Math.min(posRef.current + SCROLL_SPEED * (delta / 16.67), maxScroll);
+      if (next >= maxScroll) {
         phaseRef.current = "resetting";
-        pauseUntilRef.current = now + 900;
+        pauseUntilRef.current = now + 640;
       }
 
       posRef.current = next;
@@ -122,6 +145,7 @@ function LivePreviewPanel({ url, isVisible }: { url: string; isVisible: boolean 
 
     const timeout = window.setTimeout(() => {
       pauseUntilRef.current = performance.now() + 180;
+      lastFrameRef.current = null;
       animFrameRef.current = requestAnimationFrame(tick);
     }, 180);
 
@@ -133,7 +157,7 @@ function LivePreviewPanel({ url, isVisible }: { url: string; isVisible: boolean 
 
   return (
     <div className="project-preview-panel" style={{ pointerEvents: "none" }}>
-      <div ref={scrollRef} style={{ width: "100%", height: "100%", overflow: "hidden", position: "relative" }}>
+      <div ref={scrollRef} style={{ width: "100%", height: "100%", overflowY: "auto", overflowX: "hidden", position: "relative" }}>
         <iframe
           src={url}
           title="Live preview"
@@ -165,13 +189,13 @@ function ProjectCard({ project, index }: { project: ProjectApi; index: number })
 
   return (
     <article
-      className="premium-card rounded-2xl p-6 flex flex-col justify-between transition-all duration-300 hover:border-primary/30 hover:scale-[1.02] reveal-in tilt-hover"
+      className="premium-card rounded-3xl p-6 flex flex-col justify-between transition-all duration-300 hover:border-primary/30 hover:scale-[1.02] reveal-in tilt-hover"
       style={{ animationDelay: `${index * 0.1}s` }}
       aria-label={`Project: ${project.title}`}
     >
       <div>
         <div
-          className="project-preview-stage relative mb-5 overflow-hidden rounded-xl border border-border/70 bg-linear-to-r from-primary/12 via-accent/10 to-primary/8 h-52 md:h-64 group"
+          className="project-preview-stage relative mb-5 overflow-hidden rounded-2xl border border-border/70 bg-linear-to-r from-primary/12 via-accent/10 to-primary/8 h-52 md:h-64 group"
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
         >
@@ -213,7 +237,10 @@ function ProjectCard({ project, index }: { project: ProjectApi; index: number })
           )}
         </div>
 
-        <h3 className="text-base font-bold text-foreground mb-2 leading-snug">{project.title}</h3>
+        <div className="flex items-center justify-between gap-3 mb-2">
+          <h3 className="text-base font-bold text-foreground leading-snug">{project.title}</h3>
+          {project.featured && <span className="skill-badge skill-badge--expert">Featured</span>}
+        </div>
         <p className="text-sm text-muted-foreground leading-relaxed mb-4">{project.description}</p>
 
         <div className="flex flex-wrap gap-1.5 mb-5">
@@ -267,6 +294,7 @@ function ProjectCard({ project, index }: { project: ProjectApi; index: number })
 export function ProjectsPage() {
   const [projectsData, setProjectsData] = useState<ProjectApi[]>([]);
   const [backendEmpty, setBackendEmpty] = useState(false);
+  const refreshKey = useLiveDataRefresh(12000);
 
   useEffect(() => {
     let active = true;
@@ -278,7 +306,7 @@ export function ProjectsPage() {
       if (!active) return;
 
       if (projectsResult.status === "fulfilled" && projectsResult.value.length) {
-        setProjectsData(normalizeProjectData(projectsResult.value));
+        setProjectsData(sortProjects(normalizeProjectData(projectsResult.value)));
         setBackendEmpty(false);
       } else if (projectsResult.status === "fulfilled") {
         setBackendEmpty(true);
@@ -297,9 +325,9 @@ export function ProjectsPage() {
     return () => {
       active = false;
     };
-  }, []);
+  }, [refreshKey]);
 
-  const displayProjects = projectsData.length > 0 ? projectsData : projects;
+  const displayProjects = projectsData.length > 0 ? projectsData : sortProjects(projects);
 
   return (
     <section className="section-shell py-20">

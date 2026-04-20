@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { ArrowRight, Download, Mail, Code2, Server, Database, Sparkles, Star, ExternalLink } from "lucide-react";
 import { fetchJson } from "@/lib/api";
 import { applySeo } from "@/lib/seo";
+import { useLiveDataRefresh } from "@/hooks/useLiveDataRefresh";
 
 const roles = [
   "Software Engineer",
@@ -79,6 +80,7 @@ export function HomePage() {
   const [siteSettings, setSiteSettings] = useState<SiteSettings | null>(null);
   const [backendEmpty, setBackendEmpty] = useState(false);
   const highlightsRef = useRef<HTMLDivElement>(null);
+  const refreshKey = useLiveDataRefresh(12000);
 
   useEffect(() => {
     let active = true;
@@ -109,7 +111,7 @@ export function HomePage() {
     });
 
     return () => { active = false; };
-  }, []);
+  }, [refreshKey]);
 
   const heroTitle = siteSettings?.hero_title ?? "Hi, I'm Shahriyar Khan";
   const heroSubtitle = siteSettings?.hero_subtitle ?? "Software Engineer crafting scalable products with Python, Django, FastAPI, and modern frontend technologies.";
@@ -141,11 +143,36 @@ export function HomePage() {
             </div>
           )}
 
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-14 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-10 lg:gap-14 items-center">
+            <div className="order-1 lg:order-2 flex justify-center lg:justify-end reveal-in" style={{ animationDelay: "0.15s" }}>
+              <div className="relative hero-portrait-shell">
+                <div className="profile-luxury-card profile-float w-72 h-72 sm:w-92 sm:h-92">
+                  <div className="orbit-frame h-full w-full">
+                    <div className="profile-swap h-full w-full">
+                      <img
+                        src="/images/profile.png"
+                        alt="Shahriyar Khan professional profile portrait"
+                        className="primary-img"
+                        loading="eager"
+                        decoding="async"
+                      />
+                      <img
+                        src="/images/shary%20photo.jpeg"
+                        alt="Shahriyar Khan in a professional workspace"
+                        className="secondary-img"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             {/* ── LEFT: Text Content ── */}
-            <div className="reveal-in">
+            <div className="order-2 lg:order-1 reveal-in">
               {/* Status pill */}
-              <div className="status-pill mb-7 w-fit">
+              <div className="status-pill mb-7 w-fit hidden sm:inline-flex">
                 Open to Work — Available Now
               </div>
 
@@ -202,34 +229,6 @@ export function HomePage() {
               </div>
             </div>
 
-            {/* ── RIGHT: Profile Card ── */}
-            <div className="flex justify-center lg:justify-end reveal-in" style={{ animationDelay: "0.15s" }}>
-              <div className="relative">
-                <div className="profile-luxury-card profile-float w-72 h-72 sm:w-92 sm:h-92">
-                  <div className="orbit-frame h-full w-full">
-                    <div className="profile-swap h-full w-full">
-                      <img
-                        src="/images/profile.png"
-                        alt="Shahriyar Khan professional profile portrait"
-                        className="primary-img"
-                        loading="eager"
-                        decoding="async"
-                      />
-                      <img
-                        src="/images/shary%20photo.jpeg"
-                        alt="Shahriyar Khan in a professional workspace"
-                        className="secondary-img"
-                        loading="lazy"
-                        decoding="async"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-
-      
-              </div>
-            </div>
           </div>
 
           {/* ── HIGHLIGHTS STRIP ── */}

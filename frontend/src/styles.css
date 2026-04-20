@@ -521,6 +521,7 @@
   border-radius: 999px;
   overflow: hidden;
   position: relative;
+  height: 0.75rem;
 }
  
 .skill-bar::before {
@@ -542,6 +543,67 @@
   transition: width 950ms var(--ease-out);
   position: relative;
   box-shadow: 0 0 8px oklch(0.68 0.195 224 / 45%);
+}
+
+.skill-bar--beginner .skill-bar-fill {
+  background: linear-gradient(90deg, oklch(0.84 0.13 67) 0%, oklch(0.75 0.18 25) 100%);
+  box-shadow: 0 0 10px oklch(0.84 0.13 67 / 38%);
+}
+
+.skill-bar--intermediate .skill-bar-fill {
+  background: linear-gradient(90deg, oklch(0.68 0.195 224) 0%, oklch(0.64 0.20 254) 100%);
+  box-shadow: 0 0 10px oklch(0.68 0.195 224 / 40%);
+}
+
+.skill-bar--advanced .skill-bar-fill {
+  background: linear-gradient(90deg, oklch(0.68 0.22 178) 0%, oklch(0.67 0.17 194) 100%);
+  box-shadow: 0 0 10px oklch(0.68 0.22 178 / 40%);
+}
+
+.skill-bar--expert .skill-bar-fill {
+  background: linear-gradient(90deg, oklch(0.72 0.18 305) 0%, oklch(0.68 0.195 224) 100%);
+  box-shadow: 0 0 10px oklch(0.72 0.18 305 / 42%);
+}
+
+.skill-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 1px solid oklch(0.32 0.016 256 / 60%);
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.skill-badge::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: currentColor;
+}
+
+.skill-badge--beginner {
+  color: oklch(0.84 0.13 67);
+  background: oklch(0.84 0.13 67 / 10%);
+}
+
+.skill-badge--intermediate {
+  color: oklch(0.68 0.195 224);
+  background: oklch(0.68 0.195 224 / 10%);
+}
+
+.skill-badge--advanced {
+  color: oklch(0.68 0.22 178);
+  background: oklch(0.68 0.22 178 / 10%);
+}
+
+.skill-badge--expert {
+  color: oklch(0.72 0.18 305);
+  background: oklch(0.72 0.18 305 / 10%);
 }
  
 .skill-bar-fill::after {
@@ -623,6 +685,66 @@ select:focus {
   border: none;
   pointer-events: none;
 }
+
+.project-gallery-shell {
+  border: 1px solid oklch(0.32 0.016 256 / 55%);
+  background: linear-gradient(180deg, oklch(0.15 0.016 256 / 96%), oklch(0.11 0.015 256 / 98%));
+  box-shadow: 0 24px 48px oklch(0 0 0 / 24%);
+}
+
+.project-gallery-track {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.25rem;
+}
+
+.project-gallery-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: scale(1.02);
+  transition:
+    opacity 420ms var(--ease-out),
+    transform 620ms var(--ease-out);
+}
+
+.project-gallery-slide.is-active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.project-gallery-indicator {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 999px;
+  border: 1px solid oklch(0.68 0.195 224 / 40%);
+  background: oklch(0.68 0.195 224 / 15%);
+  transition:
+    transform 220ms var(--ease-out),
+    background-color 220ms var(--ease-out),
+    width 220ms var(--ease-out);
+}
+
+.project-gallery-indicator.is-active {
+  width: 2rem;
+  background: linear-gradient(90deg, oklch(0.68 0.195 224), oklch(0.68 0.22 178));
+  box-shadow: 0 0 14px oklch(0.68 0.195 224 / 35%);
+}
+
+.hero-portrait-shell {
+  max-width: 24rem;
+  margin-inline: auto;
+}
+
+.hero-portrait-shell img {
+  aspect-ratio: 1 / 1;
+}
+
+@media (max-width: 1024px) {
+  .hero-portrait-shell {
+    max-width: 18rem;
+  }
+}
  
 /* Auto-scroll shimmer overlay on preview */
 .project-preview-panel::after {
@@ -642,6 +764,14 @@ select:focus {
   border-radius: 999px;
   padding: 3px 10px;
   backdrop-filter: blur(8px);
+}
+
+.project-preview-panel div {
+  scrollbar-width: none;
+}
+
+.project-preview-panel div::-webkit-scrollbar {
+  display: none;
 }
  
 /* For mobile: show preview below card */

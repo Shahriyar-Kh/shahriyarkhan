@@ -3,6 +3,7 @@ import { Mail, Phone, MapPin, Github, Linkedin, MessageCircle, Send } from "luci
 import { useEffect, useState } from "react";
 import { applySeo } from "@/lib/seo";
 import { fetchJson, fetchListJson, postJson } from "@/lib/api";
+import { useLiveDataRefresh } from "@/hooks/useLiveDataRefresh";
 
 const contactInfo = [
   { icon: Mail, label: "Email", value: "shahriyarkhanpk1@gmail.com", href: "mailto:shahriyarkhanpk1@gmail.com" },
@@ -46,6 +47,7 @@ export function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const refreshKey = useLiveDataRefresh(12000);
 
   useEffect(() => {
     let active = true;
@@ -78,7 +80,7 @@ export function ContactPage() {
     return () => {
       active = false;
     };
-  }, []);
+  }, [refreshKey]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

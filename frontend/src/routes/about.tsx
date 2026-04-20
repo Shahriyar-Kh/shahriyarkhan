@@ -4,6 +4,7 @@ import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { Award, Target, Rocket, BookOpen } from "lucide-react";
 import { applySeo } from "@/lib/seo";
 import { fetchJson } from "@/lib/api";
+import { useLiveDataRefresh } from "@/hooks/useLiveDataRefresh";
 
 const highlights = [
   { icon: Award, title: "BS Software Engineering", desc: "Abasyn University, Peshawar — CGPA 3.67" },
@@ -15,6 +16,7 @@ const highlights = [
 export function AboutPage() {
   const { ref, isVisible } = useScrollAnimation();
   const [backendEmpty, setBackendEmpty] = useState(false);
+  const refreshKey = useLiveDataRefresh(12000);
 
   useEffect(() => {
     let active = true;
@@ -40,7 +42,7 @@ export function AboutPage() {
     return () => {
       active = false;
     };
-  }, []);
+  }, [refreshKey]);
 
   return (
     <section className="section-shell py-20">

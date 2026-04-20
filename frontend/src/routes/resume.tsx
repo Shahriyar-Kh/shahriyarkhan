@@ -3,10 +3,12 @@ import { SectionHeading } from "@/components/SectionHeading";
 import { Download, FileText } from "lucide-react";
 import { applySeo } from "@/lib/seo";
 import { fetchJson } from "@/lib/api";
+import { useLiveDataRefresh } from "@/hooks/useLiveDataRefresh";
 
 export function ResumePage() {
   const [resume, setResume] = useState<ResumeApi | null>(null);
   const [backendEmpty, setBackendEmpty] = useState(false);
+  const refreshKey = useLiveDataRefresh(12000);
 
   useEffect(() => {
     let active = true;
@@ -35,7 +37,7 @@ export function ResumePage() {
     return () => {
       active = false;
     };
-  }, []);
+  }, [refreshKey]);
 
   const experienceItems = resume?.experiences ?? [];
   const skillGroups = useMemo(() => {
@@ -152,7 +154,22 @@ export function ResumePage() {
 
           <ResumeSection title="Skills">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-muted-foreground">
-              {Object.entries(skillGroups).map(([category, items]) => (
+              {Object.entries(skillGroups)
+                .sort(([left], [right]) => {
+                  const categoryOrder: Record<string, number> = {
+                    Frontend: 1,
+                    Backend: 2,
+                    Database: 3,
+                    Databases: 3,
+                    Tools: 4,
+                    "Tools & DevOps": 4,
+                    Deployment: 5,
+                    "AI & ML": 6,
+                  };
+
+                  return (categoryOrder[left] ?? 99) - (categoryOrder[right] ?? 99) || left.localeCompare(right);
+                })
+                .map(([category, items]) => (
                 <p key={category}><span className="text-foreground font-medium">{category}:</span> {items.join(", ")}</p>
               ))}
             </div>
