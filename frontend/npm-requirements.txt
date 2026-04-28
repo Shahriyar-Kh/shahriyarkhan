@@ -1,9 +1,5 @@
-# Frontend package requirements (npm install list)
-# Usage:
-#   npm install $(Get-Content requirements.txt | Where-Object {$_ -and $_ -notmatch '^#'})
-# For dev dependencies add --save-dev for the dev section packages.
-
-# Runtime dependencies
+# Frontend npm-style package list (keeps npm/pnpm/yarn deps separated from Python)
+# Usage: copy into package.json or use as reference for installs
 @cloudflare/vite-plugin@^1.25.5
 @hookform/resolvers@^5.2.2
 @radix-ui/react-accordion@^1.2.12
