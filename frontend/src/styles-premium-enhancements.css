@@ -1,0 +1,960 @@
+/* ══════════════════════════════════════════════════════════════════════════════
+   PREMIUM UI ENHANCEMENT ADDITIONS
+   Batch 1: Global Design System Improvements
+   
+   CONTENTS:
+   1. Elevation & Shadow System
+   2. Enhanced Typography Hierarchy
+   3. Premium Button Styling
+   4. Premium Form Styling
+   5. Surface & Background Variants
+   6. Motion & Animation Enhancements
+   7. Section Styling Improvements
+   8. Icon & Badge Treatments
+   9. Text Color Hierarchy
+   10. Premium Interaction States
+══════════════════════════════════════════════════════════════════════════════ */
+
+/* ══════════════════════════════════════════
+   1. ELEVATION & SHADOW SYSTEM
+══════════════════════════════════════════ */
+
+:root {
+  /* Elevation shadows for depth layers */
+  --elevation-xs: 0 2px 4px oklch(0 0 0 / 12%);
+  --elevation-sm: 0 4px 8px oklch(0 0 0 / 16%);
+  --elevation-md: 0 8px 16px oklch(0 0 0 / 20%);
+  --elevation-lg: 0 16px 32px oklch(0 0 0 / 24%);
+  --elevation-xl: 0 24px 48px oklch(0 0 0 / 28%);
+  --elevation-2xl: 0 32px 64px oklch(0 0 0 / 32%);
+
+  /* Glow layers for accent lighting */
+  --glow-xs: 0 0 12px oklch(0.68 0.195 224 / 6%);
+  --glow-sm: 0 0 20px oklch(0.68 0.195 224 / 8%);
+  --glow-md: 0 0 32px oklch(0.68 0.195 224 / 12%);
+  --glow-lg: 0 0 48px oklch(0.68 0.195 224 / 16%);
+
+  /* Surface tints for section variations */
+  --surface-tint-blue: oklch(0.18 0.015 224 / 50%);
+  --surface-tint-teal: oklch(0.18 0.015 178 / 50%);
+  --surface-tint-purple: oklch(0.18 0.015 290 / 50%);
+  --surface-tint-slate: oklch(0.18 0.015 256 / 50%);
+}
+
+/* Elevation utility classes */
+.elevation-1 {
+  box-shadow: var(--elevation-xs);
+}
+
+.elevation-2 {
+  box-shadow: var(--elevation-sm);
+}
+
+.elevation-3 {
+  box-shadow: var(--elevation-md);
+}
+
+.elevation-4 {
+  box-shadow: var(--elevation-lg);
+}
+
+.elevation-5 {
+  box-shadow: var(--elevation-xl);
+}
+
+.elevation-6 {
+  box-shadow: var(--elevation-2xl);
+}
+
+/* Glow utility classes */
+.glow-1 {
+  box-shadow: var(--glow-xs);
+}
+
+.glow-2 {
+  box-shadow: var(--glow-sm);
+}
+
+.glow-3 {
+  box-shadow: var(--glow-md);
+}
+
+.glow-4 {
+  box-shadow: var(--glow-lg);
+}
+
+/* ══════════════════════════════════════════
+   2. ENHANCED TYPOGRAPHY HIERARCHY
+══════════════════════════════════════════ */
+
+/* Text color hierarchy */
+.text-primary {
+  color: oklch(0.96 0.006 255);
+}
+
+.text-secondary {
+  color: oklch(0.80 0.01 255);
+}
+
+.text-tertiary {
+  color: oklch(0.68 0.012 256);
+}
+
+.text-hint {
+  color: oklch(0.58 0.010 258);
+}
+
+/* Typography variants */
+.text-display-lg {
+  font-size: 3.5rem;
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  font-family: var(--font-heading);
+}
+
+.text-display-md {
+  font-size: 2.6rem;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  font-family: var(--font-heading);
+}
+
+.text-display-sm {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  font-family: var(--font-heading);
+}
+
+.text-headline-lg {
+  font-size: 1.875rem;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.018em;
+  font-family: var(--font-heading);
+}
+
+.text-headline-md {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  font-family: var(--font-heading);
+}
+
+.text-headline-sm {
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  font-family: var(--font-heading);
+}
+
+.text-body-lg {
+  font-size: 1.125rem;
+  font-weight: 400;
+  line-height: 1.75;
+  letter-spacing: -0.005em;
+}
+
+.text-body {
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.75;
+  letter-spacing: -0.003em;
+}
+
+.text-body-sm {
+  font-size: 0.9375rem;
+  font-weight: 400;
+  line-height: 1.65;
+}
+
+.text-caption {
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+.text-caption-sm {
+  font-size: 0.8125rem;
+  font-weight: 400;
+  line-height: 1.55;
+}
+
+.text-label-lg {
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.text-label {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* ══════════════════════════════════════════
+   3. PREMIUM BUTTON STYLING
+══════════════════════════════════════════ */
+
+/* Base button reset */
+button,
+.btn,
+input[type="button"],
+input[type="submit"] {
+  all: revert;
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+  font-weight: 600;
+  transition:
+    transform var(--motion-fast) var(--ease-out),
+    box-shadow var(--motion-fast) var(--ease-smooth),
+    border-color var(--motion-fast) var(--ease-smooth),
+    background-color var(--motion-fast) var(--ease-smooth);
+}
+
+/* Button sizes */
+.btn-xs {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.75rem;
+  border-radius: 0.375rem;
+}
+
+.btn-sm {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  border-radius: 0.5rem;
+}
+
+.btn-md {
+  padding: 0.75rem 1.5rem;
+  font-size: 0.9375rem;
+  border-radius: 0.625rem;
+}
+
+.btn-lg {
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  border-radius: 0.75rem;
+}
+
+.btn-xl {
+  padding: 1.25rem 2.5rem;
+  font-size: 1.0625rem;
+  border-radius: 0.875rem;
+}
+
+/* Primary button */
+.btn-primary,
+.btn.primary {
+  background: linear-gradient(
+    135deg,
+    oklch(0.72 0.195 224),
+    oklch(0.68 0.22 178)
+  );
+  color: oklch(0.112 0.018 252);
+  border: 1px solid oklch(0.68 0.195 224 / 35%);
+  box-shadow:
+    0 8px 16px oklch(0.68 0.195 224 / 24%),
+    inset 0 1px 0 oklch(1 0 0 / 12%);
+  font-weight: 700;
+}
+
+.btn-primary:hover,
+.btn.primary:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow:
+    0 12px 24px oklch(0.68 0.195 224 / 32%),
+    inset 0 1px 0 oklch(1 0 0 / 12%),
+    0 0 24px oklch(0.68 0.195 224 / 16%);
+}
+
+.btn-primary:active,
+.btn.primary:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.btn-primary:disabled,
+.btn.primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Secondary button (outline) */
+.btn-secondary,
+.btn.secondary {
+  background: transparent;
+  color: oklch(0.68 0.195 224);
+  border: 1.5px solid oklch(0.68 0.195 224 / 40%);
+  box-shadow: inset 0 1px 2px oklch(1 0 0 / 4%);
+  font-weight: 600;
+}
+
+.btn-secondary:hover,
+.btn.secondary:hover {
+  background: oklch(0.68 0.195 224 / 8%);
+  border-color: oklch(0.68 0.195 224 / 60%);
+  transform: translateY(-2px);
+  box-shadow:
+    inset 0 1px 2px oklch(1 0 0 / 4%),
+    0 0 20px oklch(0.68 0.195 224 / 12%);
+}
+
+.btn-secondary:active,
+.btn.secondary:active {
+  background: oklch(0.68 0.195 224 / 12%);
+  transform: translateY(0);
+}
+
+/* Ghost button */
+.btn-ghost {
+  background: transparent;
+  color: oklch(0.68 0.195 224);
+  border: 1px solid transparent;
+  box-shadow: none;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 4px;
+}
+
+.btn-ghost:hover {
+  color: oklch(0.72 0.195 224);
+  text-decoration-thickness: 2px;
+  transform: translateX(2px);
+}
+
+/* Tertiary button (muted) */
+.btn-tertiary {
+  background: oklch(0.20 0.014 256);
+  color: oklch(0.68 0.195 224);
+  border: 1px solid oklch(0.32 0.016 256 / 60%);
+  box-shadow: inset 0 1px 2px oklch(1 0 0 / 4%);
+  font-weight: 600;
+}
+
+.btn-tertiary:hover {
+  background: oklch(0.25 0.015 256);
+  border-color: oklch(0.68 0.195 224 / 30%);
+  transform: translateY(-1px);
+}
+
+/* Destructive button */
+.btn-destructive {
+  background: linear-gradient(
+    135deg,
+    oklch(0.64 0.22 26),
+    oklch(0.62 0.20 28)
+  );
+  color: oklch(0.955 0.008 255);
+  border: 1px solid oklch(0.62 0.22 26 / 35%);
+  box-shadow:
+    0 8px 16px oklch(0.62 0.22 26 / 20%),
+    inset 0 1px 0 oklch(1 0 0 / 8%);
+  font-weight: 700;
+}
+
+.btn-destructive:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 12px 24px oklch(0.62 0.22 26 / 28%),
+    inset 0 1px 0 oklch(1 0 0 / 8%);
+}
+
+/* Icon button */
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  border-radius: 0.625rem;
+  background: oklch(0.20 0.014 256);
+  color: oklch(0.68 0.195 224);
+  border: 1px solid oklch(0.32 0.016 256 / 60%);
+  width: 2.5rem;
+  height: 2.5rem;
+  font-size: 1rem;
+}
+
+.btn-icon:hover {
+  background: oklch(0.25 0.015 256);
+  border-color: oklch(0.68 0.195 224 / 30%);
+  transform: translateY(-2px);
+}
+
+/* ══════════════════════════════════════════
+   4. PREMIUM FORM STYLING
+══════════════════════════════════════════ */
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.form-label {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: oklch(0.80 0.01 255);
+  letter-spacing: -0.005em;
+}
+
+.form-label.required::after {
+  content: " *";
+  color: oklch(0.62 0.22 26);
+}
+
+.form-input,
+.form-textarea,
+.form-select {
+  padding: 0.875rem 1rem;
+  border-radius: 0.625rem;
+  font-size: 1rem;
+  font-family: var(--font-body);
+  background: oklch(0.18 0.014 256);
+  color: oklch(0.95 0.008 255);
+  border: 1.5px solid oklch(0.28 0.014 256);
+  transition:
+    border-color var(--motion-fast) var(--ease-smooth),
+    box-shadow var(--motion-fast) var(--ease-smooth),
+    background-color var(--motion-fast) var(--ease-smooth);
+}
+
+.form-input::placeholder,
+.form-textarea::placeholder {
+  color: oklch(0.55 0.010 256);
+}
+
+.form-input:focus,
+.form-textarea:focus,
+.form-select:focus {
+  outline: none;
+  border-color: oklch(0.68 0.195 224 / 60%);
+  background: oklch(0.20 0.014 256);
+  box-shadow:
+    0 0 0 3px oklch(0.68 0.195 224 / 16%),
+    inset 0 1px 2px oklch(1 0 0 / 4%);
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 8rem;
+  line-height: 1.6;
+}
+
+/* Form help text */
+.form-help {
+  font-size: 0.8125rem;
+  color: oklch(0.65 0.012 256);
+  font-weight: 400;
+  letter-spacing: -0.003em;
+}
+
+/* Form error state */
+.form-group.error .form-input,
+.form-group.error .form-textarea,
+.form-group.error .form-select {
+  border-color: oklch(0.62 0.22 26 / 60%);
+  background: oklch(0.62 0.22 26 / 8%);
+}
+
+.form-group.error .form-input:focus,
+.form-group.error .form-textarea:focus,
+.form-group.error .form-select:focus {
+  border-color: oklch(0.62 0.22 26 / 80%);
+  box-shadow:
+    0 0 0 3px oklch(0.62 0.22 26 / 16%),
+    inset 0 1px 2px oklch(1 0 0 / 4%);
+}
+
+.form-error {
+  font-size: 0.8125rem;
+  color: oklch(0.68 0.20 26);
+  font-weight: 600;
+  margin-top: 0.35rem;
+}
+
+/* Form success state */
+.form-group.success .form-input,
+.form-group.success .form-textarea,
+.form-group.success .form-select {
+  border-color: oklch(0.72 0.15 82 / 60%);
+}
+
+/* ══════════════════════════════════════════
+   5. PREMIUM SURFACE VARIANTS
+══════════════════════════════════════════ */
+
+/* Surface base variants */
+.surface-elevated {
+  background: linear-gradient(
+    155deg,
+    oklch(0.20 0.016 256 / 80%) 0%,
+    oklch(0.16 0.016 256 / 85%) 100%
+  );
+  border: 1px solid oklch(0.32 0.016 256 / 50%);
+  box-shadow:
+    0 0 0 1px oklch(1 0 0 / 4%) inset,
+    0 16px 32px oklch(0 0 0 / 24%);
+}
+
+.surface-elevated:hover {
+  border-color: oklch(0.68 0.195 224 / 30%);
+  box-shadow:
+    0 0 0 1px oklch(1 0 0 / 4%) inset,
+    0 20px 40px oklch(0 0 0 / 28%),
+    0 0 24px oklch(0.68 0.195 224 / 8%);
+}
+
+.surface-subtle {
+  background: oklch(0.16 0.015 256);
+  border: 1px solid oklch(0.26 0.014 256 / 60%);
+  box-shadow: inset 0 1px 2px oklch(1 0 0 / 4%);
+}
+
+.surface-subtle:hover {
+  border-color: oklch(0.32 0.016 256 / 80%);
+  background: oklch(0.18 0.015 256);
+}
+
+/* Surface with tint */
+.surface-tint-blue {
+  background: linear-gradient(
+    155deg,
+    oklch(0.20 0.018 224 / 70%) 0%,
+    oklch(0.16 0.016 256 / 85%) 100%
+  );
+  border: 1px solid oklch(0.68 0.195 224 / 25%);
+}
+
+.surface-tint-teal {
+  background: linear-gradient(
+    155deg,
+    oklch(0.20 0.018 178 / 70%) 0%,
+    oklch(0.16 0.016 256 / 85%) 100%
+  );
+  border: 1px solid oklch(0.68 0.22 178 / 25%);
+}
+
+.surface-tint-purple {
+  background: linear-gradient(
+    155deg,
+    oklch(0.20 0.018 290 / 70%) 0%,
+    oklch(0.16 0.016 256 / 85%) 100%
+  );
+  border: 1px solid oklch(0.72 0.18 305 / 25%);
+}
+
+/* ══════════════════════════════════════════
+   6. MOTION & ANIMATION ENHANCEMENTS
+══════════════════════════════════════════ */
+
+/* Fade-up entrance animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Fade entrance animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Scale entrance animation */
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Slide-in animation */
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Pulse glow animation */
+@keyframes pulse-glow {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+/* Orbit animation */
+@keyframes orbit-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Typewriter blink */
+@keyframes typewriter-blink {
+  0%, 49% {
+    opacity: 1;
+  }
+  50%, 100% {
+    opacity: 0;
+  }
+}
+
+/* Profile float animation */
+@keyframes profile-float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+/* Shimmer effect */
+@keyframes shimmer {
+  0% {
+    left: -140%;
+  }
+  100% {
+    left: 155%;
+  }
+}
+
+/* Entrance animation utilities */
+.animate-fadeInUp {
+  animation: fadeInUp 600ms var(--ease-out) forwards;
+}
+
+.animate-fadeIn {
+  animation: fadeIn 400ms var(--ease-smooth) forwards;
+}
+
+.animate-scaleIn {
+  animation: scaleIn 500ms var(--ease-out) forwards;
+}
+
+/* Stagger animation delays */
+.delay-100 {
+  animation-delay: 100ms;
+}
+
+.delay-150 {
+  animation-delay: 150ms;
+}
+
+.delay-200 {
+  animation-delay: 200ms;
+}
+
+.delay-250 {
+  animation-delay: 250ms;
+}
+
+.delay-300 {
+  animation-delay: 300ms;
+}
+
+.delay-400 {
+  animation-delay: 400ms;
+}
+
+.delay-500 {
+  animation-delay: 500ms;
+}
+
+/* ══════════════════════════════════════════
+   7. SECTION STYLING IMPROVEMENTS
+══════════════════════════════════════════ */
+
+/* Section padding refinements */
+.section-padded {
+  padding-block: clamp(2rem, 8vw, 4rem);
+  padding-inline: clamp(1rem, 5vw, 2rem);
+}
+
+.section-container {
+  max-width: 88rem;
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 5vw, 2rem);
+}
+
+/* Section background variants */
+.section-bg-subtle {
+  background: linear-gradient(
+    180deg,
+    oklch(0.115 0.018 252 / 100%) 0%,
+    oklch(0.125 0.018 250 / 100%) 100%
+  );
+  position: relative;
+}
+
+.section-bg-elevated {
+  background: linear-gradient(
+    180deg,
+    oklch(0.14 0.018 252 / 100%) 0%,
+    oklch(0.12 0.018 250 / 100%) 100%
+  );
+  position: relative;
+}
+
+.section-divider {
+  position: relative;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    oklch(0.42 0.02 256 / 40%) 30%,
+    oklch(0.68 0.195 224 / 20%) 50%,
+    oklch(0.42 0.02 256 / 40%) 70%,
+    transparent
+  );
+  margin-block: clamp(1.5rem, 4vw, 2.5rem);
+}
+
+/* ══════════════════════════════════════════
+   8. ICON & BADGE TREATMENTS
+══════════════════════════════════════════ */
+
+.icon-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.625rem;
+  background: oklch(0.68 0.195 224 / 12%);
+  color: oklch(0.68 0.195 224);
+  font-weight: 600;
+}
+
+.icon-badge-sm {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.icon-badge-lg {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.75rem;
+  font-size: 1.25rem;
+}
+
+/* Badge variants */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 1px solid currentColor;
+  opacity: 0.8;
+}
+
+.badge-primary {
+  background: oklch(0.68 0.195 224 / 12%);
+  color: oklch(0.68 0.195 224);
+  border-color: oklch(0.68 0.195 224 / 30%);
+}
+
+.badge-success {
+  background: oklch(0.72 0.15 82 / 12%);
+  color: oklch(0.72 0.15 82);
+  border-color: oklch(0.72 0.15 82 / 30%);
+}
+
+.badge-warning {
+  background: oklch(0.84 0.13 67 / 12%);
+  color: oklch(0.84 0.13 67);
+  border-color: oklch(0.84 0.13 67 / 30%);
+}
+
+.badge-error {
+  background: oklch(0.62 0.22 26 / 12%);
+  color: oklch(0.62 0.22 26);
+  border-color: oklch(0.62 0.22 26 / 30%);
+}
+
+/* ══════════════════════════════════════════
+   9. CARD IMPROVEMENTS
+══════════════════════════════════════════ */
+
+/* Base card with consistent styling */
+.card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+  border: 1px solid oklch(0.32 0.016 256 / 50%);
+  background: linear-gradient(
+    155deg,
+    oklch(0.185 0.016 256 / 90%) 0%,
+    oklch(0.148 0.016 256 / 95%) 100%
+  );
+  box-shadow:
+    0 0 0 1px oklch(1 0 0 / 4%) inset,
+    0 8px 16px oklch(0 0 0 / 20%),
+    0 2px 4px oklch(0 0 0 / 12%);
+  padding: 1.5rem;
+  transition:
+    transform var(--motion-base) var(--ease-out),
+    box-shadow var(--motion-base) var(--ease-smooth),
+    border-color var(--motion-base) var(--ease-smooth);
+}
+
+.card:hover {
+  border-color: oklch(0.68 0.195 224 / 30%);
+  box-shadow:
+    0 0 0 1px oklch(1 0 0 / 5%) inset,
+    0 12px 24px oklch(0 0 0 / 24%),
+    0 4px 12px oklch(0.68 0.195 224 / 8%);
+  transform: translateY(-2px);
+}
+
+/* Shared micro-interaction utilities for parity across pages */
+.micro-interactive {
+  transition:
+    transform var(--motion-base) var(--ease-out),
+    box-shadow var(--motion-base) var(--ease-smooth),
+    border-color var(--motion-base) var(--ease-smooth),
+    background-color var(--motion-base) var(--ease-smooth),
+    color var(--motion-fast) var(--ease-smooth);
+}
+
+.micro-interactive:hover {
+  transform: translateY(-2px);
+}
+
+.micro-interactive:active {
+  transform: translateY(0) scale(0.99);
+}
+
+/* ══════════════════════════════════════════
+   10. PREMIUM INTERACTION STATES
+══════════════════════════════════════════ */
+
+/* Focus ring styling */
+:focus-visible {
+  outline: 2px solid oklch(0.68 0.195 224 / 60%);
+  outline-offset: 2px;
+}
+
+/* Link hover styling */
+a {
+  transition: color var(--motion-fast) var(--ease-smooth);
+}
+
+a:hover {
+  color: oklch(0.72 0.195 224);
+}
+
+/* Disabled state */
+[disabled],
+.is-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Loading state */
+.is-loading {
+  position: relative;
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.is-loading::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 2px solid oklch(0.68 0.195 224 / 20%);
+  border-top-color: oklch(0.68 0.195 224 / 80%);
+  animation: apf-spin 1s linear infinite;
+}
+
+/* ══════════════════════════════════════════
+   RESPONSIVE ADJUSTMENTS
+══════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+  .text-display-lg {
+    font-size: 2.5rem;
+  }
+
+  .text-display-md {
+    font-size: 1.875rem;
+  }
+
+  .text-display-sm {
+    font-size: 1.5rem;
+  }
+
+  .btn-lg,
+  .btn-xl {
+    padding: 0.875rem 1.5rem;
+    width: 100%;
+  }
+
+  .section-padded {
+    padding-block: clamp(1.5rem, 6vw, 2.5rem);
+  }
+}
+
+@media (max-width: 480px) {
+  .text-display-lg {
+    font-size: 2rem;
+  }
+
+  .text-display-md {
+    font-size: 1.5rem;
+  }
+
+  .text-headline-lg {
+    font-size: 1.25rem;
+  }
+
+  .form-input,
+  .form-textarea,
+  .form-select {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+}

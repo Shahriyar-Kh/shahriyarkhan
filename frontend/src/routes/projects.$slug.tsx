@@ -12,7 +12,7 @@ import { useLiveDataRefresh } from "@/hooks/useLiveDataRefresh";
 type Tech = { name: string; slug: string };
 
 type ProjectDetail = {
-  title: string; slug: string;
+  title: string; slug?: string;
   description: string;
   live_url?: string; github_url?: string;
   preview_image?: string | null; featured_image?: string | null;
@@ -257,16 +257,16 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
         )}
 
         {/* ══════ HERO HEADER ══════ */}
-        <div className="pd-hero">
+        <div className="pd-hero card surface-elevated">
           <div className="pd-hero__badges">
-            <span className="pd-badge pd-badge--accent">Case Study</span>
-            {project.featured && <span className="pd-badge pd-badge--gold"><Star size={10} /> Featured</span>}
-            {project.live_url && <span className="pd-badge pd-badge--green"><Globe size={10} /> Live Product</span>}
+            <span className="pd-badge pd-badge--accent badge badge-primary">Case Study</span>
+            {project.featured && <span className="pd-badge pd-badge--gold badge badge-warning"><Star size={10} /> Featured</span>}
+            {project.live_url && <span className="pd-badge pd-badge--green badge badge-success"><Globe size={10} /> Live Product</span>}
           </div>
 
-          <h1 className="pd-hero__title">{project.title}</h1>
+          <h1 className="pd-hero__title text-display-sm text-primary">{project.title}</h1>
 
-          <p className="pd-hero__summary">
+          <p className="pd-hero__summary text-body text-tertiary">
             {project.ai_summary ?? project.description}
           </p>
 
@@ -274,7 +274,7 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
           {techs.length > 0 && (
             <div className="pd-hero__techs">
               {techs.map(t => (
-                <span key={t.slug} className="pd-tech-pill">{t.name}</span>
+                <span key={t.slug} className="pd-tech-pill badge badge-primary">{t.name}</span>
               ))}
             </div>
           )}
@@ -282,16 +282,16 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
           {/* Action buttons */}
           <div className="pd-hero__actions">
             {project.live_url && (
-              <a href={project.live_url} target="_blank" rel="noopener noreferrer" className="btn-primary">
+              <a href={project.live_url} target="_blank" rel="noopener noreferrer" className="btn-primary btn-md">
                 <ExternalLink size={15} /> Live Demo
               </a>
             )}
             {project.github_url && (
-              <a href={project.github_url} target="_blank" rel="noopener noreferrer" className="btn-secondary">
+              <a href={project.github_url} target="_blank" rel="noopener noreferrer" className="btn-secondary btn-md">
                 <Github size={15} /> Source Code
               </a>
             )}
-            <Link to="/projects" className="btn-ghost">
+            <Link to="/projects" className="btn-ghost btn-md">
               All Projects <ArrowRight size={14} />
             </Link>
           </div>
@@ -304,35 +304,35 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
 
             {/* Overview */}
             {project.overview && (
-              <div className="pd-case-block">
-                <div className="pd-case-block__label"><Layers size={13} /> Overview</div>
-                <p className="pd-case-block__text">{project.overview}</p>
+              <div className="pd-case-block card surface-elevated">
+                <div className="pd-case-block__label text-label-lg text-primary"><Layers size={13} /> Overview</div>
+                <p className="pd-case-block__text text-body text-tertiary">{project.overview}</p>
               </div>
             )}
 
             {/* Problem */}
             {(project.problem ?? project.challenge) && (
-              <div className="pd-case-block">
-                <div className="pd-case-block__label">Challenge</div>
-                <p className="pd-case-block__text">{project.problem ?? project.challenge}</p>
+              <div className="pd-case-block card surface-elevated">
+                <div className="pd-case-block__label text-label-lg text-primary">Challenge</div>
+                <p className="pd-case-block__text text-body text-tertiary">{project.problem ?? project.challenge}</p>
               </div>
             )}
 
             {/* Solution */}
             {project.solution && (
-              <div className="pd-case-block">
-                <div className="pd-case-block__label">Solution</div>
-                <p className="pd-case-block__text">{project.solution}</p>
+              <div className="pd-case-block card surface-elevated">
+                <div className="pd-case-block__label text-label-lg text-primary">Solution</div>
+                <p className="pd-case-block__text text-body text-tertiary">{project.solution}</p>
               </div>
             )}
 
             {/* Key Features */}
             {bullets.length > 0 && (
-              <div className="pd-case-block">
-                <div className="pd-case-block__label"><Code2 size={13} /> Key Features</div>
+              <div className="pd-case-block card surface-elevated">
+                <div className="pd-case-block__label text-label-lg text-primary"><Code2 size={13} /> Key Features</div>
                 <div className="pd-features-grid">
                   {bullets.map((b, i) => (
-                    <div key={i} className="pd-feature-item">
+                    <div key={i} className="pd-feature-item text-body-sm text-tertiary">
                       <CheckCircle2 size={14} className="pd-feature-item__icon" />
                       <span>{b}</span>
                     </div>
@@ -343,11 +343,11 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
 
             {/* Dev Highlights */}
             {devHighs.length > 0 && (
-              <div className="pd-case-block">
-                <div className="pd-case-block__label">Engineering Highlights</div>
+              <div className="pd-case-block card surface-elevated">
+                <div className="pd-case-block__label text-label-lg text-primary">Engineering Highlights</div>
                 <ul className="pd-highlights-list">
                   {devHighs.map((h, i) => (
-                    <li key={i} className="pd-highlights-list__item">
+                    <li key={i} className="pd-highlights-list__item text-body-sm text-tertiary">
                       <span className="pd-highlights-list__dot" />
                       {h}
                     </li>
@@ -358,11 +358,11 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
 
             {/* Technologies */}
             {techs.length > 0 && (
-              <div className="pd-case-block">
-                <div className="pd-case-block__label">Technologies Used</div>
+              <div className="pd-case-block card surface-elevated">
+                <div className="pd-case-block__label text-label-lg text-primary">Technologies Used</div>
                 <div className="pd-tech-grid">
                   {techs.map(t => (
-                    <div key={t.slug} className="pd-tech-badge">
+                    <div key={t.slug} className="pd-tech-badge badge badge-primary">
                       <Code2 size={12} />
                       {t.name}
                     </div>
@@ -373,9 +373,9 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
 
             {/* Outcome */}
             {project.outcome && (
-              <div className="pd-outcome-block">
-                <div className="pd-case-block__label"><Star size={13} /> Outcome</div>
-                <p className="pd-outcome-block__text">{project.outcome}</p>
+              <div className="pd-outcome-block card surface-elevated">
+                <div className="pd-case-block__label text-label-lg text-primary"><Star size={13} /> Outcome</div>
+                <p className="pd-outcome-block__text text-body text-tertiary">{project.outcome}</p>
               </div>
             )}
           </main>
@@ -386,20 +386,20 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
             <ProjectGallery images={gallery} />
 
             {/* Quick info card */}
-            <div className="pd-info-card">
-              <h3 className="pd-info-card__title">Project Info</h3>
+            <div className="pd-info-card card surface-elevated">
+              <h3 className="pd-info-card__title text-headline-sm text-primary">Project Info</h3>
               <div className="pd-info-card__rows">
                 <div className="pd-info-card__row">
-                  <span className="pd-info-card__label">Status</span>
-                  <span className="pd-info-card__value">{project.live_url ? "Live" : "Private"}</span>
+                  <span className="pd-info-card__label text-label text-hint">Status</span>
+                  <span className="pd-info-card__value text-body-sm text-primary">{project.live_url ? "Live" : "Private"}</span>
                 </div>
                 <div className="pd-info-card__row">
-                  <span className="pd-info-card__label">Stack Size</span>
-                  <span className="pd-info-card__value">{techs.length > 0 ? `${techs.length} technologies` : "—"}</span>
+                  <span className="pd-info-card__label text-label text-hint">Stack Size</span>
+                  <span className="pd-info-card__value text-body-sm text-primary">{techs.length > 0 ? `${techs.length} technologies` : "—"}</span>
                 </div>
                 <div className="pd-info-card__row">
-                  <span className="pd-info-card__label">Type</span>
-                  <span className="pd-info-card__value">{project.featured ? "Featured Project" : "Portfolio Project"}</span>
+                  <span className="pd-info-card__label text-label text-hint">Type</span>
+                  <span className="pd-info-card__value text-body-sm text-primary">{project.featured ? "Featured Project" : "Portfolio Project"}</span>
                 </div>
                 {project.live_url && (
                   <div className="pd-info-card__row">
@@ -413,13 +413,13 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
             </div>
 
             {/* CTA card */}
-            <div className="pd-cta-card">
-              <p className="pd-cta-card__heading">Interested in this kind of work?</p>
-              <p className="pd-cta-card__sub">I'm open to full-time opportunities and freelance projects.</p>
-              <Link to="/contact" className="btn-primary" style={{ justifyContent: "center" }}>
+            <div className="pd-cta-card card surface-elevated">
+              <p className="pd-cta-card__heading text-headline-sm text-primary">Interested in this kind of work?</p>
+              <p className="pd-cta-card__sub text-body-sm text-tertiary">I'm open to full-time opportunities and freelance projects.</p>
+              <Link to="/contact" className="btn-primary btn-md" style={{ justifyContent: "center" }}>
                 Hire Me <ArrowRight size={14} />
               </Link>
-              <Link to="/services" className="btn-ghost" style={{ justifyContent: "center", marginTop: "0.5rem" }}>
+              <Link to="/services" className="btn-ghost btn-md" style={{ justifyContent: "center", marginTop: "0.5rem" }}>
                 View Services
               </Link>
             </div>
@@ -428,17 +428,17 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
 
         {/* ── Bottom nav ── */}
         <div className="pd-bottom-nav">
-          <Link to="/projects" className="btn-secondary">
+          <Link to="/projects" className="btn-secondary btn-md">
             <ArrowLeft size={14} /> All Projects
           </Link>
           <div className="pd-bottom-nav__right">
             {project.live_url && (
-              <a href={project.live_url} target="_blank" rel="noopener noreferrer" className="btn-primary">
+              <a href={project.live_url} target="_blank" rel="noopener noreferrer" className="btn-primary btn-md">
                 <ExternalLink size={14} /> Live Demo
               </a>
             )}
             {project.github_url && (
-              <a href={project.github_url} target="_blank" rel="noopener noreferrer" className="btn-ghost">
+              <a href={project.github_url} target="_blank" rel="noopener noreferrer" className="btn-ghost btn-md">
                 <Github size={14} /> GitHub
               </a>
             )}

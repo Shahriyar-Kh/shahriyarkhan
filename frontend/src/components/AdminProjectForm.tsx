@@ -71,7 +71,7 @@ function getToken(): string {
 // ─── AI generation via Anthropic API ─────────────────────────────────────────
 
 async function generateWithAI(rawText: string): Promise<Partial<ProjectFormData>> {
-  const apiKey = (import.meta as Record<string, Record<string, string>>).env?.VITE_ANTHROPIC_KEY ?? "";
+  const apiKey = (import.meta as unknown as Record<string, Record<string, string>>).env?.VITE_ANTHROPIC_KEY ?? "";
   if (!apiKey) throw new Error("VITE_ANTHROPIC_KEY not set — cannot call Anthropic API directly.");
 
   const SYSTEM = `You are a senior software engineer writing premium portfolio project descriptions.

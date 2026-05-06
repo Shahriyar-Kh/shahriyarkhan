@@ -61,34 +61,34 @@ export function AboutPage() {
         >
           {/* Bio (primary) */}
           <div className="space-y-5">
-            <h2 className="text-xl font-semibold text-foreground tracking-tight">Building reliable software with strong backend foundations</h2>
-            <p className="text-base text-muted-foreground leading-relaxed">
+            <h2 className="text-display-sm text-primary">Building reliable software with strong backend foundations</h2>
+            <p className="text-body text-tertiary leading-relaxed">
               I am <span className="text-foreground font-semibold">Shahriyar Khan</span>, a Software Engineer in Pakistan focused on backend architecture and full-stack application delivery. I specialize in <span className="text-primary font-medium">Python, Django, Django REST Framework, FastAPI, and React.js</span> to build scalable, API-driven, production-ready software.
             </p>
-            <p className="text-base text-muted-foreground leading-relaxed">
+            <p className="text-body text-tertiary leading-relaxed">
               My work spans the full software lifecycle: understanding requirements, planning architecture, implementing clean code, testing, and deployment. I have built real projects in learning systems, productivity platforms, and AI-assisted applications with a practical engineering approach.
             </p>
-            <p className="text-base text-muted-foreground leading-relaxed">
+            <p className="text-body text-tertiary leading-relaxed">
               I am open to opportunities as a <span className="text-primary font-medium">Software Engineer, Python Developer, Django Developer, Python Backend Developer, and Full Stack Developer</span>, including full-time and freelance roles.
             </p>
 
             <div className="pt-2">
-              <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-2">Work Philosophy</h3>
-              <p className="text-base text-muted-foreground leading-relaxed">
+              <h3 className="text-label-lg text-primary mb-2">Work Philosophy</h3>
+              <p className="text-body text-tertiary leading-relaxed">
                 I prioritize clarity over complexity. That means clean architecture, clear API contracts, maintainable codebases, and communication that keeps projects predictable for teams and stakeholders.
               </p>
             </div>
 
             <div className="pt-2">
-              <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-2">Technical Strengths</h3>
-              <p className="text-base text-muted-foreground leading-relaxed">
+              <h3 className="text-label-lg text-primary mb-2">Technical Strengths</h3>
+              <p className="text-body text-tertiary leading-relaxed">
                 Backend development with Django, DRF, and FastAPI; frontend integration with React.js; relational and NoSQL data handling with PostgreSQL, MySQL, MongoDB, and Redis; and deployment workflows using Render, Vercel, and Cloudflare.
               </p>
             </div>
 
             <div className="pt-2">
-              <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-2">How I Work</h3>
-              <p className="text-base text-muted-foreground leading-relaxed">
+              <h3 className="text-label-lg text-primary mb-2">How I Work</h3>
+              <p className="text-body text-tertiary leading-relaxed">
                 I start with scope clarity, break delivery into practical milestones, and focus on dependable execution. This helps teams and clients move from ideas to stable, production-ready applications with confidence.
               </p>
             </div>
@@ -97,28 +97,30 @@ export function AboutPage() {
               {highlights.map((item, i) => (
                 <div
                   key={item.title}
-                  className="premium-card rounded-xl p-5 transition-all duration-300 hover:scale-105 reveal-in tilt-hover"
+                  className="card surface-elevated rounded-xl p-5 micro-interactive reveal-in tilt-hover"
                   style={{ animationDelay: `${0.2 + i * 0.1}s` }}
                 >
-                  <item.icon className="text-primary mb-3" size={22} />
-                  <h3 className="font-semibold text-foreground text-sm">{item.title}</h3>
-                  <p className="text-xs text-muted-foreground mt-1">{item.desc}</p>
+                  <div className="icon-badge icon-badge-sm mb-3">
+                    <item.icon className="text-primary" size={16} />
+                  </div>
+                  <h3 className="text-label-lg text-primary">{item.title}</h3>
+                  <p className="text-caption text-tertiary mt-1">{item.desc}</p>
                 </div>
               ))}
             </div>
 
             <div className="pt-4">
-              <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-2">Languages</h3>
+              <h3 className="text-label-lg text-primary mb-2">Languages</h3>
               <div className="flex flex-wrap gap-2">
                 {["Pashto (Native)", "Urdu (Native)", "English (Professional)"].map((lang) => (
-                  <span key={lang} className="px-3 py-1 rounded-full text-xs font-medium bg-secondary text-secondary-foreground">{lang}</span>
+                  <span key={lang} className="badge badge-primary">{lang}</span>
                 ))}
               </div>
             </div>
 
             <div className="pt-3">
-              <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-2">Let's Connect</h3>
-              <p className="text-base text-muted-foreground leading-relaxed">
+              <h3 className="text-label-lg text-primary mb-2">Let's Connect</h3>
+              <p className="text-body text-tertiary leading-relaxed">
                 If you are hiring for Python or Django roles, building a custom web application, or need a backend-focused full-stack developer, I would be glad to discuss your project.
               </p>
             </div>

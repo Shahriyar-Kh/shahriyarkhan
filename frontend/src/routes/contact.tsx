@@ -121,32 +121,32 @@ export function ContactPage() {
           {/* Contact Info */}
           <div className="space-y-5">
             {resolvedContactInfo.map((item) => (
-              <div key={item.label} className="premium-card rounded-xl p-5 flex items-start gap-4">
-                <div className="p-2.5 rounded-lg gradient-primary">
-                  <item.icon size={18} className="text-primary-foreground" />
+              <div key={item.label} className="card surface-elevated rounded-xl p-5 flex items-start gap-4">
+                <div className="icon-badge icon-badge-md">
+                  <item.icon size={16} className="text-primary" />
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground uppercase tracking-wider">{item.label}</p>
+                  <p className="text-label text-hint">{item.label}</p>
                   {item.href ? (
-                    <a href={item.href} className="text-sm font-medium text-foreground hover:text-primary transition-colors">{item.value}</a>
+                    <a href={item.href} className="text-body-sm text-primary hover:text-accent transition-colors">{item.value}</a>
                   ) : (
-                    <p className="text-sm font-medium text-foreground">{item.value}</p>
+                    <p className="text-body-sm text-primary">{item.value}</p>
                   )}
                 </div>
               </div>
             ))}
 
             {/* Social Links */}
-            <div className="premium-card rounded-xl p-5">
-              <p className="text-xs text-muted-foreground uppercase tracking-wider mb-3">Connect with me</p>
+            <div className="card surface-elevated rounded-xl p-5">
+              <p className="text-label text-hint mb-3">Connect with me</p>
               <div className="flex items-center gap-3">
-                <a href="https://linkedin.com/in/shahriyarkhan786" target="_blank" rel="noopener noreferrer" className="p-3 rounded-lg bg-secondary text-muted-foreground hover:text-primary hover:bg-secondary/80 transition-all" aria-label="LinkedIn">
+                <a href="https://linkedin.com/in/shahriyarkhan786" target="_blank" rel="noopener noreferrer" className="btn-ghost btn-icon" aria-label="LinkedIn">
                   <Linkedin size={20} />
                 </a>
-                <a href="https://github.com/Shahriyar-Kh" target="_blank" rel="noopener noreferrer" className="p-3 rounded-lg bg-secondary text-muted-foreground hover:text-primary hover:bg-secondary/80 transition-all" aria-label="GitHub">
+                <a href="https://github.com/Shahriyar-Kh" target="_blank" rel="noopener noreferrer" className="btn-ghost btn-icon" aria-label="GitHub">
                   <Github size={20} />
                 </a>
-                <a href="https://wa.me/923110924560" target="_blank" rel="noopener noreferrer" className="p-3 rounded-lg bg-secondary text-muted-foreground hover:text-accent hover:bg-secondary/80 transition-all" aria-label="WhatsApp">
+                <a href="https://wa.me/923110924560" target="_blank" rel="noopener noreferrer" className="btn-ghost btn-icon" aria-label="WhatsApp">
                   <MessageCircle size={20} />
                 </a>
               </div>
@@ -156,54 +156,54 @@ export function ContactPage() {
           {/* Contact Form */}
           <div className="lg:col-span-2">
             {submitted ? (
-              <div className="premium-card rounded-xl p-10 text-center">
-                <p className="text-2xl font-bold gradient-text">Message Sent! 🎉</p>
-                <p className="text-muted-foreground mt-3">Thank you for reaching out. I'll respond within 24 hours.</p>
+              <div className="card surface-elevated rounded-xl p-10 text-center">
+                <p className="text-headline-lg gradient-text">Message Sent! 🎉</p>
+                <p className="text-body text-tertiary mt-3">Thank you for reaching out. I'll respond within 24 hours.</p>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="premium-card rounded-xl p-8 space-y-5">
+              <form onSubmit={handleSubmit} className="card surface-elevated rounded-xl p-8 space-y-5">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                  <div>
-                    <label className="block text-sm font-medium text-foreground mb-1.5">Full Name</label>
+                  <div className="form-group">
+                    <label className="form-label">Full Name</label>
                     <input
                       type="text"
                       required
                       value={formData.name}
                       onChange={(e) => setFormData((f) => ({ ...f, name: e.target.value }))}
-                      className="w-full rounded-lg bg-input border border-border px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                      className="form-input"
                       placeholder="Your full name"
                     />
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-foreground mb-1.5">Email</label>
+                  <div className="form-group">
+                    <label className="form-label">Email</label>
                     <input
                       type="email"
                       required
                       value={formData.email}
                       onChange={(e) => setFormData((f) => ({ ...f, email: e.target.value }))}
-                      className="w-full rounded-lg bg-input border border-border px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                      className="form-input"
                       placeholder="your@email.com"
                     />
                   </div>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                  <div>
-                    <label className="block text-sm font-medium text-foreground mb-1.5">Subject</label>
+                  <div className="form-group">
+                    <label className="form-label">Subject</label>
                     <input
                       type="text"
                       required
                       value={formData.subject}
                       onChange={(e) => setFormData((f) => ({ ...f, subject: e.target.value }))}
-                      className="w-full rounded-lg bg-input border border-border px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                      className="form-input"
                       placeholder="Project inquiry"
                     />
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-foreground mb-1.5">Service Type</label>
+                  <div className="form-group">
+                    <label className="form-label">Service Type</label>
                     <select
                       value={formData.service}
                       onChange={(e) => setFormData((f) => ({ ...f, service: e.target.value }))}
-                      className="w-full rounded-lg bg-input border border-border px-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                      className="form-select"
                     >
                       <option value="">Select (optional)</option>
                       {contactServiceOptions.map((s) => (
@@ -212,21 +212,21 @@ export function ContactPage() {
                     </select>
                   </div>
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-1.5">Message</label>
+                <div className="form-group">
+                  <label className="form-label">Message</label>
                   <textarea
                     required
                     rows={5}
                     value={formData.message}
                     onChange={(e) => setFormData((f) => ({ ...f, message: e.target.value }))}
-                    className="w-full rounded-lg bg-input border border-border px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none"
+                    className="form-textarea"
                     placeholder="Tell me about your project or opportunity..."
                   />
                 </div>
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full inline-flex items-center justify-center gap-2 rounded-xl gradient-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:shadow-lg transition-all hover:scale-[1.02]"
+                  className="btn-primary btn-lg w-full inline-flex items-center justify-center gap-2"
                 >
                   <Send size={16} /> {loading ? "Sending..." : "Send Message"}
                 </button>

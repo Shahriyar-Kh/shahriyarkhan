@@ -78,21 +78,21 @@ export function ResumePage() {
           <a
             href="/resume/Shahriyar_Khan_Software_Engineer.pdf"
             download
-            className="inline-flex items-center gap-2 rounded-xl gradient-primary px-8 py-4 text-sm font-semibold text-primary-foreground shadow-lg hover:shadow-xl transition-all hover:scale-105"
+            className="btn-primary btn-lg inline-flex items-center gap-2"
           >
             <Download size={18} /> Download Resume (PDF)
           </a>
         </div>
 
         {/* Inline Resume Preview */}
-        <div className="premium-card rounded-xl p-8 sm:p-10 space-y-8">
+        <div className="card surface-elevated rounded-xl p-8 sm:p-10 space-y-8">
           <div className="text-center border-b border-border pb-6">
-            <h2 className="text-2xl font-bold text-foreground">{resume?.title?.toUpperCase() ?? "SHAHRIYAR KHAN"}</h2>
-            <p className="text-primary font-medium mt-1">{resume?.target_role ?? "Software Engineer | Python • Django • FastAPI"}</p>
-            <p className="text-sm text-muted-foreground mt-2">
+            <h2 className="text-display-sm text-primary">{resume?.title?.toUpperCase() ?? "SHAHRIYAR KHAN"}</h2>
+            <p className="text-body text-secondary mt-1">{resume?.target_role ?? "Software Engineer | Python • Django • FastAPI"}</p>
+            <p className="text-caption text-tertiary mt-2">
               Islamabad, Pakistan • shahriyarkhanpk1@gmail.com • +92 311 0924560
             </p>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-caption text-tertiary">
               linkedin.com/in/shahriyarkhan786 • github.com/Shahriyar-Kh
             </p>
           </div>
@@ -250,7 +250,7 @@ type ResumeApi = {
 function ResumeSection({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
-      <h3 className="text-sm font-bold text-primary uppercase tracking-wider mb-3 flex items-center gap-2">
+      <h3 className="text-label-lg text-primary mb-3 flex items-center gap-2">
         <FileText size={14} /> {title}
       </h3>
       {children}
@@ -268,13 +268,13 @@ function ExperienceItem({ title, company, period, location, points }: {
   return (
     <div className="mb-5 last:mb-0">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-sm font-semibold text-foreground">{title}</p>
-        <p className="text-xs text-muted-foreground">{period}</p>
+        <p className="text-body-sm text-primary">{title}</p>
+        <p className="text-caption text-tertiary">{period}</p>
       </div>
-      <p className="text-sm text-muted-foreground">{company} • {location}</p>
+      <p className="text-body-sm text-tertiary">{company} • {location}</p>
       <ul className="mt-2 space-y-1">
         {points.map((point) => (
-          <li key={point} className="text-sm text-muted-foreground">• {point}</li>
+          <li key={point} className="text-body-sm text-tertiary">• {point}</li>
         ))}
       </ul>
     </div>

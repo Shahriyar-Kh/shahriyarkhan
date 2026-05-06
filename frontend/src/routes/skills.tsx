@@ -133,9 +133,9 @@ function SkillBar({ name, level, delay }: { name: string; level: number; delay: 
 
   return (
     <div ref={ref} className="space-y-1.5" style={{ transitionDelay: `${delay}ms` }}>
-      <div className="flex items-center justify-between gap-3 text-sm">
-        <span className="font-medium text-foreground">{name}</span>
-        <span className="text-muted-foreground">{normalizedLevel}%</span>
+      <div className="flex items-center justify-between gap-3">
+        <span className="text-body-sm text-primary">{name}</span>
+        <span className="text-caption text-tertiary">{normalizedLevel}%</span>
       </div>
       <div className={`skill-bar skill-bar--${tone}`}>
         <div className="skill-bar-fill" style={{ width: isVisible ? `${normalizedLevel}%` : "0%" }} />
@@ -246,13 +246,13 @@ export function SkillsPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {categories.map((cat) => (
-            <div key={cat.slug} className="premium-card rounded-2xl p-6">
+            <div key={cat.slug} className="card surface-elevated rounded-2xl p-6">
               <div className="flex items-start justify-between gap-4 mb-5">
                 <div>
-                  <p className="text-xs uppercase tracking-[0.18em] text-primary/80 font-semibold mb-2">Skill Category</p>
-                  <h3 className="text-lg font-bold text-foreground">{cat.title}</h3>
+                  <p className="text-label text-hint mb-2">Skill Category</p>
+                  <h3 className="text-headline-sm text-primary">{cat.title}</h3>
                 </div>
-                <span className="skill-badge skill-badge--intermediate">{cat.skills.length} skills</span>
+                <span className="badge badge-primary">{cat.skills.length} skills</span>
               </div>
               <div className="space-y-4">
                 {cat.skills.map((skill, i) => (

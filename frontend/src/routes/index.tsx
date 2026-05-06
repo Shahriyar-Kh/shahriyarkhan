@@ -456,7 +456,7 @@ function SkillsSection() {
                 </div>
               ))}
             </div>
-            <Link to="/skills" className="btn-secondary" style={{ marginTop: "1.5rem", alignSelf: "flex-start" }}>
+            <Link to="/skills" className="btn-secondary btn-md" style={{ marginTop: "1.5rem", alignSelf: "flex-start" }}>
               Full Skills List <ArrowRight size={14} />
             </Link>
           </div>
@@ -555,7 +555,7 @@ function ExperienceSection() {
                   <span className="experience-timeline__node" />
                 </div>
 
-                <div className="experience-timeline__card premium-card">
+                <div className="experience-timeline__card premium-card card surface-elevated">
                   <div className="experience-timeline__card-top">
                     <div>
                       <div className="experience-timeline__eyebrow">{side === "right" ? "Current Chapter" : "Previous Chapter"}</div>
@@ -566,7 +566,6 @@ function ExperienceSection() {
                         {exp.current && <span className="experience-timeline__current-badge">Current</span>}
                       </div>
                     </div>
-
                     <div className="experience-timeline__dates">
                       <Calendar size={12} />
                       <span>{exp.period}</span>
@@ -670,13 +669,13 @@ function CTASection() {
           </p>
 
           <div className="home-cta-section__actions">
-            <Link to="/contact" className="btn-primary">
+            <Link to="/contact" className="btn-primary btn-lg">
               Start a Project <ArrowRight size={14} />
             </Link>
-            <Link to="/services" className="btn-secondary">
+            <Link to="/services" className="btn-secondary btn-lg">
               View Services <ExternalLink size={14} />
             </Link>
-            <a href="https://wa.me/923110924560" target="_blank" rel="noopener noreferrer" className="btn-ghost">
+            <a href="https://wa.me/923110924560" target="_blank" rel="noopener noreferrer" className="btn-ghost btn-lg">
               <MessageCircle size={14} /> WhatsApp
             </a>
           </div>
@@ -777,8 +776,8 @@ export function HomePage() {
                 <TypewriterText />
               </div>
 
-              <p className="hero-subtitle">{heroSubtitle}</p>
-              <p className="hero-body">
+              <p className="hero-subtitle text-body-lg text-secondary">{heroSubtitle}</p>
+              <p className="hero-body text-body text-tertiary">
                 I design scalable API-driven architectures with secure JWT authentication, build production-ready backend systems using Django REST Framework and FastAPI, and develop responsive full-stack applications with React.js. Experienced in microservices architecture, PostgreSQL database design, Redis caching, and deploying cloud-native solutions on Render and Vercel.
               </p>
 
@@ -789,9 +788,9 @@ export function HomePage() {
               </div>
 
               <div className="hero-cta-row">
-                <Link to="/projects" className="btn-primary">View Projects <ArrowRight size={15} /></Link>
-                <Link to="/resume" className="btn-secondary"><Download size={15} /> Download CV</Link>
-                <Link to="/contact" className="btn-ghost"><Mail size={15} /> Contact</Link>
+                <Link to="/projects" className="btn-primary btn-lg">View Projects <ArrowRight size={15} /></Link>
+                <Link to="/resume" className="btn-secondary btn-lg"><Download size={15} /> Download CV</Link>
+                <Link to="/contact" className="btn-ghost btn-lg"><Mail size={15} /> Contact</Link>
               </div>
 
               <div className="hero-socials">

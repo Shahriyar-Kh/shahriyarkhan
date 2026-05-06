@@ -201,7 +201,7 @@ function ProjectCard({ project, index }: { project: ProjectApi; index: number })
 
   return (
     <article
-      className="premium-card rounded-3xl p-6 flex flex-col justify-between transition-all duration-300 hover:border-primary/30 hover:scale-[1.02] reveal-in tilt-hover"
+      className="card surface-elevated rounded-3xl p-6 flex flex-col justify-between micro-interactive reveal-in tilt-hover"
       style={{ animationDelay: `${index * 0.1}s` }}
       aria-label={`Project: ${project.title}`}
     >
@@ -250,17 +250,14 @@ function ProjectCard({ project, index }: { project: ProjectApi; index: number })
         </div>
 
         <div className="flex items-center justify-between gap-3 mb-2">
-          <h3 className="text-base font-bold text-foreground leading-snug">{project.title}</h3>
-          {project.featured && <span className="skill-badge skill-badge--expert">Featured</span>}
+          <h3 className="text-headline-sm text-primary leading-snug">{project.title}</h3>
+          {project.featured && <span className="badge badge-success">Featured</span>}
         </div>
-        <p className="text-sm text-muted-foreground leading-relaxed mb-4">{project.description}</p>
+        <p className="text-body-sm text-tertiary leading-relaxed mb-4">{project.description}</p>
 
         <div className="flex flex-wrap gap-1.5 mb-5">
           {tools.map((tool) => (
-            <span
-              key={tool}
-              className="px-2.5 py-1 rounded-md text-[11px] font-semibold bg-primary/10 text-primary border border-primary/20 tracking-wide"
-            >
+            <span key={tool} className="badge badge-primary">
               {tool}
             </span>
           ))}
@@ -271,9 +268,9 @@ function ProjectCard({ project, index }: { project: ProjectApi; index: number })
         {project.slug && (
           <Link
             to={`/projects/${project.slug}`}
-            className="text-xs font-semibold text-accent hover:text-primary transition-colors uppercase tracking-wider"
+            className="btn-ghost btn-sm"
           >
-            Case Study →
+            Case Study
           </Link>
         )}
         {liveUrl && (
@@ -281,7 +278,7 @@ function ProjectCard({ project, index }: { project: ProjectApi; index: number })
             href={liveUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:text-accent transition-colors"
+            className="btn-secondary btn-sm inline-flex items-center gap-1.5"
             aria-label={`Live demo of ${project.title}`}
           >
             <ExternalLink size={13} /> Live Demo
@@ -292,7 +289,7 @@ function ProjectCard({ project, index }: { project: ProjectApi; index: number })
             href={githubUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors ml-auto"
+            className="btn-ghost btn-sm inline-flex items-center gap-1.5 ml-auto"
             aria-label={`GitHub source for ${project.title}`}
           >
             <Github size={13} /> Source

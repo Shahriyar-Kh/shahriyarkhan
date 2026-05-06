@@ -123,10 +123,12 @@ export function ServicesPage() {
             const description = service.description ?? service.desc ?? "";
 
             return (
-              <div key={service.title} className="premium-card rounded-xl p-6 transition-all duration-300 hover:scale-105 hover:border-primary/30 group tilt-hover">
-                <Icon className="text-primary mb-4 group-hover:scale-110 transition-transform" size={28} />
-                <h3 className="font-semibold text-foreground mb-2">{service.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
+              <div key={service.title} className="card surface-elevated rounded-xl p-6 micro-interactive group tilt-hover">
+                <div className="icon-badge icon-badge-md mb-4">
+                  <Icon className="text-primary group-hover:scale-110 transition-transform duration-300" size={18} />
+                </div>
+                <h3 className="text-headline-sm text-primary mb-2">{service.title}</h3>
+                <p className="text-body-sm text-tertiary leading-relaxed">{description}</p>
               </div>
             );
           })}
@@ -136,43 +138,43 @@ export function ServicesPage() {
           <SectionHeading title="Request a Service" subtitle="Tell me about your project and I'll get back to you" />
 
           {submitted ? (
-            <div className="glass-card rounded-xl p-8 text-center">
-              <p className="text-lg font-semibold text-primary">Thank you! 🎉</p>
-              <p className="text-muted-foreground mt-2">Your request has been received. I'll get back to you soon.</p>
+            <div className="card surface-elevated rounded-xl p-8 text-center">
+              <p className="text-headline-md text-primary">Thank you! 🎉</p>
+              <p className="text-body text-tertiary mt-2">Your request has been received. I'll get back to you soon.</p>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="glass-card rounded-xl p-8 space-y-5">
+            <form onSubmit={handleSubmit} className="card surface-elevated rounded-xl p-8 space-y-5">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-1.5">Name</label>
+                <div className="form-group">
+                  <label className="form-label">Name</label>
                   <input
                     type="text"
                     required
                     value={formData.name}
                     onChange={(e) => setFormData((f) => ({ ...f, name: e.target.value }))}
-                    className="w-full rounded-lg bg-input border border-border px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    className="form-input"
                     placeholder="Your name"
                   />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-1.5">Email</label>
+                <div className="form-group">
+                  <label className="form-label">Email</label>
                   <input
                     type="email"
                     required
                     value={formData.email}
                     onChange={(e) => setFormData((f) => ({ ...f, email: e.target.value }))}
-                    className="w-full rounded-lg bg-input border border-border px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    className="form-input"
                     placeholder="your@email.com"
                   />
                 </div>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-1.5">Service Type</label>
+              <div className="form-group">
+                <label className="form-label">Service Type</label>
                 <select
                   required
                   value={formData.service}
                   onChange={(e) => setFormData((f) => ({ ...f, service: e.target.value }))}
-                  className="w-full rounded-lg bg-input border border-border px-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  className="form-select"
                 >
                   <option value="">Select a service</option>
                   {serviceTitles.map((title) => (
@@ -183,12 +185,12 @@ export function ServicesPage() {
                 </select>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-1.5">Budget Range</label>
+                <div className="form-group">
+                  <label className="form-label">Budget Range</label>
                   <select
                     value={formData.budgetRange}
                     onChange={(e) => setFormData((f) => ({ ...f, budgetRange: e.target.value }))}
-                    className="w-full rounded-lg bg-input border border-border px-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    className="form-select"
                   >
                     <option value="">Select a budget (optional)</option>
                     {budgetOptions.map((budget) => (
@@ -198,32 +200,32 @@ export function ServicesPage() {
                     ))}
                   </select>
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-1.5">Timeline / Deadline</label>
+                <div className="form-group">
+                  <label className="form-label">Timeline / Deadline</label>
                   <input
                     type="text"
                     value={formData.timeline}
                     onChange={(e) => setFormData((f) => ({ ...f, timeline: e.target.value }))}
-                    className="w-full rounded-lg bg-input border border-border px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    className="form-input"
                     placeholder="e.g. 2 weeks, end of month"
                   />
                 </div>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-1.5">Project Details</label>
+              <div className="form-group">
+                <label className="form-label">Project Details</label>
                 <textarea
                   required
                   rows={4}
                   value={formData.details}
                   onChange={(e) => setFormData((f) => ({ ...f, details: e.target.value }))}
-                  className="w-full rounded-lg bg-input border border-border px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none"
+                  className="form-textarea"
                   placeholder="Describe your project..."
                 />
               </div>
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full rounded-xl gradient-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:shadow-lg transition-all hover:scale-[1.02]"
+                className="btn-primary btn-lg w-full"
               >
                 {loading ? "Sending..." : "Submit Request"}
               </button>
