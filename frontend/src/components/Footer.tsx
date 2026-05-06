@@ -1,39 +1,133 @@
 import { Link } from "@/lib/navigation";
-import { Github, Linkedin, MessageCircle, Heart } from "lucide-react";
+import { Github, Linkedin, MessageCircle, Mail, MapPin, ArrowUpRight } from "lucide-react";
+
+const quickLinks = [
+  { to: "/about",    label: "About" },
+  { to: "/projects", label: "Projects" },
+  { to: "/skills",   label: "Skills" },
+  { to: "/services", label: "Services" },
+  { to: "/resume",   label: "Resume" },
+  { to: "/contact",  label: "Contact" },
+];
+
+const services = [
+  "Backend Development",
+  "Website Development",
+  "SaaS Applications",
+  "Ecommerce Solutions",
+  "Custom Web Apps",
+  "Portfolio Websites",
+];
 
 export function Footer() {
   return (
-    <footer className="border-t border-border/80 bg-surface/95 backdrop-blur">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div>
-            <span className="text-2xl font-bold gradient-text">SK.</span>
-            <p className="mt-3 text-sm text-muted-foreground max-w-xs">
-              Software Engineer specializing in Python, Django, and scalable backend systems. Open to opportunities.
-            </p>
+    <footer className="footer-shell">
+      {/* Top separator glow */}
+      <div className="footer-top-line" aria-hidden="true" />
+
+      <div className="footer-inner">
+        {/* ── Brand col ── */}
+        <div className="footer-brand-col">
+          <Link to="/" className="footer-logo" aria-label="Home">
+            SK<span className="footer-logo__dot">.</span>
+          </Link>
+          <p className="footer-brand-bio">
+            Software Engineer specializing in Python, Django, and full-stack product development. Building scalable backend systems and premium web applications.
+          </p>
+
+          <div className="footer-location">
+            <MapPin size={13} />
+            <span>Islamabad, Pakistan · Remote-friendly</span>
           </div>
-          <div>
-            <h4 className="font-semibold text-foreground mb-3">Quick Links</h4>
-            <div className="flex flex-col gap-2">
-              <Link to="/about" className="text-sm text-muted-foreground hover:text-primary transition-colors">About</Link>
-              <Link to="/projects" className="text-sm text-muted-foreground hover:text-primary transition-colors">Projects</Link>
-              <Link to="/services" className="text-sm text-muted-foreground hover:text-primary transition-colors">Services</Link>
-              <Link to="/contact" className="text-sm text-muted-foreground hover:text-primary transition-colors">Contact</Link>
-            </div>
-          </div>
-          <div>
-            <h4 className="font-semibold text-foreground mb-3">Connect</h4>
-            <div className="flex items-center gap-3">
-              <a href="https://linkedin.com/in/shahriyarkhan786" target="_blank" rel="noopener noreferrer" className="p-2.5 rounded-lg bg-secondary text-muted-foreground hover:text-primary hover:bg-secondary/80 transition-all duration-300 hover:-translate-y-0.5" aria-label="LinkedIn"><Linkedin size={18} /></a>
-              <a href="https://github.com/Shahriyar-Kh" target="_blank" rel="noopener noreferrer" className="p-2.5 rounded-lg bg-secondary text-muted-foreground hover:text-primary hover:bg-secondary/80 transition-all duration-300 hover:-translate-y-0.5" aria-label="GitHub"><Github size={18} /></a>
-              <a href="https://wa.me/923110924560" target="_blank" rel="noopener noreferrer" className="p-2.5 rounded-lg bg-secondary text-muted-foreground hover:text-accent hover:bg-secondary/80 transition-all duration-300 hover:-translate-y-0.5" aria-label="WhatsApp"><MessageCircle size={18} /></a>
-            </div>
-            <p className="mt-4 text-sm text-muted-foreground">shahriyarkhanpk1@gmail.com</p>
+
+          <div className="footer-socials">
+            <a href="https://linkedin.com/in/shahriyarkhan786" target="_blank" rel="noopener noreferrer" className="footer-social-btn" aria-label="LinkedIn">
+              <Linkedin size={16} />
+            </a>
+            <a href="https://github.com/Shahriyar-Kh" target="_blank" rel="noopener noreferrer" className="footer-social-btn" aria-label="GitHub">
+              <Github size={16} />
+            </a>
+            <a href="https://wa.me/923110924560" target="_blank" rel="noopener noreferrer" className="footer-social-btn" aria-label="WhatsApp">
+              <MessageCircle size={16} />
+            </a>
+            <a href="mailto:shahriyarkhanpk1@gmail.com" className="footer-social-btn" aria-label="Email">
+              <Mail size={16} />
+            </a>
           </div>
         </div>
-        <div className="mt-10 pt-6 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} Shahriyar Khan. All rights reserved.</p>
-          <p className="text-xs text-muted-foreground flex items-center gap-1">Built with by Shahriyar Khan</p>
+
+        {/* ── Quick Links ── */}
+        <div className="footer-nav-col">
+          <h3 className="footer-col-title">Navigation</h3>
+          <nav aria-label="Footer navigation">
+            {quickLinks.map((link) => (
+              <Link key={link.to} to={link.to} className="footer-nav-link">
+                <span>{link.label}</span>
+                <ArrowUpRight size={11} className="footer-nav-link__arrow" />
+              </Link>
+            ))}
+          </nav>
+        </div>
+
+        {/* ── Services ── */}
+        <div className="footer-nav-col">
+          <h3 className="footer-col-title">Services</h3>
+          <nav aria-label="Services navigation">
+            {services.map((s) => (
+              <Link key={s} to="/services" className="footer-nav-link">
+                <span>{s}</span>
+                <ArrowUpRight size={11} className="footer-nav-link__arrow" />
+              </Link>
+            ))}
+          </nav>
+        </div>
+
+        {/* ── Contact ── */}
+        <div className="footer-contact-col">
+          <h3 className="footer-col-title">Get in Touch</h3>
+          <div className="footer-contact-items">
+            <a href="mailto:shahriyarkhanpk1@gmail.com" className="footer-contact-item">
+              <div className="footer-contact-item__icon"><Mail size={14} /></div>
+              <div>
+                <p className="footer-contact-item__label">Email</p>
+                <p className="footer-contact-item__value">shahriyarkhanpk1@gmail.com</p>
+              </div>
+            </a>
+            <a href="https://wa.me/923110924560" target="_blank" rel="noopener noreferrer" className="footer-contact-item">
+              <div className="footer-contact-item__icon"><MessageCircle size={14} /></div>
+              <div>
+                <p className="footer-contact-item__label">WhatsApp</p>
+                <p className="footer-contact-item__value">+92 311 092 4560</p>
+              </div>
+            </a>
+            <a href="https://linkedin.com/in/shahriyarkhan786" target="_blank" rel="noopener noreferrer" className="footer-contact-item">
+              <div className="footer-contact-item__icon"><Linkedin size={14} /></div>
+              <div>
+                <p className="footer-contact-item__label">LinkedIn</p>
+                <p className="footer-contact-item__value">Shahriyar Khan</p>
+              </div>
+            </a>
+          </div>
+
+          <div className="footer-availability-badge">
+            <span className="footer-availability-badge__dot" />
+            Open to Work — Full-time or Freelance
+          </div>
+        </div>
+      </div>
+
+      {/* ── Bottom bar ── */}
+      <div className="footer-bottom">
+        <div className="footer-bottom__inner">
+          <p className="footer-bottom__copy">
+            © {new Date().getFullYear()} Shahriyar Khan. All rights reserved.
+          </p>
+          <div className="footer-bottom__keywords" aria-hidden="true">
+            Python · Django · FastAPI · React · PostgreSQL · Software Engineer
+          </div>
+          <p className="footer-bottom__built">
+            Designed &amp; built by <span className="footer-bottom__built-name">Shahriyar Khan</span>
+          </p>
         </div>
       </div>
     </footer>

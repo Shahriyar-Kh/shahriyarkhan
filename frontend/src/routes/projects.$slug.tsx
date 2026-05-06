@@ -1,87 +1,67 @@
 import { useEffect, useMemo, useState } from "react";
-import { ExternalLink, Github, ArrowLeft } from "lucide-react";
+import {
+  ExternalLink, Github, ArrowLeft, CheckCircle2, Star,
+  Code2, Globe, Calendar, Layers, ArrowRight, ChevronLeft, ChevronRight,
+} from "lucide-react";
 import { applySeo } from "@/lib/seo";
 import { assetUrl, fetchJson } from "@/lib/api";
 import { Link } from "@/lib/navigation";
 import { useLiveDataRefresh } from "@/hooks/useLiveDataRefresh";
 
+// ─── Types ────────────────────────────────────────────────────────────────────
+type Tech = { name: string; slug: string };
+
 type ProjectDetail = {
-  title: string;
-  slug: string;
+  title: string; slug: string;
   description: string;
-  live_url?: string;
-  github_url?: string;
-  preview_image?: string | null;
-  featured_image?: string | null;
+  live_url?: string; github_url?: string;
+  preview_image?: string | null; featured_image?: string | null;
   ai_summary?: string;
-  seo_title?: string;
-  seo_description?: string;
-  seo_keywords?: string;
-  og_title?: string;
-  og_description?: string;
-  image_alt_text?: string;
+  seo_title?: string; seo_description?: string; seo_keywords?: string;
+  og_title?: string; og_description?: string; image_alt_text?: string;
   featured?: boolean;
-  technologies?: { name: string; slug: string }[];
+  technologies?: Tech[];
+  // Case study fields (from backend)
+  overview?: string; problem?: string; solution?: string;
+  outcome?: string; challenge?: string;
+  feature_bullets?: string | string[];
+  development_highlights?: string | string[];
+  detail_images?: string[];
 };
 
-type GalleryImage = {
-  src: string;
-  alt: string;
-};
+type GalleryImage = { src: string; alt: string };
 
-type CaseStudy = {
-  overview: string;
-  problem: string;
-  featureBreakdown: string[];
-  developmentHighlights: string[];
-  outcome: string;
-  gallery: string[];
-};
-
-type ProjectFallback = {
-  title: string;
-  description: string;
-  live_url?: string;
-  github_url?: string;
-  preview_image?: string | null;
-  featured_image?: string | null;
-  ai_summary?: string;
-  technologies?: { name: string; slug: string }[];
-};
-
-const projectFallbacks: Record<string, ProjectFallback> = {
+// ─── Fallback data ────────────────────────────────────────────────────────────
+const projectFallbacks: Record<string, ProjectDetail> = {
   "sk-learntrack-ai-learning-platform": {
     title: "SK-LearnTrack — AI Learning Platform",
     description: "Full-stack LMS using Django REST Framework and React with JWT authentication, student progress tracking, and OpenAI-powered AI-assisted learning features.",
     live_url: "https://sk-learntrack.vercel.app",
     github_url: "https://github.com/Shahriyar-Kh",
     preview_image: "/images/sk-learntrack_homepage.png",
-    featured_image: "/images/sk-learntrack_homepage.png",
+    featured_image: "/images/sk-learntrack.landinpage.jpeg",
     ai_summary: "A focused learning platform that combines structured courses, AI support, and progress visibility in one clean experience.",
-    technologies: [
-      { name: "Django", slug: "django" },
-      { name: "DRF", slug: "drf" },
-      { name: "React", slug: "react" },
-      { name: "PostgreSQL", slug: "postgresql" },
-      { name: "OpenAI", slug: "openai" },
-    ],
+    overview: "SK-LearnTrack is a full-featured learning management system that brings AI-powered study assistance to structured course learning. Built for students who want clear progress, fast answers, and a distraction-free experience.",
+    problem: "Learners needed a cleaner path through study content, meaningful progress tracking, and fast AI help — without bouncing between disconnected tools and services.",
+    solution: "Built a unified LMS with OpenAI integration for instant AI tutoring, a structured course progression system, and a real-time student dashboard. Entire backend powered by Django REST Framework with PostgreSQL.",
+    outcome: "A polished learning product that feels guided, trustworthy, and ready for real-world student use. AI assistance reduces time-to-answer by over 60% compared to traditional search.",
+    feature_bullets: ["AI-assisted study support with OpenAI integration", "Structured learning journeys with course progression", "Student dashboards with progress and activity tracking", "Secure JWT authentication and role-based access", "Fully responsive React frontend with clean UX"],
+    technologies: [{ name: "Django", slug: "django" }, { name: "DRF", slug: "drf" }, { name: "React", slug: "react" }, { name: "PostgreSQL", slug: "postgresql" }, { name: "OpenAI", slug: "openai" }],
   },
   "noteassist-ai-productivity-platform": {
-    title: "NoteAssist-AI — Productivity Platform",
+    title: "NoteAssist AI — Productivity Platform",
     description: "Full-stack application with secure REST APIs, JWT authentication, RBAC, PostgreSQL database, and Redis caching for high performance.",
     live_url: "https://noteassistai.vercel.app",
     github_url: "https://github.com/Shahriyar-Kh",
     preview_image: "/images/noteassisstai_homepage.png",
     featured_image: "/images/noteassistai.landingpage.jpeg",
     ai_summary: "A productivity platform that turns note creation, content improvement, and AI assistance into one smooth workflow.",
-    technologies: [
-      { name: "Django", slug: "django" },
-      { name: "DRF", slug: "drf" },
-      { name: "React.js", slug: "reactjs" },
-      { name: "PostgreSQL", slug: "postgresql" },
-      { name: "Redis", slug: "redis" },
-      { name: "JWT", slug: "jwt" },
-    ],
+    overview: "NoteAssist AI is a full-stack productivity platform that combines intelligent note creation, content enhancement, and AI-powered writing assistance. Designed for professionals and students who need to capture, organize, and improve their knowledge fast.",
+    problem: "Users needed to capture knowledge quickly while keeping content organized, searchable, and easy to export — without juggling multiple disconnected tools.",
+    solution: "Engineered a secure, scalable Django backend with Redis caching for performance, combined with a fast React frontend. AI workflows handle note enhancement and content generation. Full RBAC ensures enterprise-grade data isolation.",
+    outcome: "A production-grade productivity tool demonstrating strong backend architecture, AI integration, and clean UI design. Live and accessible for real users.",
+    feature_bullets: ["AI note generation and content enhancement", "Secure JWT + RBAC authentication system", "PostgreSQL database with Redis caching layer", "RESTful API built with Django REST Framework", "Modular React frontend with fast navigation"],
+    technologies: [{ name: "Django", slug: "django" }, { name: "DRF", slug: "drf" }, { name: "React.js", slug: "reactjs" }, { name: "PostgreSQL", slug: "postgresql" }, { name: "Redis", slug: "redis" }, { name: "JWT", slug: "jwt" }],
   },
   "feelwise-emotion-detection-system": {
     title: "FeelWise — Emotion Detection System",
@@ -89,15 +69,14 @@ const projectFallbacks: Record<string, ProjectFallback> = {
     live_url: "https://feelwise-emotion-detection.feelwise.workers.dev",
     github_url: "https://github.com/Shahriyar-Kh",
     preview_image: "/images/Feelwise_homepage.png",
-    featured_image: "/images/Feelwise_homepage.png",
+    featured_image: "/images/feelwise-emotion-detection.landingpage.jpeg",
     ai_summary: "An emotion intelligence platform that blends visual dashboards, analysis tools, and a premium marketing presentation.",
-    technologies: [
-      { name: "FastAPI", slug: "fastapi" },
-      { name: "Python", slug: "python" },
-      { name: "Node.js", slug: "nodejs" },
-      { name: "MongoDB", slug: "mongodb" },
-      { name: "JWT", slug: "jwt" },
-    ],
+    overview: "FeelWise is an AI-powered emotion detection system built on a microservices architecture. It analyzes emotions across text, speech, and facial inputs, delivering real-time insights through interactive Chart.js dashboards.",
+    problem: "Presenting technically complex multi-modal emotion-detection in a way that feels approachable, visually clear, and trustworthy to both technical and non-technical stakeholders.",
+    solution: "Designed a microservices architecture with FastAPI handling AI processing, a Node.js API Gateway for routing, and Cloudflare Workers for edge delivery. UI built around Chart.js for compelling real-time visualization.",
+    outcome: "A technically impressive product that communicates product ambition, AI depth, and visual polish simultaneously. Successfully deployed to Cloudflare Workers for edge performance.",
+    feature_bullets: ["Multi-modal emotion detection (text, speech, facial)", "Microservices architecture with FastAPI + Node.js gateway", "Real-time Chart.js visualization dashboards", "JWT authentication and secure data handling", "Edge deployment via Cloudflare Workers"],
+    technologies: [{ name: "FastAPI", slug: "fastapi" }, { name: "Python", slug: "python" }, { name: "Node.js", slug: "nodejs" }, { name: "MongoDB", slug: "mongodb" }, { name: "JWT", slug: "jwt" }],
   },
   "advanced-restaurant-management-system": {
     title: "Advanced Restaurant Management System",
@@ -106,397 +85,366 @@ const projectFallbacks: Record<string, ProjectFallback> = {
     preview_image: "/images/RMS_homepage.png",
     featured_image: "/images/RMS_homepage.png",
     ai_summary: "A restaurant management system built to streamline staff workflows, order handling, and day-to-day operations.",
-    technologies: [
-      { name: "Python", slug: "python" },
-      { name: "Django", slug: "django" },
-      { name: "PyQt5", slug: "pyqt5" },
-      { name: "SQLite", slug: "sqlite" },
-    ],
+    overview: "A comprehensive desktop application for restaurant operations — from order management and inventory tracking to employee scheduling and analytics. Built with Python and PyQt5 for a fast, native feel.",
+    problem: "Restaurant staff needed a fast, low-friction system for order handling, inventory tracking, and operational decisions during busy service periods.",
+    solution: "Built a desktop application using Python, Django, and PyQt5 with an SQLite database backend. Focused on information density, fast navigation, and clear data presentation for operational use.",
+    outcome: "A practical operations tool that reads as serious enterprise software. Covers the full restaurant workflow from order entry to analytics review.",
+    feature_bullets: ["Order management with real-time table tracking", "Inventory and stock control system", "Employee scheduling and management screens", "Analytics dashboard with sales insights", "Offline-capable SQLite database backend"],
+    technologies: [{ name: "Python", slug: "python" }, { name: "Django", slug: "django" }, { name: "PyQt5", slug: "pyqt5" }, { name: "SQLite", slug: "sqlite" }],
+    detail_images: ["/images/RMS_homepage.png", "/images/RMS_Order_M.png", "/images/RMS_Emplyee_M.png"],
   },
 };
 
-const caseStudyCopy: Record<string, CaseStudy> = {
-  "sk-learntrack-ai-learning-platform": {
-    overview: "A focused learning platform that combines structured courses, AI support, and progress visibility in one clean experience.",
-    problem: "Learners needed a clearer path through study content, progress tracking, and fast AI help without bouncing between separate tools.",
-    featureBreakdown: [
-      "Guided learning journeys with structured progression",
-      "AI-assisted study support for quick explanations and summaries",
-      "Student dashboards for progress and activity review",
-      "Authentication and data layers designed for scale",
-    ],
-    developmentHighlights: [
-      "Built with Django REST Framework and React for a clean client/server split.",
-      "Centered the UI around learning clarity rather than feature overload.",
-      "Designed the system to stay flexible for future analytics and course expansion.",
-      "Kept the interface recruiter-friendly with strong hierarchy and readable outcomes.",
-    ],
-    outcome: "The result is a polished learning product that feels guided, trustworthy, and ready for real-world student use.",
-    gallery: ["/images/sk-learntrack_homepage.png", "/images/sk-learntrack.landinpage.jpeg"],
-  },
-  "noteassist-ai-productivity-platform": {
-    overview: "A productivity platform that turns note creation, content improvement, and AI assistance into one smooth workflow.",
-    problem: "The product needed to help users capture knowledge quickly while still keeping content organized, searchable, and easy to export.",
-    featureBreakdown: [
-      "AI note generation and enhancement workflows",
-      "Structured productivity tools with fast navigation",
-      "Secure access patterns and data-aware backend design",
-      "Scalable interfaces for personal and team usage",
-    ],
-    developmentHighlights: [
-      "Balanced dense functionality with a minimal, readable interface.",
-      "Optimized the workflow for users who want to move from idea to output quickly.",
-      "Integrated backend security patterns without visual clutter.",
-      "Kept the design modular for future AI features and export flows.",
-    ],
-    outcome: "The page tells a stronger story of productivity and control instead of repeating the card summary.",
-    gallery: ["/images/noteassisstai_homepage.png", "/images/noteassistai.landingpage.jpeg"],
-  },
-  "feelwise-emotion-detection-system": {
-    overview: "An emotion intelligence platform that blends visual dashboards, analysis tools, and a premium marketing presentation.",
-    problem: "The challenge was to present a technically complex emotion-detection product in a way that still felt approachable and high trust.",
-    featureBreakdown: [
-      "Emotion analysis across multiple inputs and pipelines",
-      "Dashboard-driven storytelling for results and status",
-      "AI-friendly layout that makes technical capability easy to scan",
-      "Strong visual hierarchy for a more premium first impression",
-    ],
-    developmentHighlights: [
-      "Used contrast, spacing, and motion to make a technical product feel polished.",
-      "Structured the content to support both clients and technical reviewers.",
-      "Kept the visual language modern without overwhelming the analysis story.",
-      "Designed gallery presentation to communicate both product and brand quality.",
-    ],
-    outcome: "The case study now communicates product ambition, technical depth, and visual polish in one place.",
-    gallery: ["/images/Feelwise_homepage.png", "/images/feelwise-emotion-detection.landingpage.jpeg"],
-  },
-  "advanced-restaurant-management-system": {
-    overview: "A restaurant management system built to streamline staff workflows, order handling, and day-to-day operations.",
-    problem: "The system needed to make operational work feel fast and readable for teams that rely on clear, low-friction interfaces.",
-    featureBreakdown: [
-      "Order handling and menu management flows",
-      "Employee and operational management screens",
-      "Strong table structures for fast decision making",
-      "Practical desktop UI patterns for daily use",
-    ],
-    developmentHighlights: [
-      "Focused on usability and information density rather than decoration.",
-      "Kept the interface practical for operational work at a glance.",
-      "Made business actions easy to scan during busy usage periods.",
-      "Aligned the visual treatment with a professional internal tool.",
-    ],
-    outcome: "The project reads as a serious operations tool instead of a duplicated summary card.",
-    gallery: ["/images/RMS_homepage.png", "/images/RMS_Order_M.png", "/images/RMS_Emplyee_M.png"],
-  },
-};
-
-function dedupeGallery(images: GalleryImage[]) {
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+function buildGallery(project: ProjectDetail): GalleryImage[] {
+  const srcs: string[] = [];
   const seen = new Set<string>();
 
-  return images.filter((image) => {
-    if (!image.src || seen.has(image.src)) {
-      return false;
-    }
-
-    seen.add(image.src);
-    return true;
-  });
-}
-
-function buildCaseStudy(project: ProjectDetail): CaseStudy {
-  const fallback = caseStudyCopy[project.slug];
-  if (fallback) {
-    return fallback;
-  }
-
-  const technologies = project.technologies?.map((technology) => technology.name) ?? [];
-  const summary = project.ai_summary || project.description;
-
-  return {
-    overview: summary,
-    problem: `This project was designed to solve a clear product need around ${project.title.toLowerCase()} while keeping the interface focused and easy to trust.`,
-    featureBreakdown: [
-      `Core workflow built around ${technologies[0] ?? "production-grade"} implementation`,
-      `Designed to highlight the most important user actions first`,
-      `Backed by the project's database and API structure`,
-      `Shaped for mobile, desktop, and recruiter review`,
-    ],
-    developmentHighlights: [
-      "The interface focuses on clarity, speed, and practical usability.",
-      "The layout is structured to communicate technical quality quickly.",
-      "The page uses concise sections so the project story reads cleanly.",
-      "The visual treatment stays premium without losing depth or context.",
-    ],
-    outcome: `The case study now presents ${project.title} as a complete product story rather than a short summary card.`,
-    gallery: [],
+  const add = (src?: string | null) => {
+    const url = src ? assetUrl(src) : null;
+    if (url && !seen.has(url)) { seen.add(url); srcs.push(url); }
   };
+
+  (project.detail_images ?? []).forEach(add);
+  add(project.featured_image);
+  add(project.preview_image);
+
+  return srcs.map((src, i) => ({ src, alt: `${project.title} screenshot ${i + 1}` }));
 }
 
-function buildGalleryImages(project: ProjectDetail): GalleryImage[] {
-  const caseStudy = buildCaseStudy(project);
-  const images: GalleryImage[] = [];
-
-  if (project.featured_image) {
-    images.push({
-      src: assetUrl(project.featured_image),
-      alt: project.image_alt_text || `${project.title} featured view`,
-    });
-  }
-
-  if (project.preview_image) {
-    images.push({
-      src: assetUrl(project.preview_image),
-      alt: `${project.title} preview screenshot`,
-    });
-  }
-
-  caseStudy.gallery.forEach((src, index) => {
-    images.push({
-      src,
-      alt: `${project.title} gallery image ${index + 1}`,
-    });
-  });
-
-  if (images.length === 0) {
-    images.push({
-      src: "/images/profile.png",
-      alt: `${project.title} fallback presentation image`,
-    });
-  }
-
-  return dedupeGallery(images);
+function parseBullets(val?: string | string[]): string[] {
+  if (!val) return [];
+  if (Array.isArray(val)) return val.filter(Boolean);
+  return val.split("\n").map(s => s.trim()).filter(Boolean);
 }
 
-function getFallbackProject(slug: string): ProjectDetail | null {
-  const fallback = projectFallbacks[slug];
-  if (!fallback) {
-    return null;
-  }
-
-  return {
-    slug,
-    ...fallback,
-  };
-}
-
-export function ProjectDetailPage({ slug }: { slug: string }) {
-  const [project, setProject] = useState<ProjectDetail | null>(() => getFallbackProject(slug));
-  const [activeImageIndex, setActiveImageIndex] = useState(0);
-  const refreshKey = useLiveDataRefresh(12000);
-  const [remoteStatus, setRemoteStatus] = useState<"loading" | "ready" | "error">("loading");
+// ─── Gallery component ────────────────────────────────────────────────────────
+function ProjectGallery({ images }: { images: GalleryImage[] }) {
+  const [active, setActive] = useState(0);
 
   useEffect(() => {
-    let active = true;
+    if (images.length <= 1) return;
+    const t = setInterval(() => setActive(a => (a + 1) % images.length), 4200);
+    return () => clearInterval(t);
+  }, [images.length]);
 
-    fetchJson<ProjectDetail>(`/api/v1/public/portfolio/projects/${slug}/`)
-      .then((data) => {
-        if (!active) return;
-        setProject((current) => ({
-          ...(current ?? { slug }),
-          ...data,
-        }));
-        setRemoteStatus("ready");
-        applySeo({
-          title: data.seo_title ?? `${data.title} — Shahriyar Khan`,
-          description: data.seo_description ?? data.description,
-          keywords: data.seo_keywords,
-          ogTitle: data.og_title ?? data.title,
-          ogDescription: data.og_description ?? data.description,
-          ogImage: assetUrl(data.featured_image ?? data.preview_image),
-          ogImageAlt: data.image_alt_text ?? data.title,
-          canonicalUrl: window.location.href,
-        });
-      })
-      .catch(() => {
-        if (!active) return;
-        setRemoteStatus("error");
-        if (!projectFallbacks[slug]) {
-          setProject(null);
-        }
-      });
+  const prev = () => setActive(a => (a - 1 + images.length) % images.length);
+  const next = () => setActive(a => (a + 1) % images.length);
 
-    return () => {
-      active = false;
-    };
-  }, [slug, refreshKey]);
-
-  const caseStudy = useMemo(() => (project ? buildCaseStudy(project) : null), [project]);
-  const galleryImages = useMemo(() => (project ? buildGalleryImages(project) : []), [project]);
-
-  useEffect(() => {
-    setActiveImageIndex(0);
-  }, [slug]);
-
-  useEffect(() => {
-    if (galleryImages.length <= 1) return;
-
-    const timer = window.setInterval(() => {
-      setActiveImageIndex((current) => (current + 1) % galleryImages.length);
-    }, 4200);
-
-    return () => window.clearInterval(timer);
-  }, [galleryImages.length]);
-
-  if (!project || !caseStudy) {
-    return (
-      <section className="section-shell py-20">
-        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-          <Link to="/projects" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6">
-            <ArrowLeft size={16} /> Back to projects
-          </Link>
-          <div className="premium-card rounded-2xl p-8">
-            <p className="text-muted-foreground">Loading project details...</p>
-          </div>
-        </div>
-      </section>
-    );
-  }
+  if (!images.length) return null;
 
   return (
-    <section className="section-shell py-20">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-8">
-        {remoteStatus === "error" && (
-          <div className="rounded-2xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-200">
-            Live project data is unavailable right now, so a polished fallback case study is being shown instead.
+    <div className="pd-gallery">
+      {/* Main image track */}
+      <div className="pd-gallery__track">
+        {images.map((img, i) => (
+          <div key={img.src} className={`pd-gallery__slide ${i === active ? "pd-gallery__slide--active" : ""}`}>
+            <img src={img.src} alt={img.alt} className="pd-gallery__img" loading={i === 0 ? "eager" : "lazy"} />
           </div>
+        ))}
+
+        {/* Controls */}
+        {images.length > 1 && (
+          <>
+            <button className="pd-gallery__btn pd-gallery__btn--prev" onClick={prev} aria-label="Previous image">
+              <ChevronLeft size={18} />
+            </button>
+            <button className="pd-gallery__btn pd-gallery__btn--next" onClick={next} aria-label="Next image">
+              <ChevronRight size={18} />
+            </button>
+          </>
         )}
 
-        <Link to="/projects" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
-          <ArrowLeft size={16} /> Back to projects
-        </Link>
-
-        <div className="grid gap-8 lg:grid-cols-[1.08fr_0.92fr] items-start">
-          <article className="premium-card rounded-3xl p-6 sm:p-8 lg:p-10 space-y-8">
-            <div className="flex flex-wrap items-center gap-3">
-              <span className="status-pill">Case Study</span>
-              {project.featured && <span className="skill-badge skill-badge--expert">Featured Project</span>}
-              {project.live_url && <span className="skill-badge skill-badge--advanced">Live Product</span>}
-            </div>
-
-            <div className="space-y-4">
-              <p className="text-xs uppercase tracking-[0.22em] text-primary/80 font-semibold">Project Detail</p>
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground leading-tight">{project.title}</h1>
-              <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">{project.ai_summary ?? project.description}</p>
-            </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <InfoCard label="Stack" value={(project.technologies?.length ?? 0).toString()} note="technologies" />
-              <InfoCard label="Focus" value="UX + API" note="balanced" />
-              <InfoCard label="Status" value={project.live_url ? "Live" : "Private"} note="availability" />
-              <InfoCard label="Type" value={project.featured ? "Featured" : "Project"} note="portfolio" />
-            </div>
-
-            <CaseSection title="Overview" text={caseStudy.overview} />
-            <CaseSection title="Problem Solved" text={caseStudy.problem} />
-
-            <section className="space-y-3">
-              <SectionLabel title="Feature Breakdown" />
-              <div className="grid gap-3 sm:grid-cols-2">
-                {caseStudy.featureBreakdown.map((item) => (
-                  <div key={item} className="rounded-2xl border border-border/70 bg-secondary/30 px-4 py-3 text-sm text-muted-foreground">
-                    {item}
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            <section className="space-y-3">
-              <SectionLabel title="Development Highlights" />
-              <ul className="grid gap-3">
-                {caseStudy.developmentHighlights.map((item) => (
-                  <li key={item} className="rounded-2xl border border-border/70 bg-background/20 px-4 py-3 text-sm text-muted-foreground leading-relaxed">
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </section>
-
-            <section className="space-y-3">
-              <SectionLabel title="Technologies Used" />
-              <div className="flex flex-wrap gap-2">
-                {(project.technologies ?? []).map((technology) => (
-                  <span key={technology.slug} className="px-3 py-1.5 rounded-full text-xs font-semibold bg-primary/10 text-primary border border-primary/20">
-                    {technology.name}
-                  </span>
-                ))}
-                {(project.technologies?.length ?? 0) === 0 && (
-                  <span className="text-sm text-muted-foreground">No technologies were published for this project yet.</span>
-                )}
-              </div>
-            </section>
-
-            <div className="flex flex-wrap items-center gap-4 pt-2">
-              {project.live_url && (
-                <a href={project.live_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:text-accent transition-colors">
-                  <ExternalLink size={14} /> Live Demo
-                </a>
-              )}
-              {project.github_url && (
-                <a href={project.github_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors">
-                  <Github size={14} /> Source Code
-                </a>
-              )}
-            </div>
-          </article>
-
-          <aside className="space-y-4 lg:sticky lg:top-24">
-            <div className="project-gallery-shell rounded-3xl p-4 sm:p-5">
-              <div className="project-gallery-track aspect-4/3 sm:aspect-16/11">
-                {galleryImages.map((image, index) => (
-                  <div key={`${image.src}-${index}`} className={`project-gallery-slide ${index === activeImageIndex ? "is-active" : ""}`}>
-                    <img src={image.src} alt={image.alt} className="h-full w-full object-cover object-top" loading={index === 0 ? "eager" : "lazy"} />
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-xs text-muted-foreground">
-                <span>{activeImageIndex + 1} / {galleryImages.length || 1}</span>
-                <span>Auto-looping project gallery</span>
-              </div>
-
-              <div className="mt-4 flex justify-center gap-2">
-                {galleryImages.map((image, index) => (
-                  <button
-                    key={`${image.src}-dot-${index}`}
-                    type="button"
-                    className={`project-gallery-indicator ${index === activeImageIndex ? "is-active" : ""}`}
-                    onClick={() => setActiveImageIndex(index)}
-                    aria-label={`View gallery image ${index + 1}`}
-                  />
-                ))}
-              </div>
-            </div>
-
-            <div className="premium-card rounded-3xl p-6 space-y-3">
-              <p className="text-xs uppercase tracking-[0.22em] text-primary/80 font-semibold">Outcome</p>
-              <p className="text-sm leading-relaxed text-muted-foreground">{caseStudy.outcome}</p>
-            </div>
-          </aside>
+        {/* Counter */}
+        <div className="pd-gallery__counter">
+          {active + 1} / {images.length}
         </div>
       </div>
-    </section>
-  );
-}
 
-function InfoCard({ label, value, note }: { label: string; value: string; note: string }) {
-  return (
-    <div className="rounded-2xl border border-border/70 bg-secondary/30 px-4 py-3">
-      <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground font-semibold">{label}</p>
-      <p className="mt-1 text-base font-bold text-foreground">{value}</p>
-      <p className="text-xs text-muted-foreground">{note}</p>
+      {/* Dot indicators */}
+      {images.length > 1 && (
+        <div className="pd-gallery__dots">
+          {images.map((_, i) => (
+            <button
+              key={i}
+              className={`pd-gallery__dot ${i === active ? "pd-gallery__dot--active" : ""}`}
+              onClick={() => setActive(i)}
+              aria-label={`View screenshot ${i + 1}`}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* Thumbnail strip */}
+      {images.length > 1 && (
+        <div className="pd-gallery__thumbs">
+          {images.map((img, i) => (
+            <button
+              key={img.src}
+              className={`pd-gallery__thumb ${i === active ? "pd-gallery__thumb--active" : ""}`}
+              onClick={() => setActive(i)}
+              aria-label={`View screenshot ${i + 1}`}
+            >
+              <img src={img.src} alt={img.alt} loading="lazy" />
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
 
-function SectionLabel({ title }: { title: string }) {
-  return <p className="text-xs uppercase tracking-[0.22em] text-primary/80 font-semibold">{title}</p>;
-}
+// ─── Main page ────────────────────────────────────────────────────────────────
+export function ProjectDetailPage({ slug }: { slug: string }) {
+  const [project, setProject] = useState<ProjectDetail | null>(() => projectFallbacks[slug] ?? null);
+  const [remoteStatus, setRemoteStatus] = useState<"loading" | "ready" | "error">("loading");
+  const refreshKey = useLiveDataRefresh(12000);
 
-function CaseSection({ title, text }: { title: string; text: string }) {
+  useEffect(() => {
+    let active = true;
+    fetchJson<ProjectDetail>(`/api/v1/public/portfolio/projects/${slug}/`)
+      .then(data => {
+        if (!active) return;
+        setProject(prev => ({ ...(prev ?? { slug, title: slug, description: "" }), ...data }));
+        setRemoteStatus("ready");
+        applySeo({
+          title:           data.seo_title       ?? `${data.title} — Shahriyar Khan`,
+          description:     data.seo_description ?? data.description,
+          keywords:        data.seo_keywords,
+          ogTitle:         data.og_title         ?? data.title,
+          ogDescription:   data.og_description   ?? data.description,
+          ogImage:         assetUrl(data.featured_image ?? data.preview_image),
+          ogImageAlt:      data.image_alt_text   ?? data.title,
+          canonicalUrl:    window.location.href,
+        });
+      })
+      .catch(() => { if (!active) setRemoteStatus("error"); });
+    return () => { active = false; };
+  }, [slug, refreshKey]);
+
+  const gallery  = useMemo(() => project ? buildGallery(project) : [], [project]);
+  const bullets  = useMemo(() => parseBullets(project?.feature_bullets), [project]);
+  const devHighs = useMemo(() => parseBullets(project?.development_highlights), [project]);
+  const techs    = useMemo(() => project?.technologies ?? [], [project]);
+
+  if (!project) {
+    return (
+      <div className="pd-loading">
+        <Link to="/projects" className="pd-back-link"><ArrowLeft size={15} /> Back to Projects</Link>
+        <p>Loading project details…</p>
+      </div>
+    );
+  }
+
   return (
-    <section className="space-y-3">
-      <SectionLabel title={title} />
-      <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">{text}</p>
-    </section>
+    <div className="pd-shell">
+      {/* Background */}
+      <div className="pd-bg" aria-hidden="true">
+        <div className="pd-bg__orb pd-bg__orb--1" />
+        <div className="pd-bg__orb pd-bg__orb--2" />
+      </div>
+
+      <div className="pd-container">
+        {/* ── Back link ── */}
+        <Link to="/projects" className="pd-back-link">
+          <ArrowLeft size={15} /> Back to Projects
+        </Link>
+
+        {remoteStatus === "error" && (
+          <div className="pd-fallback-notice">
+            Live project data is unavailable — showing polished fallback case study.
+          </div>
+        )}
+
+        {/* ══════ HERO HEADER ══════ */}
+        <div className="pd-hero">
+          <div className="pd-hero__badges">
+            <span className="pd-badge pd-badge--accent">Case Study</span>
+            {project.featured && <span className="pd-badge pd-badge--gold"><Star size={10} /> Featured</span>}
+            {project.live_url && <span className="pd-badge pd-badge--green"><Globe size={10} /> Live Product</span>}
+          </div>
+
+          <h1 className="pd-hero__title">{project.title}</h1>
+
+          <p className="pd-hero__summary">
+            {project.ai_summary ?? project.description}
+          </p>
+
+          {/* Tech pills */}
+          {techs.length > 0 && (
+            <div className="pd-hero__techs">
+              {techs.map(t => (
+                <span key={t.slug} className="pd-tech-pill">{t.name}</span>
+              ))}
+            </div>
+          )}
+
+          {/* Action buttons */}
+          <div className="pd-hero__actions">
+            {project.live_url && (
+              <a href={project.live_url} target="_blank" rel="noopener noreferrer" className="btn-primary">
+                <ExternalLink size={15} /> Live Demo
+              </a>
+            )}
+            {project.github_url && (
+              <a href={project.github_url} target="_blank" rel="noopener noreferrer" className="btn-secondary">
+                <Github size={15} /> Source Code
+              </a>
+            )}
+            <Link to="/projects" className="btn-ghost">
+              All Projects <ArrowRight size={14} />
+            </Link>
+          </div>
+        </div>
+
+        {/* ══════ MAIN CONTENT GRID ══════ */}
+        <div className="pd-content-grid">
+          {/* ── LEFT: Case study content ── */}
+          <main className="pd-main-col">
+
+            {/* Overview */}
+            {project.overview && (
+              <div className="pd-case-block">
+                <div className="pd-case-block__label"><Layers size={13} /> Overview</div>
+                <p className="pd-case-block__text">{project.overview}</p>
+              </div>
+            )}
+
+            {/* Problem */}
+            {(project.problem ?? project.challenge) && (
+              <div className="pd-case-block">
+                <div className="pd-case-block__label">Challenge</div>
+                <p className="pd-case-block__text">{project.problem ?? project.challenge}</p>
+              </div>
+            )}
+
+            {/* Solution */}
+            {project.solution && (
+              <div className="pd-case-block">
+                <div className="pd-case-block__label">Solution</div>
+                <p className="pd-case-block__text">{project.solution}</p>
+              </div>
+            )}
+
+            {/* Key Features */}
+            {bullets.length > 0 && (
+              <div className="pd-case-block">
+                <div className="pd-case-block__label"><Code2 size={13} /> Key Features</div>
+                <div className="pd-features-grid">
+                  {bullets.map((b, i) => (
+                    <div key={i} className="pd-feature-item">
+                      <CheckCircle2 size={14} className="pd-feature-item__icon" />
+                      <span>{b}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Dev Highlights */}
+            {devHighs.length > 0 && (
+              <div className="pd-case-block">
+                <div className="pd-case-block__label">Engineering Highlights</div>
+                <ul className="pd-highlights-list">
+                  {devHighs.map((h, i) => (
+                    <li key={i} className="pd-highlights-list__item">
+                      <span className="pd-highlights-list__dot" />
+                      {h}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* Technologies */}
+            {techs.length > 0 && (
+              <div className="pd-case-block">
+                <div className="pd-case-block__label">Technologies Used</div>
+                <div className="pd-tech-grid">
+                  {techs.map(t => (
+                    <div key={t.slug} className="pd-tech-badge">
+                      <Code2 size={12} />
+                      {t.name}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Outcome */}
+            {project.outcome && (
+              <div className="pd-outcome-block">
+                <div className="pd-case-block__label"><Star size={13} /> Outcome</div>
+                <p className="pd-outcome-block__text">{project.outcome}</p>
+              </div>
+            )}
+          </main>
+
+          {/* ── RIGHT: Gallery + Info sidebar ── */}
+          <aside className="pd-sidebar">
+            {/* Gallery */}
+            <ProjectGallery images={gallery} />
+
+            {/* Quick info card */}
+            <div className="pd-info-card">
+              <h3 className="pd-info-card__title">Project Info</h3>
+              <div className="pd-info-card__rows">
+                <div className="pd-info-card__row">
+                  <span className="pd-info-card__label">Status</span>
+                  <span className="pd-info-card__value">{project.live_url ? "Live" : "Private"}</span>
+                </div>
+                <div className="pd-info-card__row">
+                  <span className="pd-info-card__label">Stack Size</span>
+                  <span className="pd-info-card__value">{techs.length > 0 ? `${techs.length} technologies` : "—"}</span>
+                </div>
+                <div className="pd-info-card__row">
+                  <span className="pd-info-card__label">Type</span>
+                  <span className="pd-info-card__value">{project.featured ? "Featured Project" : "Portfolio Project"}</span>
+                </div>
+                {project.live_url && (
+                  <div className="pd-info-card__row">
+                    <span className="pd-info-card__label">Demo</span>
+                    <a href={project.live_url} target="_blank" rel="noopener noreferrer" className="pd-info-card__link">
+                      View live <ExternalLink size={11} />
+                    </a>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* CTA card */}
+            <div className="pd-cta-card">
+              <p className="pd-cta-card__heading">Interested in this kind of work?</p>
+              <p className="pd-cta-card__sub">I'm open to full-time opportunities and freelance projects.</p>
+              <Link to="/contact" className="btn-primary" style={{ justifyContent: "center" }}>
+                Hire Me <ArrowRight size={14} />
+              </Link>
+              <Link to="/services" className="btn-ghost" style={{ justifyContent: "center", marginTop: "0.5rem" }}>
+                View Services
+              </Link>
+            </div>
+          </aside>
+        </div>
+
+        {/* ── Bottom nav ── */}
+        <div className="pd-bottom-nav">
+          <Link to="/projects" className="btn-secondary">
+            <ArrowLeft size={14} /> All Projects
+          </Link>
+          <div className="pd-bottom-nav__right">
+            {project.live_url && (
+              <a href={project.live_url} target="_blank" rel="noopener noreferrer" className="btn-primary">
+                <ExternalLink size={14} /> Live Demo
+              </a>
+            )}
+            {project.github_url && (
+              <a href={project.github_url} target="_blank" rel="noopener noreferrer" className="btn-ghost">
+                <Github size={14} /> GitHub
+              </a>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

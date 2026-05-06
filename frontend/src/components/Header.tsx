@@ -3,119 +3,141 @@ import { Menu, X, Github, Linkedin, MessageCircle } from "lucide-react";
 import { Link, useLocation } from "@/lib/navigation";
 
 const navLinks = [
-  { to: "/", label: "Home" },
-  { to: "/about", label: "About" },
-  { to: "/skills", label: "Skills" },
+  { to: "/",         label: "Home",     exact: true },
+  { to: "/about",    label: "About" },
+  { to: "/skills",   label: "Skills" },
   { to: "/services", label: "Services" },
   { to: "/projects", label: "Projects" },
-  { to: "/resume", label: "Resume" },
-  { to: "/contact", label: "Contact" },
+  { to: "/resume",   label: "Resume" },
+  { to: "/contact",  label: "Contact" },
 ] as const;
 
 export function Header() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen]   = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const location = useLocation();
+  const location              = useLocation();
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", onScroll);
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  useEffect(() => { setIsOpen(false); }, [location.pathname]);
+
+  // Prevent body scroll when mobile menu open
   useEffect(() => {
-    setIsOpen(false);
-  }, [location.pathname]);
+    document.body.style.overflow = isOpen ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [isOpen]);
 
   return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        scrolled ? "glass py-3 shadow-lg shadow-black/20 border-b border-border/60" : "py-5"
-      }`}
-    >
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-        <Link to="/" className="text-xl font-bold gradient-text tracking-tight">
-          SK.
-        </Link>
+    <>
+      <header
+        role="banner"
+        className={`header-shell ${scrolled ? "header-shell--scrolled" : ""}`}
+      >
+        <div className="header-inner">
+          {/* ── Logo ── */}
+          <Link to="/" className="header-logo" aria-label="Shahriyar Khan — Home">
+            SK<span className="header-logo__dot">.</span>
+          </Link>
 
-        {/* Desktop Nav */}
-        <nav className="hidden lg:flex items-center gap-1">
-          {navLinks.map((link) => (
-            <Link
-              key={link.to}
-              to={link.to}
-              className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-all duration-300 rounded-lg hover:bg-secondary/50 hover:-translate-y-0.5"
-              activeClassName="!text-primary bg-primary/10"
-              exact
-            >
-              {link.label}
+          {/* ── Desktop Nav ── */}
+          <nav className="header-desktop-nav" aria-label="Primary navigation">
+            {navLinks.map((link) => (
+              <Link
+                key={link.to}
+                to={link.to}
+                exact={"exact" in link ? link.exact : false}
+                className="header-nav-link"
+                activeClassName="header-nav-link--active"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+
+          {/* ── Right side ── */}
+          <div className="header-right">
+            {/* Social icons */}
+            <div className="header-social-row">
+              <a href="https://linkedin.com/in/shahriyarkhan786" target="_blank" rel="noopener noreferrer" className="header-social-icon" aria-label="LinkedIn">
+                <Linkedin size={15} />
+              </a>
+              <a href="https://github.com/Shahriyar-Kh" target="_blank" rel="noopener noreferrer" className="header-social-icon" aria-label="GitHub">
+                <Github size={15} />
+              </a>
+              <a href="https://wa.me/923110924560" target="_blank" rel="noopener noreferrer" className="header-social-icon" aria-label="WhatsApp">
+                <MessageCircle size={15} />
+              </a>
+            </div>
+
+            {/* Hire me CTA */}
+            <Link to="/contact" className="header-hire-btn">
+              Hire Me
             </Link>
-          ))}
-        </nav>
 
-        {/* Social + Mobile Toggle */}
-        <div className="flex items-center gap-3">
-          <div className="hidden sm:flex items-center gap-2">
-            <a
-              href="https://linkedin.com/in/shahriyarkhan786"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-2 text-muted-foreground hover:text-primary transition-colors"
-              aria-label="LinkedIn"
+            {/* Mobile toggle */}
+            <button
+              className="header-mobile-toggle"
+              onClick={() => setIsOpen((o) => !o)}
+              aria-label={isOpen ? "Close menu" : "Open menu"}
+              aria-expanded={isOpen}
             >
-              <Linkedin size={18} />
-            </a>
-            <a
-              href="https://github.com/Shahriyar-Kh"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-2 text-muted-foreground hover:text-primary transition-colors"
-              aria-label="GitHub"
-            >
-              <Github size={18} />
-            </a>
-            <a
-              href="https://wa.me/923110924560"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-2 text-muted-foreground hover:text-accent transition-colors"
-              aria-label="WhatsApp"
-            >
-              <MessageCircle size={18} />
-            </a>
+              {isOpen ? <X size={20} /> : <Menu size={20} />}
+            </button>
           </div>
-
-          <button
-            className="lg:hidden p-2 text-foreground"
-            onClick={() => setIsOpen(!isOpen)}
-            aria-label="Toggle menu"
-          >
-            {isOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
         </div>
-      </div>
+      </header>
 
-      {/* Mobile Nav */}
-      {isOpen && (
-        <nav className="lg:hidden glass mt-2 mx-4 rounded-xl p-4 animate-fade-in-up shadow-xl shadow-black/25 border border-border/70">
-          {navLinks.map((link) => (
-            <Link
-              key={link.to}
-              to={link.to}
-              className="block px-4 py-3 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-lg hover:bg-secondary/50"
-              activeClassName="!text-primary"
-              exact
-            >
-              {link.label}
+      {/* ── Mobile Menu ── */}
+      <div
+        className={`mobile-menu ${isOpen ? "mobile-menu--open" : ""}`}
+        aria-hidden={!isOpen}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Mobile navigation"
+      >
+        <div className="mobile-menu__backdrop" onClick={() => setIsOpen(false)} />
+        <nav className="mobile-menu__panel">
+          <div className="mobile-menu__header">
+            <span className="header-logo" style={{ fontSize: "1.5rem" }}>
+              SK<span className="header-logo__dot">.</span>
+            </span>
+            <button className="header-mobile-toggle" onClick={() => setIsOpen(false)} aria-label="Close menu">
+              <X size={20} />
+            </button>
+          </div>
+
+          <div className="mobile-menu__links">
+            {navLinks.map((link, i) => (
+              <Link
+                key={link.to}
+                to={link.to}
+                exact={"exact" in link ? link.exact : false}
+                className="mobile-menu__link"
+                activeClassName="mobile-menu__link--active"
+                style={{ animationDelay: `${0.04 + i * 0.04}s` }}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
+
+          <div className="mobile-menu__footer">
+            <Link to="/contact" className="btn-primary" style={{ justifyContent: "center" }}>
+              Let's Work Together
             </Link>
-          ))}
-          <div className="flex items-center gap-3 px-4 pt-3 border-t border-border mt-3">
-            <a href="https://linkedin.com/in/shahriyarkhan786" target="_blank" rel="noopener noreferrer" className="p-2 text-muted-foreground hover:text-primary"><Linkedin size={18} /></a>
-            <a href="https://github.com/Shahriyar-Kh" target="_blank" rel="noopener noreferrer" className="p-2 text-muted-foreground hover:text-primary"><Github size={18} /></a>
-            <a href="https://wa.me/923110924560" target="_blank" rel="noopener noreferrer" className="p-2 text-muted-foreground hover:text-accent"><MessageCircle size={18} /></a>
+            <div className="footer-socials" style={{ justifyContent: "center" }}>
+              <a href="https://linkedin.com/in/shahriyarkhan786" target="_blank" rel="noopener noreferrer" className="footer-social-btn" aria-label="LinkedIn"><Linkedin size={16} /></a>
+              <a href="https://github.com/Shahriyar-Kh" target="_blank" rel="noopener noreferrer" className="footer-social-btn" aria-label="GitHub"><Github size={16} /></a>
+              <a href="https://wa.me/923110924560" target="_blank" rel="noopener noreferrer" className="footer-social-btn" aria-label="WhatsApp"><MessageCircle size={16} /></a>
+            </div>
+            <p className="mobile-menu__email">shahriyarkhanpk1@gmail.com</p>
           </div>
         </nav>
-      )}
-    </header>
+      </div>
+    </>
   );
 }
