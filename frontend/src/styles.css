@@ -654,7 +654,7 @@
 
 .portrait-badge {
   position: absolute;
-  display: flex;
+  display: none;
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 0.875rem;
@@ -727,11 +727,11 @@
 .stats-strip {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: clamp(1rem, 3vw, 2rem);
-  padding-top: clamp(2rem, 5vw, 3rem);
+  gap: clamp(1.5rem, 4vw, 2.5rem);
+  padding: clamp(2rem, 5vw, 3rem) clamp(1.5rem, 5vw, 2.5rem);
   margin-top: clamp(2rem, 5vw, 3rem);
   border-top: 1px solid oklch(0.24 0.014 256 / 50%);
-  max-width: 100%;
+  max-width: 88rem;
   margin-left: auto;
   margin-right: auto;
 }
@@ -800,7 +800,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.75rem;
+  gap: 1.25rem;
   font-size: clamp(0.8rem, 1.5vw, 0.9375rem);
 }
 
