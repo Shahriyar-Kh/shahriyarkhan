@@ -93,13 +93,95 @@ function useReveal(threshold = 0.12) {
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 const stats = [
-  { icon: Code2,    value: 5,  suffix: "+", label: "Production Apps",    sub: "Deployed & live" },
-  { icon: Server,   value: 3,  suffix: "+", label: "Years Learning",     sub: "Python & Django" },
-  { icon: Database, value: 4,  suffix: "+", label: "Databases Mastered", sub: "SQL & NoSQL" },
-  { icon: Sparkles, value: 10, suffix: "+", label: "Projects Built",     sub: "End-to-end" },
+  { icon: Star,     value: 2,  suffix: "+", label: "Happy Clients",      sub: "Trusted by businesses & startups" },
+  { icon: Code2,    value: 10, suffix: "+", label: "Projects Built",     sub: "End-to-end delivery" },
+  { icon: Server,   value: 4,  suffix: "",  label: "Real Roles",         sub: "Software + internship experience" },
+  { icon: Database, value: 4,  suffix: "+", label: "Core Data Layers",   sub: "PostgreSQL, MySQL, MongoDB, Redis" },
+  { icon: Sparkles, value: 5,  suffix: "+", label: "Primary Stacks",     sub: "Python, Django, DRF, React, FastAPI" },
 ];
 
 const techStack = ["Python", "Django", "FastAPI", "React.js", "PostgreSQL", "Redis", "Docker", "JWT"];
+
+type ExperienceTimelineItem = {
+  id: number;
+  role: string;
+  company: string;
+  location: string;
+  period: string;
+  summary: string;
+  bullets: string[];
+  current?: boolean;
+};
+
+const experienceItems: ExperienceTimelineItem[] = [
+  {
+    id: 1,
+    role: "Software Developer",
+    company: "HA Technologies (Private) Limited",
+    location: "Islamabad",
+    period: "Jun 2025 - Present",
+    current: true,
+    summary: "Contribute to backend and full-stack development for production web applications.",
+    bullets: [
+      "Contribute to backend and full-stack development for production web applications.",
+      "Work on API implementation, application structure, and maintainable feature delivery.",
+      "Collaborate with team members to refine requirements and support dependable releases.",
+      "Focus on clean code, stable system behavior, and practical execution.",
+    ],
+  },
+  {
+    id: 2,
+    role: "Python Developer Intern",
+    company: "CodeAlpha",
+    location: "Remote",
+    period: "Feb 2025 - May 2025",
+    summary: "Worked on Python-focused tasks with an emphasis on implementation, debugging, and dependable delivery.",
+    bullets: [
+      "Worked on Python development tasks with a focus on problem-solving and task completion.",
+      "Strengthened backend workflow through implementation, debugging, and iteration.",
+      "Gained experience delivering work in a remote collaboration environment.",
+      "Improved consistency in writing readable, structured code for assigned projects.",
+    ],
+  },
+  {
+    id: 3,
+    role: "Web Developer Intern",
+    company: "Abasyn University (Incubation Center)",
+    location: "Peshawar",
+    period: "Sep 2024 - Feb 2025",
+    summary: "Supported frontend and backend work in a team setting with practical feature delivery.",
+    bullets: [
+      "Supported web development work across frontend and backend tasks as assigned.",
+      "Translated requirements into functional application features with a practical delivery mindset.",
+      "Contributed in a team-oriented environment and real project workflows.",
+      "Built stronger habits around structured implementation, testing, and iteration.",
+    ],
+  },
+  {
+    id: 4,
+    role: "Python Development Intern",
+    company: "CognoRise InfoTech",
+    location: "Remote",
+    period: "Oct 2024 - Dec 2024",
+    summary: "Strengthened Python workflow through clean implementation, troubleshooting, and collaboration.",
+    bullets: [
+      "Worked on Python development tasks with emphasis on clean implementation and debugging.",
+      "Strengthened backend problem-solving and feature delivery skills through assigned work.",
+      "Contributed to maintainable code while learning practical development workflows.",
+      "Developed stronger discipline around technical clarity and remote collaboration.",
+    ],
+  },
+];
+
+const education = {
+  degree: "BS Software Engineering",
+  school: "Abasyn University, Peshawar",
+  period: "Completed with CGPA 3.67",
+  notes: [
+    "Focused on software engineering fundamentals, databases, and application development.",
+    "Built a strong academic base for backend architecture and full-stack delivery.",
+  ],
+};
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 type SiteSettings  = { site_name?: string; hero_title?: string; hero_subtitle?: string };
@@ -141,10 +223,7 @@ const skillsSnapshot = [
   { category: "DevOps & Tools", items: ["Git / GitHub", "Docker", "Render", "Vercel", "Cloudflare", "Postman"] },
 ];
 
-const experienceFallback: ExperienceApi[] = [
-  { id: 1, role: "Backend Developer (Freelance)", company: "Self-Employed",   current: true,  start_date: "2023-06", summary: "Designing and shipping full-stack products — AI platforms, e-learning systems, and productivity tools — using Django, FastAPI, and React. Focused on clean architecture, secure APIs, and production-grade deployments." },
-  { id: 2, role: "Software Engineering Student",  company: "Abasyn University", current: false, start_date: "2021-09", end_date: "2025-05", summary: "BS Software Engineering — CGPA 3.67. Built a strong foundation in data structures, databases, software architecture, and full-stack development. Final year project: AI-powered productivity platform." },
-];
+const experienceFallback: ExperienceTimelineItem[] = experienceItems;
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 function fmt(d?: string | null) {
@@ -155,6 +234,17 @@ function fmt(d?: string | null) {
 
 function normalizeProject(p: ProjectApi): ProjectApi {
   return { ...p, live: p.live || p.live_url || null, github: p.github || p.github_url };
+}
+
+function getHeroName(heroTitle: string) {
+  return heroTitle.replace("Hi, I'm ", "").replace("Hi, I'm", "").trim() || "Shahriyar Khan";
+}
+
+function getProjectDescription(description: string) {
+  return description
+    .replace("Full-stack AI productivity app with JWT, RBAC, PostgreSQL, and Redis.", "Full-stack productivity platform built with Django, DRF, React, PostgreSQL, and Redis for secure, dependable delivery.")
+    .replace("LMS with OpenAI-powered AI learning assistant and student progress tracking.", "Learning platform built with Django REST Framework and React for structured learning workflows and student progress tracking.")
+    .replace("Microservices AI system with FastAPI, Node.js gateway, and Chart.js visuals.", "Microservices-based Python system built with FastAPI, a Node.js gateway, and data visualization support.");
 }
 
 // ─── Section: Services Preview ────────────────────────────────────────────────
@@ -174,10 +264,10 @@ function ServicesSection({ services }: { services: ServiceCard[] }) {
 
         <div className={`home-heading-block ${visible ? "visible" : ""}`}>
           <h2 id="services-heading" className="home-section__title">
-            What I <span className="gradient-text">Build</span> For You
+            What I <span className="gradient-text">Build</span>
           </h2>
           <p className="home-section__subtitle">
-            From robust backend APIs to full-featured web products — end-to-end engineering for your vision.
+            Backend-first, full-stack delivery for businesses that need dependable web applications.
           </p>
         </div>
 
@@ -225,6 +315,7 @@ function ProjectCardHover({ project, index }: { project: ProjectApi; index: numb
   const n = normalizeProject(project);
   const tools = n.tools || n.technologies?.map(t => t.name) || [];
   const imgSrc = assetUrl(n.preview_image);
+  const description = getProjectDescription(n.description);
 
   return (
     <div
@@ -269,7 +360,7 @@ function ProjectCardHover({ project, index }: { project: ProjectApi; index: numb
         </div>
 
         <h3 className="project-showcase-card__title">{n.title}</h3>
-        <p className="project-showcase-card__desc">{n.description}</p>
+        <p className="project-showcase-card__desc">{description}</p>
 
         <div className="project-showcase-card__actions">
           <Link to={`/projects/${n.slug}`} className="project-showcase-card__btn-detail">
@@ -310,7 +401,7 @@ function ProjectsSection({ projects }: { projects: ProjectApi[] }) {
             Featured <span className="gradient-text">Projects</span>
           </h2>
           <p className="home-section__subtitle">
-            Production applications built with modern architecture, clean code, and real-world impact.
+            Selected projects that reflect backend depth, clean implementation, and production-oriented thinking.
           </p>
         </div>
 
@@ -347,17 +438,17 @@ function SkillsSection() {
           {/* Left text */}
           <div className={`skills-snapshot-intro ${visible ? "visible" : ""}`}>
             <h2 id="skills-heading" className="home-section__title" style={{ textAlign: "left", maxWidth: "none" }}>
-              Technologies I <span className="gradient-text">Master</span>
+              Core <span className="gradient-text">Tech Stack</span>
             </h2>
             <p className="home-section__subtitle" style={{ textAlign: "left", maxWidth: "none" }}>
-              A focused stack built for production — backend-first, full-stack capable, always evolving.
+              A focused stack built for production: backend-first, full-stack capable, and practical.
             </p>
             <div className="skills-snapshot-highlights">
               {[
-                { icon: CheckCircle2, text: "3+ years of Python & Django" },
-                { icon: CheckCircle2, text: "Production REST API experience" },
-                { icon: CheckCircle2, text: "PostgreSQL, Redis, MongoDB" },
-                { icon: CheckCircle2, text: "Deployed on Render, Vercel, Cloudflare" },
+                { icon: CheckCircle2, text: "Python, Django, DRF, FastAPI" },
+                { icon: CheckCircle2, text: "React, TypeScript, Tailwind CSS" },
+                { icon: CheckCircle2, text: "PostgreSQL, Redis, MySQL, MongoDB" },
+                { icon: CheckCircle2, text: "Docker, Render, Vercel, Cloudflare" },
               ].map(({ icon: Icon, text }) => (
                 <div key={text} className="skills-highlight-item">
                   <Icon size={15} className="skills-highlight-icon" />
@@ -390,14 +481,45 @@ function SkillsSection() {
 }
 
 // ─── Section: Experience ──────────────────────────────────────────────────────
-function ExperienceSection({ experience }: { experience: ExperienceApi[] }) {
+function ExperienceSection() {
   const { ref, visible } = useReveal();
-  const list = experience.length ? experience : experienceFallback;
+  const list = experienceFallback;
+  const itemRefs = useRef<(HTMLElement | null)[]>([]);
+  const [visibleItems, setVisibleItems] = useState<boolean[]>(() => list.map(() => false));
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    setVisibleItems(list.map(() => false));
+    setActiveIndex(0);
+
+    const nodes = itemRefs.current.filter(Boolean) as HTMLElement[];
+    if (!nodes.length) return;
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const index = Number((entry.target as HTMLElement).dataset.index);
+        setVisibleItems((current) => {
+          const next = [...current];
+          next[index] = true;
+          return next;
+        });
+        setActiveIndex(index);
+      });
+    }, {
+      threshold: 0.55,
+      rootMargin: "-8% 0px -20% 0px",
+    });
+
+    nodes.forEach((node) => observer.observe(node));
+    return () => observer.disconnect();
+  }, [list]);
+
+  const progress = list.length > 1 ? (activeIndex / (list.length - 1)) * 100 : 100;
 
   return (
     <section className="home-section section-shell" aria-labelledby="experience-heading">
       <div className="home-section__inner" ref={ref}>
-
         <div className={`home-label-row ${visible ? "visible" : ""}`}>
           <span className="home-label-pill"><Award size={11} /> Background</span>
           <span className="home-label-line" />
@@ -405,51 +527,67 @@ function ExperienceSection({ experience }: { experience: ExperienceApi[] }) {
 
         <div className={`home-heading-block ${visible ? "visible" : ""}`}>
           <h2 id="experience-heading" className="home-section__title">
-            Experience & <span className="gradient-text">Education</span>
+            Experience <span className="gradient-text">Timeline</span>
           </h2>
           <p className="home-section__subtitle">
-            A track record of shipping real software and continuous growth as an engineer.
+            A visual timeline of real roles and internships that shows growth, depth, and production thinking.
           </p>
         </div>
 
-        <div className="experience-timeline">
-          {list.map((exp, i) => (
-            <div key={exp.id} className={`experience-timeline__item ${visible ? "visible" : ""}`} style={{ transitionDelay: `${0.1 + i * 0.15}s` }}>
-              {/* Timeline line + dot */}
-              <div className="experience-timeline__marker">
-                <div className={`experience-timeline__dot ${exp.current ? "experience-timeline__dot--active" : ""}`} />
-                {i < list.length - 1 && <div className="experience-timeline__line" />}
-              </div>
+        <div className="experience-timeline experience-timeline--alternating" style={{ ["--experience-progress" as never]: `${progress}%` }}>
+          <div className="experience-timeline__rail" aria-hidden="true">
+            <span className="experience-timeline__rail-track" />
+            <span className="experience-timeline__rail-progress" />
+          </div>
 
-              {/* Content card */}
-              <div className="experience-timeline__card">
-                <div className="experience-timeline__header">
-                  <div>
-                    <h3 className="experience-timeline__role">{exp.role}</h3>
-                    <div className="experience-timeline__company-row">
-                      <Briefcase size={12} />
-                      <span className="experience-timeline__company">{exp.company}</span>
-                      {exp.current && <span className="experience-timeline__current-badge">Current</span>}
+          {list.map((exp, i) => {
+            const side = i % 2 === 0 ? "right" : "left";
+
+            return (
+              <article
+                key={exp.id}
+                ref={(el: HTMLElement | null) => { itemRefs.current[i] = el; }}
+                data-index={i}
+                className={`experience-timeline__item experience-timeline__item--${side} ${visibleItems[i] ? "is-visible" : ""} ${activeIndex === i ? "is-active" : ""}`}
+                style={{ transitionDelay: `${0.08 + i * 0.12}s` }}
+              >
+                <div className="experience-timeline__node-wrap" aria-hidden="true">
+                  <span className="experience-timeline__node" />
+                </div>
+
+                <div className="experience-timeline__card premium-card">
+                  <div className="experience-timeline__card-top">
+                    <div>
+                      <div className="experience-timeline__eyebrow">{side === "right" ? "Current Chapter" : "Previous Chapter"}</div>
+                      <h3 className="experience-timeline__role">{exp.role}</h3>
+                      <div className="experience-timeline__company-row">
+                        <Briefcase size={12} />
+                        <span className="experience-timeline__company">{exp.company}</span>
+                        {exp.current && <span className="experience-timeline__current-badge">Current</span>}
+                      </div>
+                    </div>
+
+                    <div className="experience-timeline__dates">
+                      <Calendar size={12} />
+                      <span>{exp.period}</span>
                     </div>
                   </div>
-                  <div className="experience-timeline__dates">
-                    <Calendar size={12} />
-                    <span>{fmt(exp.start_date)}{exp.end_date ? ` – ${fmt(exp.end_date)}` : exp.current ? " – Present" : ""}</span>
+
+                  <div className="experience-timeline__meta-row">
+                    <span className="experience-timeline__meta-chip">{exp.location}</span>
                   </div>
-                </div>
-                {exp.summary && (
+
                   <p className="experience-timeline__summary">{exp.summary}</p>
-                )}
-                {exp.bullet_points && exp.bullet_points.length > 0 && (
+
                   <ul className="experience-timeline__bullets">
-                    {exp.bullet_points.map((b, bi) => (
-                      <li key={bi}><span className="experience-timeline__bullet-dot" />{b}</li>
+                    {exp.bullets.map((bullet, bulletIndex) => (
+                      <li key={bulletIndex}><span className="experience-timeline__bullet-dot" />{bullet}</li>
                     ))}
                   </ul>
-                )}
-              </div>
-            </div>
-          ))}
+                </div>
+              </article>
+            );
+          })}
         </div>
 
         <div className={`home-section__cta-row ${visible ? "visible" : ""}`}>
@@ -465,51 +603,46 @@ function ExperienceSection({ experience }: { experience: ExperienceApi[] }) {
   );
 }
 
-// ─── Section: Social Proof ────────────────────────────────────────────────────
-function SocialProofSection() {
-  const { ref, visible } = useReveal();
+    // ─── Section: Education ──────────────────────────────────────────────────────
+    function EducationSection() {
+      const { ref, visible } = useReveal();
 
-  const proofs = [
-    { icon: Code2,    value: "10+",  label: "Projects Built",     detail: "From scratch, end-to-end" },
-    { icon: Globe,    value: "5+",   label: "Live Deployments",   detail: "Render · Vercel · Cloudflare" },
-    { icon: Database, value: "4+",   label: "Database Stacks",    detail: "SQL, NoSQL, Cache layers" },
-    { icon: Award,    value: "3.67", label: "CGPA",               detail: "BS Software Engineering" },
-    { icon: MapPin,   value: "ISB",  label: "Based in Islamabad", detail: "Pakistan — Remote-friendly" },
-    { icon: Sparkles, value: "100%", label: "Open to Work",       detail: "Full-time or freelance" },
-  ];
-
-  return (
-    <section className="home-section section-shell home-section--alt" aria-labelledby="social-proof-heading">
-      <div className="home-section__inner" ref={ref}>
-        <div className={`home-heading-block ${visible ? "visible" : ""}`}>
-          <h2 id="social-proof-heading" className="home-section__title">
-            At a <span className="gradient-text">Glance</span>
-          </h2>
-          <p className="home-section__subtitle">
-            Numbers that reflect real engineering experience, not just theory.
-          </p>
-        </div>
-
-        <div className="proof-grid">
-          {proofs.map(({ icon: Icon, value, label, detail }, i) => (
-            <div
-              key={label}
-              className={`proof-card ${visible ? "visible" : ""}`}
-              style={{ transitionDelay: `${i * 0.07}s` }}
-            >
-              <div className="proof-card__icon"><Icon size={18} /></div>
-              <p className="proof-card__value">{value}</p>
-              <p className="proof-card__label">{label}</p>
-              <p className="proof-card__detail">{detail}</p>
+      return (
+        <section className="home-section section-shell home-section--alt" aria-labelledby="education-heading">
+          <div className="home-section__inner" ref={ref}>
+            <div className={`home-label-row ${visible ? "visible" : ""}`}>
+              <span className="home-label-pill"><Award size={11} /> Education</span>
+              <span className="home-label-line" />
             </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
 
-// ─── Section: CTA ─────────────────────────────────────────────────────────────
+            <div className={`home-heading-block ${visible ? "visible" : ""}`}>
+              <h2 id="education-heading" className="home-section__title">
+                Academic <span className="gradient-text">Foundation</span>
+              </h2>
+              <p className="home-section__subtitle">
+                Formal software engineering training that supports practical backend and full-stack work.
+              </p>
+            </div>
+
+            <div className={`education-card premium-card ${visible ? "visible" : ""}`}>
+              <div className="education-card__header">
+                <div>
+                  <h3 className="education-card__degree">{education.degree}</h3>
+                  <p className="education-card__school">{education.school}</p>
+                </div>
+                <span className="education-card__badge">{education.period}</span>
+              </div>
+
+              <div className="education-card__body">
+                {education.notes.map((note) => (
+                  <p key={note} className="education-card__note">{note}</p>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+      );
+    }
 function CTASection() {
   const { ref, visible } = useReveal();
 
@@ -533,7 +666,7 @@ function CTASection() {
           </h2>
 
           <p className="home-cta-section__subtitle">
-            Whether you need a scalable backend, a premium full-stack product, or a freelance developer who ships clean code — I'm available and ready to contribute from day one.
+            If you need a backend-focused software engineer, a React and Django developer, or a freelancer for a custom web application, I’m open to the right project.
           </p>
 
           <div className="home-cta-section__actions">
@@ -593,19 +726,19 @@ export function HomePage() {
       setBackendEmpty(settingsR.status !== "fulfilled");
       const seo = seoR.status === "fulfilled" ? seoR.value : null;
       applySeo({
-        title: seo?.title_tag ?? "Shahriyar Khan — Software Engineer | Python & Django Developer",
-        description: seo?.meta_description ?? "Portfolio of Shahriyar Khan (Shary), Software Engineer specializing in Python, Django, FastAPI, and full-stack development.",
-        keywords: seo?.keywords ?? "Shahriyar, Shahriyar Khan, Shary, Python Developer, Django Developer, Backend Developer, Full Stack Developer",
+        title: seo?.title_tag ?? "Shahriyar Khan | Software Engineer, Python Developer, Django Developer",
+        description: seo?.meta_description ?? "Shahriyar Khan is a Software Engineer in Pakistan specializing in Python, Django, Django REST Framework, FastAPI, React, PostgreSQL, Redis, and Docker. He builds scalable web applications and production-ready full-stack systems.",
+        keywords: seo?.keywords ?? "Software Engineer in Pakistan, Python Developer, Django Developer, Full Stack Developer, Backend Developer, Django REST Framework Developer, React and Django Developer, API Development, Scalable Web Applications, Production-Ready Applications, Freelance Developer, Custom Web Application Development",
         ogTitle: seo?.og_title ?? "Shahriyar Khan — Software Engineer",
-        ogDescription: seo?.og_description ?? "Shahriyar Khan (Shary) is a Software Engineer focused on Python, Django, FastAPI, and high-quality backend architecture.",
+        ogDescription: seo?.og_description ?? "Shahriyar Khan is a Software Engineer focused on Python, Django, Django REST Framework, FastAPI, React, PostgreSQL, Redis, and Docker.",
         ogImageAlt: seo?.image_alt_text ?? "Portrait of Shahriyar Khan, Software Engineer",
       });
     });
     return () => { active = false; };
   }, [refreshKey]);
 
-  const heroTitle    = siteSettings?.hero_title ?? "Hi, I'm Shahriyar Khan";
-  const heroSubtitle = siteSettings?.hero_subtitle ?? "Software Engineer crafting scalable products with Python, Django, FastAPI, and modern frontend technologies.";
+  const heroTitle = siteSettings?.hero_title ?? "Shahriyar Khan";
+  const heroSubtitle = siteSettings?.hero_subtitle ?? "Software Engineering graduate specializing in backend development with Python, Django, and FastAPI, and full-stack web applications with Django REST Framework and React.js.";
 
   return (
     <>
@@ -632,14 +765,12 @@ export function HomePage() {
             <div className="hero-text-col">
               <div className="hero-pill">
                 <span className="hero-pill__dot" />
-                Open to Work — Available Now
+                Software Engineer in Pakistan
               </div>
 
               <h1 className="hero-heading">
-                <span className="hero-heading__greeting">Hi, I'm</span>
-                <span className="hero-heading__name gradient-text">
-                  {heroTitle.replace("Hi, I'm ", "").replace("Hi, I'm", "").trim() || "Shahriyar Khan"}
-                </span>
+                <span className="hero-heading__greeting">Hi, I’m</span>
+                <span className="hero-heading__name gradient-text">{getHeroName(heroTitle)}</span>
               </h1>
 
               <div className="hero-role-line" aria-label="Current role">
@@ -648,7 +779,7 @@ export function HomePage() {
 
               <p className="hero-subtitle">{heroSubtitle}</p>
               <p className="hero-body">
-                Building scalable systems and backend architecture with Python, Django, and modern technologies. Passionate about clean code, AI-powered features, and delivering production-ready products.
+                I design scalable API-driven architectures with secure JWT authentication, build production-ready backend systems using Django REST Framework and FastAPI, and develop responsive full-stack applications with React.js. Experienced in microservices architecture, PostgreSQL database design, Redis caching, and deploying cloud-native solutions on Render and Vercel.
               </p>
 
               <div className="hero-tech-stack">
@@ -723,11 +854,11 @@ export function HomePage() {
       </section>
 
       {/* ═══════════════════════════════ BELOW HERO SECTIONS ════════════════════ */}
-      <ServicesSection services={services} />
+      <ExperienceSection />
       <ProjectsSection projects={projects} />
       <SkillsSection />
-      <SocialProofSection />
-      <ExperienceSection experience={experience} />
+      <ServicesSection services={services} />
+      <EducationSection />
       <CTASection />
     </>
   );

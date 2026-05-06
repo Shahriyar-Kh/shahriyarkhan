@@ -47,7 +47,7 @@ export function AboutPage() {
   return (
     <section className="section-shell py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <SectionHeading title="About Me" subtitle="A brief introduction to who I am and what I do" />
+        <SectionHeading title="About Me" subtitle="Software Engineer specializing in Python backend and full-stack web development" />
 
         {backendEmpty && (
           <div className="mb-6 rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-700 dark:text-amber-300">
@@ -61,16 +61,37 @@ export function AboutPage() {
         >
           {/* Bio (primary) */}
           <div className="space-y-5">
-            <h2 className="text-xl font-semibold text-foreground tracking-tight">Building reliable products with strong backend foundations</h2>
+            <h2 className="text-xl font-semibold text-foreground tracking-tight">Building reliable software with strong backend foundations</h2>
             <p className="text-base text-muted-foreground leading-relaxed">
-              I'm <span className="text-foreground font-semibold">Shahriyar Khan</span>, a Software Engineer and Python Full-Stack Developer based in Islamabad, Pakistan. I specialize in backend engineering, building scalable APIs, and crafting production-ready systems using <span className="text-primary font-medium">Django, Django REST Framework, FastAPI, and React.js</span>.
+              I am <span className="text-foreground font-semibold">Shahriyar Khan</span>, a Software Engineer in Pakistan focused on backend architecture and full-stack application delivery. I specialize in <span className="text-primary font-medium">Python, Django, Django REST Framework, FastAPI, and React.js</span> to build scalable, API-driven, production-ready software.
             </p>
             <p className="text-base text-muted-foreground leading-relaxed">
-              I have hands-on experience across the complete Software Development Life Cycle — from requirement analysis and system design to development, testing, and deployment. I've built real-world applications including AI-powered platforms, e-learning systems, and productivity tools.
+              My work spans the full software lifecycle: understanding requirements, planning architecture, implementing clean code, testing, and deployment. I have built real projects in learning systems, productivity platforms, and AI-assisted applications with a practical engineering approach.
             </p>
             <p className="text-base text-muted-foreground leading-relaxed">
-              My long-term vision is to become an expert in Python, backend engineering, and AI-powered systems. I'm currently open to opportunities as a <span className="text-primary font-medium">Python Developer, Django Developer, Full-Stack Developer, or Software Engineer</span>.
+              I am open to opportunities as a <span className="text-primary font-medium">Software Engineer, Python Developer, Django Developer, Python Backend Developer, and Full Stack Developer</span>, including full-time and freelance roles.
             </p>
+
+            <div className="pt-2">
+              <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-2">Work Philosophy</h3>
+              <p className="text-base text-muted-foreground leading-relaxed">
+                I prioritize clarity over complexity. That means clean architecture, clear API contracts, maintainable codebases, and communication that keeps projects predictable for teams and stakeholders.
+              </p>
+            </div>
+
+            <div className="pt-2">
+              <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-2">Technical Strengths</h3>
+              <p className="text-base text-muted-foreground leading-relaxed">
+                Backend development with Django, DRF, and FastAPI; frontend integration with React.js; relational and NoSQL data handling with PostgreSQL, MySQL, MongoDB, and Redis; and deployment workflows using Render, Vercel, and Cloudflare.
+              </p>
+            </div>
+
+            <div className="pt-2">
+              <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-2">How I Work</h3>
+              <p className="text-base text-muted-foreground leading-relaxed">
+                I start with scope clarity, break delivery into practical milestones, and focus on dependable execution. This helps teams and clients move from ideas to stable, production-ready applications with confidence.
+              </p>
+            </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
               {highlights.map((item, i) => (
@@ -93,6 +114,13 @@ export function AboutPage() {
                   <span key={lang} className="px-3 py-1 rounded-full text-xs font-medium bg-secondary text-secondary-foreground">{lang}</span>
                 ))}
               </div>
+            </div>
+
+            <div className="pt-3">
+              <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-2">Let's Connect</h3>
+              <p className="text-base text-muted-foreground leading-relaxed">
+                If you are hiring for Python or Django roles, building a custom web application, or need a backend-focused full-stack developer, I would be glad to discuss your project.
+              </p>
             </div>
           </div>
 
