@@ -4937,3 +4937,339 @@ button:active, a:active {
     opacity: 0.08;
   }
 }
+
+/* Skills page */
+.skills-page-shell {
+  position: relative;
+  overflow: hidden;
+}
+
+.skills-page-shell::before {
+  content: "";
+  position: absolute;
+  top: -4rem;
+  left: -9rem;
+  width: min(52vw, 560px);
+  aspect-ratio: 16 / 10;
+  border-radius: 1.2rem;
+  border: 1px solid oklch(0.3 0.014 256 / 26%);
+  background-image: linear-gradient(135deg, oklch(0.11 0.015 256 / 26%), oklch(0.11 0.015 256 / 82%)), url('/images/yangowing_images/Services_page.png');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.11;
+  transform: rotate(5deg);
+  pointer-events: none;
+}
+
+.skills-page-intro {
+  border: 1px solid oklch(0.3 0.014 256 / 52%);
+  background:
+    linear-gradient(150deg, oklch(0.19 0.016 256 / 84%), oklch(0.145 0.016 256 / 95%)),
+    radial-gradient(circle at 90% 5%, oklch(0.68 0.195 224 / 10%), transparent 48%);
+}
+
+.skill-category-card {
+  border: 1px solid oklch(0.28 0.014 256 / 58%);
+  transition: transform 220ms var(--ease-out), border-color 220ms var(--ease-smooth), box-shadow 220ms var(--ease-smooth);
+}
+
+.skill-category-card:hover {
+  transform: translateY(-4px);
+  border-color: oklch(0.68 0.195 224 / 35%);
+  box-shadow: 0 16px 34px oklch(0 0 0 / 22%);
+}
+
+.skill-category-card__top {
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid oklch(0.23 0.014 256 / 65%);
+}
+
+/* About page */
+.about-page-shell {
+  position: relative;
+}
+
+.about-page-shell::before {
+  content: "";
+  position: absolute;
+  top: -4rem;
+  right: -10rem;
+  width: min(48vw, 540px);
+  aspect-ratio: 16 / 10;
+  border-radius: 1.2rem;
+  border: 1px solid oklch(0.3 0.014 256 / 24%);
+  background-image: linear-gradient(135deg, oklch(0.11 0.015 256 / 26%), oklch(0.11 0.015 256 / 84%)), url('/images/yangowing_images/custom_dashbaord_image1.png');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.1;
+  transform: rotate(-6deg);
+  pointer-events: none;
+}
+
+.about-page-intro {
+  border: 1px solid oklch(0.3 0.014 256 / 52%);
+  background:
+    linear-gradient(150deg, oklch(0.19 0.016 256 / 84%), oklch(0.145 0.016 256 / 95%)),
+    radial-gradient(circle at 8% 8%, oklch(0.68 0.22 178 / 9%), transparent 48%);
+}
+
+.about-side-rail {
+  position: sticky;
+  top: 5.5rem;
+}
+
+.about-trust-card {
+  border: 1px solid oklch(0.29 0.014 256 / 58%);
+}
+
+.about-trust-card__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  padding-bottom: 0.55rem;
+  border-bottom: 1px solid oklch(0.2 0.013 256 / 65%);
+}
+
+.about-trust-card__row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+/* Resume page */
+.resume-page-shell {
+  position: relative;
+}
+
+.resume-page-shell::before {
+  content: "";
+  position: absolute;
+  top: -3.5rem;
+  left: -8rem;
+  width: min(46vw, 520px);
+  aspect-ratio: 16 / 10;
+  border-radius: 1.2rem;
+  border: 1px solid oklch(0.3 0.014 256 / 26%);
+  background-image: linear-gradient(135deg, oklch(0.11 0.015 256 / 26%), oklch(0.11 0.015 256 / 84%)), url('/images/yangowing_images/Landing_Preview_page.png');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.1;
+  transform: rotate(6deg);
+  pointer-events: none;
+}
+
+.resume-page-intro {
+  border: 1px solid oklch(0.3 0.014 256 / 52%);
+  background:
+    linear-gradient(150deg, oklch(0.19 0.016 256 / 84%), oklch(0.145 0.016 256 / 95%)),
+    radial-gradient(circle at 94% 8%, oklch(0.68 0.195 224 / 9%), transparent 48%);
+}
+
+.resume-download-row {
+  position: sticky;
+  top: 4.75rem;
+  z-index: 3;
+}
+
+.resume-download-btn {
+  box-shadow: 0 12px 26px oklch(0.68 0.195 224 / 26%);
+}
+
+.resume-preview-card {
+  border: 1px solid oklch(0.29 0.014 256 / 58%);
+  box-shadow: 0 22px 44px oklch(0 0 0 / 20%);
+}
+
+/* Contact page */
+.contact-page-shell {
+  position: relative;
+}
+
+.contact-page-shell::before {
+  content: "";
+  position: absolute;
+  top: -3rem;
+  right: -8rem;
+  width: min(52vw, 580px);
+  aspect-ratio: 16 / 10;
+  border-radius: 1.2rem;
+  border: 1px solid oklch(0.3 0.014 256 / 24%);
+  background-image: linear-gradient(135deg, oklch(0.11 0.015 256 / 26%), oklch(0.11 0.015 256 / 84%)), url('/images/yangowing_images/Registration_page.png');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.11;
+  transform: rotate(-5deg);
+  pointer-events: none;
+}
+
+.contact-page-intro {
+  border: 1px solid oklch(0.3 0.014 256 / 52%);
+  background:
+    linear-gradient(150deg, oklch(0.19 0.016 256 / 84%), oklch(0.145 0.016 256 / 95%)),
+    radial-gradient(circle at 8% 8%, oklch(0.68 0.22 178 / 8%), transparent 50%);
+}
+
+.contact-trust-card {
+  border: 1px solid oklch(0.29 0.014 256 / 58%);
+}
+
+.contact-form-card {
+  border: 1px solid oklch(0.29 0.014 256 / 58%);
+}
+
+.contact-form-card__head {
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid oklch(0.2 0.013 256 / 60%);
+}
+
+@media (max-width: 1024px) {
+  .about-side-rail {
+    position: static;
+  }
+
+  .resume-download-row {
+    position: static;
+  }
+}
+
+@media (max-width: 767px) {
+  .skills-page-shell::before,
+  .about-page-shell::before,
+  .resume-page-shell::before,
+  .contact-page-shell::before {
+    width: 72vw;
+    opacity: 0.08;
+  }
+}
+
+/* Final QA: mobile rhythm tightening */
+@media (max-width: 639px) {
+  .projects-page-intro,
+  .skills-page-intro,
+  .about-page-intro,
+  .resume-page-intro,
+  .contact-page-intro {
+    border-radius: 1.1rem;
+    padding: 1.15rem 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .projects-page-intro h1,
+  .skills-page-intro h1,
+  .about-page-intro h1,
+  .resume-page-intro h1,
+  .contact-page-intro h1 {
+    font-size: clamp(1.45rem, 6.8vw, 1.9rem);
+    line-height: 1.14;
+  }
+
+  .projects-page-shell::before,
+  .skills-page-shell::before,
+  .about-page-shell::before,
+  .resume-page-shell::before,
+  .contact-page-shell::before {
+    display: none;
+  }
+
+  .pd-hero__media {
+    border-radius: 0.8rem;
+    aspect-ratio: 16 / 9;
+  }
+
+  .hero-trust-strip {
+    gap: 0.4rem;
+  }
+
+  .hero-trust-chip {
+    font-size: 0.67rem;
+    padding: 0.34rem 0.58rem;
+  }
+}
+
+/* Final QA: tablet spacing and density balance */
+@media (min-width: 640px) and (max-width: 1024px) {
+  .projects-page-intro,
+  .skills-page-intro,
+  .about-page-intro,
+  .resume-page-intro,
+  .contact-page-intro {
+    padding: 1.6rem 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .projects-page-intro p,
+  .skills-page-intro p,
+  .about-page-intro p,
+  .resume-page-intro p,
+  .contact-page-intro p {
+    max-width: 44rem;
+  }
+
+  .resume-preview-card {
+    padding: 1.7rem 1.5rem;
+  }
+
+  .contact-form-card {
+    padding: 1.5rem;
+  }
+
+  .skill-category-card {
+    min-height: 100%;
+  }
+}
+
+/* Final QA: large desktop rhythm (1440+) */
+@media (min-width: 1440px) {
+  .projects-page-intro,
+  .skills-page-intro,
+  .about-page-intro,
+  .resume-page-intro,
+  .contact-page-intro {
+    padding: 2.35rem 2.5rem;
+    margin-bottom: 2.75rem;
+  }
+
+  .projects-page-shell::before,
+  .skills-page-shell::before,
+  .about-page-shell::before,
+  .resume-page-shell::before,
+  .contact-page-shell::before {
+    opacity: 0.14;
+  }
+
+  .resume-preview-card {
+    padding: 2.5rem 2.75rem;
+  }
+
+  .contact-form-card {
+    padding: 2.1rem;
+  }
+
+  .skill-category-card:hover {
+    transform: translateY(-5px);
+  }
+}
+
+/* Final QA: reduced motion safety */
+@media (prefers-reduced-motion: reduce) {
+  .hero-trust-strip,
+  .hero-trust-chip,
+  .projects-page-intro,
+  .skills-page-intro,
+  .about-page-intro,
+  .resume-page-intro,
+  .contact-page-intro,
+  .skill-category-card,
+  .resume-download-btn,
+  .pd-hero__media img,
+  .project-showcase-card,
+  .service-preview-card,
+  .card,
+  .btn-primary,
+  .btn-secondary,
+  .btn-ghost {
+    animation: none !important;
+    transition-duration: 1ms !important;
+    transform: none !important;
+  }
+}

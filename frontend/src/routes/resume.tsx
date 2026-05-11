@@ -61,23 +61,35 @@ export function ResumePage() {
   const educationItems = resume?.education ?? [];
 
   return (
-    <section className="section-shell py-20">
+    <section className="section-shell py-20 resume-page-shell">
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+        <div className="resume-page-intro card surface-elevated rounded-3xl p-7 sm:p-8 md:p-10 mb-8 md:mb-10">
+          <div className="flex flex-wrap items-center gap-2 mb-3">
+            <span className="badge badge-success">ATS Ready</span>
+            <span className="badge badge-primary">Recruiter Friendly</span>
+            <span className="badge badge-warning">Role Specific</span>
+          </div>
+          <h1 className="text-display-sm text-primary leading-tight mb-3">Professional Resume Studio</h1>
+          <p className="text-body text-tertiary max-w-3xl">
+            A clean resume preview built for both recruiters and ATS parsing. Content stays aligned with your live portfolio data.
+          </p>
+        </div>
+
         <SectionHeading title="Resume / CV" subtitle="ATS-optimized professional resume" />
 
         {/* Download Button */}
-        <div className="flex justify-center mb-12">
+        <div className="flex justify-center mb-12 resume-download-row">
           <a
             href="/resume/Shahriyar_Khan_Software_Engineer.pdf"
             download
-            className="btn-primary btn-lg inline-flex items-center gap-2"
+            className="btn-primary btn-lg inline-flex items-center gap-2 resume-download-btn"
           >
             <Download size={18} /> Download Resume (PDF)
           </a>
         </div>
 
         {/* Inline Resume Preview */}
-        <div className="card surface-elevated rounded-xl p-8 sm:p-10 space-y-8">
+        <div className="card surface-elevated rounded-xl p-8 sm:p-10 space-y-8 resume-preview-card">
           <div className="text-center border-b border-border pb-6">
             <h2 className="text-display-sm text-primary">{resume?.title?.toUpperCase() ?? "SHAHRIYAR KHAN"}</h2>
             <p className="text-body text-secondary mt-1">{resume?.target_role ?? "Software Engineer | Python • Django • FastAPI"}</p>
