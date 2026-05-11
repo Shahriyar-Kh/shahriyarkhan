@@ -146,7 +146,6 @@ function SkillBar({ name, level, delay }: { name: string; level: number; delay: 
 
 export function SkillsPage() {
   const [skillsData, setSkillsData] = useState<SkillApi[]>([]);
-  const [backendEmpty, setBackendEmpty] = useState(false);
   const refreshKey = useLiveDataRefresh(12000);
 
   useEffect(() => {
@@ -160,7 +159,6 @@ export function SkillsPage() {
 
       if (skillsResult.status === "fulfilled") {
         setSkillsData(skillsResult.value);
-        setBackendEmpty(skillsResult.value.length === 0);
       }
 
       const seo = seoResult.status === "fulfilled" ? seoResult.value : null;
@@ -237,12 +235,6 @@ export function SkillsPage() {
     <section className="section-shell py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionHeading title="Technical Skills" subtitle="Technologies and tools I work with" />
-
-        {backendEmpty && (
-          <div className="mb-6 rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-700 dark:text-amber-300">
-            No published skills are available in Django admin yet, so sample skill groups are being shown.
-          </div>
-        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {categories.map((cat) => (

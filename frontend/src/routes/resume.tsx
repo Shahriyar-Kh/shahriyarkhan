@@ -7,7 +7,6 @@ import { useLiveDataRefresh } from "@/hooks/useLiveDataRefresh";
 
 export function ResumePage() {
   const [resume, setResume] = useState<ResumeApi | null>(null);
-  const [backendEmpty, setBackendEmpty] = useState(false);
   const refreshKey = useLiveDataRefresh(12000);
 
   useEffect(() => {
@@ -21,7 +20,6 @@ export function ResumePage() {
 
       if (resumeResult.status === "fulfilled") {
         setResume(resumeResult.value);
-        setBackendEmpty(!resumeResult.value);
       }
 
       const seo = seoResult.status === "fulfilled" ? seoResult.value : null;
@@ -66,12 +64,6 @@ export function ResumePage() {
     <section className="section-shell py-20">
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
         <SectionHeading title="Resume / CV" subtitle="ATS-optimized professional resume" />
-
-        {backendEmpty && (
-          <div className="mb-6 rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-700 dark:text-amber-300">
-            No published resume version is set as default in Django admin yet, so a local sample resume is being shown.
-          </div>
-        )}
 
         {/* Download Button */}
         <div className="flex justify-center mb-12">

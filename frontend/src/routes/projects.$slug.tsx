@@ -3,7 +3,7 @@ import {
   ExternalLink, Github, ArrowLeft, CheckCircle2, Star,
   Code2, Globe, Calendar, Layers, ArrowRight, ChevronLeft, ChevronRight,
 } from "lucide-react";
-import { applySeo } from "@/lib/seo";
+import { applySeo, addSchemaMarkup } from "@/lib/seo";
 import { assetUrl, fetchJson } from "@/lib/api";
 import { Link } from "@/lib/navigation";
 import { useLiveDataRefresh } from "@/hooks/useLiveDataRefresh";
@@ -27,6 +27,7 @@ type ProjectDetail = {
   feature_bullets?: string | string[];
   development_highlights?: string | string[];
   detail_images?: string[];
+  images?: Array<{ id: number; image: string; alt_text?: string; caption?: string; image_type: string }>;
 };
 
 type GalleryImage = { src: string; alt: string };
@@ -105,6 +106,15 @@ function buildGallery(project: ProjectDetail): GalleryImage[] {
     if (url && !seen.has(url)) { seen.add(url); srcs.push(url); }
   };
 
+  // First, add images from API's images field (gallery/detail images)
+  if (project.images && Array.isArray(project.images)) {
+    project.images
+      .filter(img => img.image_type === "gallery" || img.image_type === "detail")
+      .sort((a, b) => (a.id ?? 0) - (b.id ?? 0))
+      .forEach(img => add(img.image));
+  }
+
+  // Then fallback to legacy fields
   (project.detail_images ?? []).forEach(add);
   add(project.featured_image);
   add(project.preview_image);
@@ -216,6 +226,25 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
           ogImage:         assetUrl(data.featured_image ?? data.preview_image),
           ogImageAlt:      data.image_alt_text   ?? data.title,
           canonicalUrl:    window.location.href,
+        });
+
+        // Add Schema.org markup for the project
+        addSchemaMarkup({
+          "@context": "https://schema.org",
+          "@type": "CreativeWork",
+          name: data.title,
+          description: data.description,
+          image: assetUrl(data.featured_image ?? data.preview_image),
+          url: window.location.href,
+          creator: {
+            "@type": "Person",
+            name: "Shahriyar Khan",
+          },
+          datePublished: new Date().toISOString().split("T")[0],
+          keywords: (data.seo_keywords ?? "").split(",").map(k => k.trim()).filter(Boolean),
+          technicalDetails: {
+            technologies: (data.technologies ?? []).map(t => t.name).join(", "),
+          },
         });
       })
       .catch(() => { if (!active) setRemoteStatus("error"); });

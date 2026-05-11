@@ -8,7 +8,7 @@ import {
   MessageCircle,
 } from "lucide-react";
 import { fetchJson, fetchListJson, assetUrl } from "@/lib/api";
-import { applySeo } from "@/lib/seo";
+import { applySeo, addSchemaMarkup } from "@/lib/seo";
 import { useLiveDataRefresh } from "@/hooks/useLiveDataRefresh";
 
 // ─── Typewriter ───────────────────────────────────────────────────────────────
@@ -702,7 +702,6 @@ function CTASection() {
 // ─── Main Component ───────────────────────────────────────────────────────────
 export function HomePage() {
   const [siteSettings, setSiteSettings] = useState<SiteSettings | null>(null);
-  const [backendEmpty, setBackendEmpty] = useState(false);
   const [projects, setProjects] = useState<ProjectApi[]>([]);
   const [services, setServices] = useState<ServiceCard[]>([]);
   const [experience, setExperience] = useState<ExperienceApi[]>([]);
@@ -722,7 +721,6 @@ export function HomePage() {
       if (projectsR.status === "fulfilled") setProjects(projectsR.value);
       if (servicesR.status === "fulfilled") setServices(servicesR.value);
       if (expR.status === "fulfilled") setExperience(expR.value);
-      setBackendEmpty(settingsR.status !== "fulfilled");
       const seo = seoR.status === "fulfilled" ? seoR.value : null;
       applySeo({
         title: seo?.title_tag ?? "Shahriyar Khan | Software Engineer, Python Developer, Django Developer",
@@ -731,6 +729,23 @@ export function HomePage() {
         ogTitle: seo?.og_title ?? "Shahriyar Khan — Software Engineer",
         ogDescription: seo?.og_description ?? "Shahriyar Khan is a Software Engineer focused on Python, Django, Django REST Framework, FastAPI, React, PostgreSQL, Redis, and Docker.",
         ogImageAlt: seo?.image_alt_text ?? "Portrait of Shahriyar Khan, Software Engineer",
+      });
+
+      // Add Schema.org markup for better SEO
+      addSchemaMarkup({
+        "@context": "https://schema.org",
+        "@type": "Person",
+        name: "Shahriyar Khan",
+        jobTitle: "Software Engineer",
+        description: "Software Engineer specializing in backend development, Python, Django, and full-stack applications",
+        url: window.location.origin,
+        sameAs: [
+          "https://linkedin.com/in/shahriyarkhan786",
+          "https://github.com/Shahriyar-Kh",
+        ],
+        email: "shahriyarkhanpk1@gmail.com",
+        worksFor: { "@type": "Organization", name: "HA Technologies (Private) Limited" },
+        skills: ["Python", "Django", "FastAPI", "React", "TypeScript", "PostgreSQL", "Docker", "DRF"],
       });
     });
     return () => { active = false; };
@@ -753,12 +768,6 @@ export function HomePage() {
         </div>
 
         <div className="hero-container">
-          {backendEmpty && (
-            <div className="mb-8 rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-300">
-              Home content using local fallback — Django site settings or SEO record is missing or unpublished.
-            </div>
-          )}
-
           <div className="hero-grid-layout">
             {/* ── Left: Text ── */}
             <div className="hero-text-col">

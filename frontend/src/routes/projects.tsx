@@ -302,7 +302,6 @@ function ProjectCard({ project, index }: { project: ProjectApi; index: number })
 
 export function ProjectsPage() {
   const [projectsData, setProjectsData] = useState<ProjectApi[]>([]);
-  const [backendEmpty, setBackendEmpty] = useState(false);
   const refreshKey = useLiveDataRefresh(12000);
 
   useEffect(() => {
@@ -316,9 +315,8 @@ export function ProjectsPage() {
 
       if (projectsResult.status === "fulfilled" && projectsResult.value.length) {
         setProjectsData(sortProjects(normalizeProjectData(projectsResult.value)));
-        setBackendEmpty(false);
       } else if (projectsResult.status === "fulfilled") {
-        setBackendEmpty(true);
+        setProjectsData([]);
       }
 
       const seo = seoResult.status === "fulfilled" ? seoResult.value : null;
@@ -342,12 +340,6 @@ export function ProjectsPage() {
     <section className="section-shell py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionHeading title="Projects" subtitle="Real-world applications I've built" />
-
-        {backendEmpty && (
-          <div className="mb-6 rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-700 dark:text-amber-300">
-            No published projects are available in Django admin yet, so sample projects are being shown.
-          </div>
-        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {displayProjects.map((project, i) => (

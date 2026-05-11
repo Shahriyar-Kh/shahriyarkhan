@@ -249,9 +249,8 @@ export function AdminProjectForm({ onSaved, onCancel, initialData }: AdminProjec
         fd.append(key, String(form[key]));
       });
 
-      // Images
+      // Card preview image (to main project)
       if (previewImage) fd.append("preview_image", previewImage);
-      detailImages.forEach(img => fd.append("detail_images", img));
 
       const isEdit = Boolean(initialData && "id" in initialData && initialData.id);
       const endpoint = isEdit
@@ -267,6 +266,31 @@ export function AdminProjectForm({ onSaved, onCancel, initialData }: AdminProjec
       if (!resp.ok) {
         const msg = await resp.text();
         throw new Error(msg || `Server error ${resp.status}`);
+      }
+
+      const projectData = await resp.json() as { id: number };
+      const projectId = projectData.id;
+
+      // Now upload detail images separately to the ProjectImage endpoint
+      if (detailImages.length > 0) {
+        for (let i = 0; i < detailImages.length; i++) {
+          const imgFd = new FormData();
+          imgFd.append("project", String(projectId));
+          imgFd.append("image", detailImages[i]);
+          imgFd.append("image_type", "gallery");
+          imgFd.append("alt_text", `${form.title} gallery image ${i + 1}`);
+          imgFd.append("display_order", String(i));
+
+          const imgResp = await fetch(apiUrl("/api/v1/admin/portfolio/project-images/"), {
+            method: "POST",
+            headers: { Authorization: `Token ${token}` },
+            body: imgFd,
+          });
+
+          if (!imgResp.ok) {
+            console.warn(`Failed to upload image ${i + 1}:`, await imgResp.text());
+          }
+        }
       }
 
       setSaved(true);

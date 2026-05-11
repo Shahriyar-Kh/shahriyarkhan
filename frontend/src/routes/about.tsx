@@ -15,7 +15,6 @@ const highlights = [
 
 export function AboutPage() {
   const { ref, isVisible } = useScrollAnimation();
-  const [backendEmpty, setBackendEmpty] = useState(false);
   const refreshKey = useLiveDataRefresh(12000);
 
   useEffect(() => {
@@ -25,8 +24,6 @@ export function AboutPage() {
       fetchJson<{ title_tag?: string; meta_description?: string; keywords?: string; og_title?: string; og_description?: string; og_image_alt_text?: string }>("/api/v1/public/seo/pages/about/"),
     ]).then(([seoResult]) => {
       if (!active) return;
-
-      setBackendEmpty(seoResult.status !== "fulfilled");
 
       const seo = seoResult.status === "fulfilled" ? seoResult.value : null;
       applySeo({
@@ -48,12 +45,6 @@ export function AboutPage() {
     <section className="section-shell py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionHeading title="About Me" subtitle="Software Engineer specializing in Python backend and full-stack web development" />
-
-        {backendEmpty && (
-          <div className="mb-6 rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-700 dark:text-amber-300">
-            About page SEO is using static fallback content because the Django SEO record is missing or unpublished.
-          </div>
-        )}
 
         <div
           ref={ref}
