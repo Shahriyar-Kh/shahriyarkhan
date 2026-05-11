@@ -232,23 +232,14 @@ export function SkillsPage() {
   }, [skillsData]);
 
   return (
-    <section className="section-shell py-20 skills-page-shell">
+    <section className="section-shell py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="skills-page-intro card surface-elevated rounded-3xl p-7 sm:p-8 md:p-10 mb-8 md:mb-10">
-          <p className="text-label text-primary mb-3">Technical Depth</p>
-          <h1 className="text-display-sm text-primary leading-tight mb-3">Skills Built For Production Workflows</h1>
-          <p className="text-body text-tertiary max-w-3xl">
-            A practical stack focused on backend reliability, clean API delivery, and end-to-end product execution.
-            Skills are grouped for quick recruiter scanning.
-          </p>
-        </div>
-
         <SectionHeading title="Technical Skills" subtitle="Technologies and tools I work with" />
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {categories.map((cat) => (
-            <div key={cat.slug} className="card surface-elevated rounded-2xl p-6 skill-category-card">
-              <div className="flex items-start justify-between gap-4 mb-5 skill-category-card__top">
+            <div key={cat.slug} className="card surface-elevated rounded-2xl p-6">
+              <div className="flex items-start justify-between gap-4 mb-5">
                 <div>
                   <p className="text-label text-hint mb-2">Skill Category</p>
                   <h3 className="text-headline-sm text-primary">{cat.title}</h3>

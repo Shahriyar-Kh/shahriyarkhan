@@ -16,11 +16,6 @@ const highlights = [
 export function AboutPage() {
   const { ref, isVisible } = useScrollAnimation();
   const refreshKey = useLiveDataRefresh(12000);
-  const trustStats = [
-    { label: "Production Deployments", value: "10+" },
-    { label: "Core Backend Focus", value: "Python + Django" },
-    { label: "Delivery Style", value: "Clean + Reliable" },
-  ];
 
   useEffect(() => {
     let active = true;
@@ -47,16 +42,8 @@ export function AboutPage() {
   }, [refreshKey]);
 
   return (
-    <section className="section-shell py-20 about-page-shell">
+    <section className="section-shell py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="about-page-intro card surface-elevated rounded-3xl p-7 sm:p-8 md:p-10 mb-8 md:mb-10">
-          <p className="text-label text-primary mb-3">Professional Profile</p>
-          <h1 className="text-display-sm text-primary leading-tight mb-3">Backend-First Engineer With Full-Stack Execution</h1>
-          <p className="text-body text-tertiary max-w-3xl">
-            Focused on production-quality systems, practical architecture decisions, and communication that keeps teams and clients aligned.
-          </p>
-        </div>
-
         <SectionHeading title="About Me" subtitle="Software Engineer specializing in Python backend and full-stack web development" />
 
         <div
@@ -131,7 +118,7 @@ export function AboutPage() {
           </div>
 
           {/* Top/side image presentation */}
-          <div className="space-y-4 about-side-rail">
+          <div className="space-y-4">
             <div className="motion-border mx-auto max-w-70 md:max-w-[320px] p-px rounded-2xl reveal-in" style={{ animationDelay: "0.05s" }}>
               <div className="premium-card rounded-2xl overflow-hidden tilt-hover h-87.5 md:h-105 shadow-xl transition-all duration-500 ease-in-out p-0">
                 <img
@@ -142,19 +129,6 @@ export function AboutPage() {
                 />
               </div>
             </div>
-
-            <div className="card surface-elevated rounded-2xl p-5 about-trust-card">
-              <p className="text-label text-primary mb-3">Recruiter Snapshot</p>
-              <div className="space-y-3">
-                {trustStats.map((item) => (
-                  <div key={item.label} className="about-trust-card__row">
-                    <span className="text-caption text-hint">{item.label}</span>
-                    <span className="text-body-sm text-primary">{item.value}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
             <div className="motion-border mx-auto max-w-70 md:max-w-[320px] p-px rounded-2xl reveal-in" style={{ animationDelay: "0.15s" }}>
               <div className="premium-card rounded-2xl overflow-hidden tilt-hover h-87.5 md:h-105 shadow-xl transition-all duration-500 ease-in-out p-0">
                 <img

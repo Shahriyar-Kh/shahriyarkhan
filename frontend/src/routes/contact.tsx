@@ -113,16 +113,8 @@ export function ContactPage() {
   const contactServiceOptions = services.length ? services.map((service) => service.title) : serviceOptions;
 
   return (
-    <section className="section-shell py-20 contact-page-shell">
+    <section className="section-shell py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="contact-page-intro card surface-elevated rounded-3xl p-7 sm:p-8 md:p-10 mb-8 md:mb-10">
-          <p className="text-label text-primary mb-3">Start A Conversation</p>
-          <h1 className="text-display-sm text-primary leading-tight mb-3">Contact Studio</h1>
-          <p className="text-body text-tertiary max-w-3xl">
-            Share your project, hiring context, or collaboration goal. You get a clear response with practical next steps.
-          </p>
-        </div>
-
         <SectionHeading title="Get in Touch" subtitle="Let's discuss your next project or opportunity" />
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -159,15 +151,6 @@ export function ContactPage() {
                 </a>
               </div>
             </div>
-
-            <div className="card surface-elevated rounded-xl p-5 contact-trust-card">
-              <p className="text-label text-primary mb-3">Response Promise</p>
-              <ul className="space-y-2 text-caption text-tertiary">
-                <li>• First response within 24 hours</li>
-                <li>• Clear scope and timeline discussion</li>
-                <li>• Professional and confidential communication</li>
-              </ul>
-            </div>
           </div>
 
           {/* Contact Form */}
@@ -178,11 +161,7 @@ export function ContactPage() {
                 <p className="text-body text-tertiary mt-3">Thank you for reaching out. I'll respond within 24 hours.</p>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="card surface-elevated rounded-xl p-8 space-y-5 contact-form-card">
-                <div className="contact-form-card__head">
-                  <p className="text-label text-primary">Project Brief</p>
-                  <p className="text-caption text-hint">Share enough context so I can respond with useful next steps.</p>
-                </div>
+              <form onSubmit={handleSubmit} className="card surface-elevated rounded-xl p-8 space-y-5">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div className="form-group">
                     <label className="form-label">Full Name</label>

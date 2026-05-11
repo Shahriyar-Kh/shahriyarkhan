@@ -352,15 +352,7 @@ export function ProjectsPage() {
   return (
     <section className="section-shell py-20 projects-page-shell">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="projects-page-intro card surface-elevated rounded-3xl p-7 sm:p-8 md:p-10 mb-8 md:mb-10">
-          <p className="text-label text-primary mb-3">Selected Work</p>
-          <h1 className="text-display-sm text-primary leading-tight mb-3">Case Studies Built For Real Products</h1>
-          <p className="text-body text-tertiary max-w-3xl">
-            These projects highlight production architecture, dependable backend systems, and polished frontend execution.
-            Each card links to a deeper case study with implementation context.
-          </p>
-        </div>
-
+   
         <SectionHeading title="Projects" subtitle="Real-world applications I've built" />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
