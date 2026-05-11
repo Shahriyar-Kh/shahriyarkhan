@@ -9,49 +9,61 @@ import { useLiveDataRefresh } from "@/hooks/useLiveDataRefresh";
 const projects: ProjectApi[] = [
   {
     id: 1,
+    slug: "yango-wing-fleet-digital-registration-platform",
+    title: "Yango Wing Fleet — Digital Registration & Fleet Management Platform",
+    description: "Production-grade full-stack web platform for driver registration, fleet management, and admin operations. Features online rider registration, custom admin dashboard, real-time analytics, and JWT-based authentication.",
+    tools: ["React", "TanStack Router", "Vite", "Tailwind CSS", "Django", "DRF", "PostgreSQL", "JWT"],
+    preview_image: "/images/yangowing_images/homepage.png",
+    featured_image: "/images/yangowing_images/Landing_Preview_page.png",
+    display_order: 1,
+    live: "https://yango-wing-fleet.vercel.app",
+    github: "https://github.com/Shahriyar-Kh",
+  },
+  {
+    id: 2,
     slug: "noteassist-ai-productivity-platform",
     title: "NoteAssisstAI — Productivity Platform",
     description: "Full-stack application with secure REST APIs, JWT authentication, RBAC, PostgreSQL database, and Redis caching for high performance.",
     tools: ["Django", "DRF", "React.js", "PostgreSQL", "Redis", "JWT"],
     preview_image: "/images/noteassisstai_homepage.png",
     featured_image: "/images/noteassistai.landingpage.jpeg",
-    display_order: 1,
+    display_order: 2,
     live: "https://noteassistai.vercel.app",
     github: "https://github.com/Shahriyar-Kh",
   },
   {
-    id: 2,
+    id: 3,
     slug: "sk-learntrack-ai-learning-platform",
     title: "SK-LearnTrack — AI Learning Platform",
     description: "Full-stack LMS using Django REST Framework and React with JWT authentication, student progress tracking, and OpenAI-powered AI-assisted learning features.",
     tools: ["Django", "DRF", "React", "PostgreSQL", "OpenAI"],
     preview_image: "/images/sk-learntrack_homepage.png",
     featured_image: "/images/sk-learntrack.landinpage.jpeg",
-    display_order: 2,
+    display_order: 3,
     live: "https://sk-learntrack.vercel.app",
     github: "https://github.com/Shahriyar-Kh",
   },
   {
-    id: 3,
+    id: 4,
     slug: "feelwise-emotion-detection-system",
     title: "FeelWise — Emotion Detection System",
     description: "Microservices-based AI system with FastAPI backend, Node.js API Gateway, and Chart.js visualization. Multi-modal emotion detection via text, speech, and facial analysis.",
     tools: ["FastAPI", "Python", "Node.js", "MongoDB", "JWT"],
     preview_image: "/images/Feelwise_homepage.png",
     featured_image: "/images/feelwise-emotion-detection.landingpage.jpeg",
-    display_order: 3,
+    display_order: 4,
     live: "https://feelwise-emotion-detection.feelwise.workers.dev",
     github: "https://github.com/Shahriyar-Kh",
   },
   {
-    id: 4,
+    id: 5,
     slug: "advanced-restaurant-management-system",
     title: "Advance Resturent Management System",
     description: "Desktop application for business operations with inventory management, order tracking, analytics dashboards, and modern UI/UX design.",
     tools: ["Python", "Django", "PyQt5", "SQLite"],
     preview_image: "/images/RMS_homepage.png",
     featured_image: "/images/RMS_Order_M.png",
-    display_order: 4,
+    display_order: 5,
     live: null,
     github: "https://github.com/Shahriyar-Kh",
   },
@@ -195,6 +207,7 @@ function ProjectCard({ project, index }: { project: ProjectApi; index: number })
   const [hovered, setHovered] = useState(false);
   const liveUrl = project.live || project.live_url;
   const githubUrl = project.github || project.github_url;
+  const previewSource = project.preview_image || project.featured_image;
   const tools = project.technologies?.length
     ? project.technologies.map((tool) => tool.name)
     : project.tools ?? [];
@@ -211,9 +224,9 @@ function ProjectCard({ project, index }: { project: ProjectApi; index: number })
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
         >
-          {project.preview_image ? (
+          {previewSource ? (
             <img
-              src={assetUrl(project.preview_image)}
+              src={assetUrl(previewSource)}
               alt={`Screenshot of ${project.title}`}
               className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
               loading="lazy"
@@ -337,8 +350,17 @@ export function ProjectsPage() {
   const displayProjects = projectsData.length > 0 ? projectsData : sortProjects(projects);
 
   return (
-    <section className="section-shell py-20">
+    <section className="section-shell py-20 projects-page-shell">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="projects-page-intro card surface-elevated rounded-3xl p-7 sm:p-8 md:p-10 mb-8 md:mb-10">
+          <p className="text-label text-primary mb-3">Selected Work</p>
+          <h1 className="text-display-sm text-primary leading-tight mb-3">Case Studies Built For Real Products</h1>
+          <p className="text-body text-tertiary max-w-3xl">
+            These projects highlight production architecture, dependable backend systems, and polished frontend execution.
+            Each card links to a deeper case study with implementation context.
+          </p>
+        </div>
+
         <SectionHeading title="Projects" subtitle="Real-world applications I've built" />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

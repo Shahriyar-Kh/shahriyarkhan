@@ -21,7 +21,18 @@ export function apiUrl(path: string) {
 export function assetUrl(path?: string | null) {
   if (!path) return "";
   if (/^https?:\/\//i.test(path)) return path;
-  if (apiBaseUrl && path.startsWith("/")) {
+
+  // Keep frontend static assets on the frontend origin.
+  // Only backend-host media/static should be prefixed with apiBaseUrl.
+  if (
+    path.startsWith("/images/") ||
+    path.startsWith("/resume/") ||
+    path.startsWith("/favicon")
+  ) {
+    return path;
+  }
+
+  if (apiBaseUrl && (path.startsWith("/media/") || path.startsWith("/static/"))) {
     return `${apiBaseUrl}${path}`;
   }
   return path;

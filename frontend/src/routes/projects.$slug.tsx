@@ -34,6 +34,46 @@ type GalleryImage = { src: string; alt: string };
 
 // ─── Fallback data ────────────────────────────────────────────────────────────
 const projectFallbacks: Record<string, ProjectDetail> = {
+  "yango-wing-fleet-digital-registration-platform": {
+    title: "Yango Wing Fleet — Digital Registration & Fleet Management Platform",
+    description: "Production-grade full-stack web platform for driver registration, fleet management, and admin operations. Features online rider registration, custom admin dashboard, real-time analytics, and JWT-based authentication.",
+    live_url: "https://yango-wing-fleet.vercel.app",
+    github_url: "https://github.com/Shahriyar-Kh/yango-wing-fleet",
+    preview_image: "/images/yangowing_images/homepage.png",
+    featured_image: "/images/yangowing_images/Landing_Preview_page.png",
+    ai_summary: "A production-ready fleet operations platform that unifies driver onboarding, admin workflows, and live operational insights in one system.",
+    overview: "Yango Wing Fleet is a full-stack registration and fleet operations platform built for real-world logistics workflows. It combines a conversion-focused public onboarding experience with a secure, high-utility admin dashboard for day-to-day operations.",
+    problem: "Fleet teams needed one system to handle rider registrations, inquiries, offers, and reporting without relying on scattered forms and manual spreadsheets.",
+    solution: "Implemented an API-first architecture with React and TanStack Router on the frontend, plus Django REST Framework on the backend. Added JWT-authenticated admin routes, polling-based dashboard refresh, and structured admin modules for registrations, offers, trip bonuses, and inquiries.",
+    outcome: "A production deployment on Vercel and Render that demonstrates enterprise-style architecture, reliable content operations, and a polished UX for both public users and internal staff.",
+    feature_bullets: [
+      "Online registration workflows for Bike, Car, and Rickshaw drivers",
+      "Custom admin dashboard for registration and inquiry operations",
+      "Offers and trip bonus management with CRUD admin tools",
+      "JWT-based auth for protected routes and API endpoints",
+      "Analytics summaries and trend visualization for operations",
+      "CSV export support for registrations and inquiries"
+    ],
+    detail_images: [
+      "/images/yangowing_images/Landing_Preview_page.png",
+      "/images/yangowing_images/homepage.png",
+      "/images/yangowing_images/Registration_page.png",
+      "/images/yangowing_images/Rawalpindi_Registration.png",
+      "/images/yangowing_images/Services_page.png",
+      "/images/yangowing_images/custom_dashbaord_image1.png",
+      "/images/yangowing_images/custom_dashbaord_image2.png"
+    ],
+    technologies: [
+      { name: "React", slug: "react" },
+      { name: "TanStack Router", slug: "tanstack-router" },
+      { name: "Vite", slug: "vite" },
+      { name: "Tailwind CSS", slug: "tailwind-css" },
+      { name: "Django", slug: "django" },
+      { name: "DRF", slug: "drf" },
+      { name: "PostgreSQL", slug: "postgresql" },
+      { name: "JWT", slug: "jwt" }
+    ],
+  },
   "sk-learntrack-ai-learning-platform": {
     title: "SK-LearnTrack — AI Learning Platform",
     description: "Full-stack LMS using Django REST Framework and React with JWT authentication, student progress tracking, and OpenAI-powered AI-assisted learning features.",
@@ -255,6 +295,13 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
   const bullets  = useMemo(() => parseBullets(project?.feature_bullets), [project]);
   const devHighs = useMemo(() => parseBullets(project?.development_highlights), [project]);
   const techs    = useMemo(() => project?.technologies ?? [], [project]);
+  const heroVisual = useMemo(() => {
+    if (!project) return "";
+    if (project.featured_image) return assetUrl(project.featured_image);
+    if (project.preview_image) return assetUrl(project.preview_image);
+    if (gallery.length > 0) return gallery[0].src;
+    return "";
+  }, [project, gallery]);
 
   if (!project) {
     return (
@@ -287,10 +334,18 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
 
         {/* ══════ HERO HEADER ══════ */}
         <div className="pd-hero card surface-elevated">
+          {heroVisual && (
+            <div className="pd-hero__media">
+              <img src={heroVisual} alt={`${project.title} featured preview`} loading="eager" />
+              <div className="pd-hero__media-overlay" aria-hidden="true" />
+            </div>
+          )}
+
           <div className="pd-hero__badges">
             <span className="pd-badge pd-badge--accent badge badge-primary">Case Study</span>
             {project.featured && <span className="pd-badge pd-badge--gold badge badge-warning"><Star size={10} /> Featured</span>}
             {project.live_url && <span className="pd-badge pd-badge--green badge badge-success"><Globe size={10} /> Live Product</span>}
+            <span className="pd-badge pd-badge--muted"><Calendar size={10} /> Production Build</span>
           </div>
 
           <h1 className="pd-hero__title text-display-sm text-primary">{project.title}</h1>

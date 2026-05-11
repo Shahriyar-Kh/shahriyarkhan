@@ -4763,3 +4763,177 @@ button:active, a:active {
   gap: 0.75rem;
   flex-wrap: wrap;
 }
+
+/* ═══════════════════════════════════════
+   BATCH 2 TARGETED REFINEMENTS
+   Landing, Projects, Project Detail
+═══════════════════════════════════════ */
+
+/* Landing hero media depth */
+.hero-showcase {
+  position: absolute;
+  border-radius: 1rem;
+  border: 1px solid oklch(0.34 0.016 256 / 38%);
+  box-shadow: 0 16px 38px oklch(0 0 0 / 24%);
+  background-size: cover;
+  background-position: center top;
+  opacity: 0.16;
+  transform: perspective(1100px) rotateY(-10deg) rotateX(4deg);
+  filter: saturate(0.95) contrast(1.08);
+}
+
+.hero-showcase--1 {
+  width: min(22vw, 320px);
+  aspect-ratio: 16 / 10;
+  top: 12%;
+  right: 5%;
+  background-image: linear-gradient(145deg, oklch(0.11 0.015 256 / 28%), oklch(0.11 0.015 256 / 78%)), url('/images/yangowing_images/homepage1.png');
+}
+
+.hero-showcase--2 {
+  width: min(20vw, 300px);
+  aspect-ratio: 16 / 10;
+  top: 30%;
+  right: 13%;
+  background-image: linear-gradient(145deg, oklch(0.11 0.015 256 / 38%), oklch(0.11 0.015 256 / 84%)), url('/images/yangowing_images/homepage2.png');
+}
+
+.hero-showcase--3 {
+  width: min(18vw, 260px);
+  aspect-ratio: 16 / 10;
+  top: 48%;
+  right: 2%;
+  background-image: linear-gradient(145deg, oklch(0.11 0.015 256 / 42%), oklch(0.11 0.015 256 / 88%)), url('/images/yangowing_images/homepage3.png');
+}
+
+@media (max-width: 1024px) {
+  .hero-showcase {
+    display: none;
+  }
+}
+
+.hero-trust-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  opacity: 0;
+  animation: fadeInUp 600ms var(--ease-out) 860ms forwards;
+}
+
+.hero-trust-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.72rem;
+  border-radius: 999px;
+  border: 1px solid oklch(0.3 0.014 256 / 62%);
+  background: oklch(0.18 0.014 256 / 72%);
+  color: oklch(0.77 0.01 255);
+  font-size: 0.72rem;
+  font-weight: 650;
+  letter-spacing: 0.01em;
+}
+
+/* Section media atmosphere */
+.home-section--media {
+  position: relative;
+}
+
+.home-section__media {
+  position: absolute;
+  inset: -2rem 0 auto;
+  height: clamp(180px, 32vw, 280px);
+  border-radius: 1.15rem;
+  border: 1px solid oklch(0.3 0.014 256 / 35%);
+  opacity: 0.12;
+  pointer-events: none;
+  background-size: cover;
+  background-position: center;
+  filter: saturate(0.9) contrast(1.08);
+}
+
+.home-section--media-a .home-section__media {
+  background-image: linear-gradient(140deg, oklch(0.11 0.015 256 / 25%), oklch(0.11 0.015 256 / 82%)), url('/images/yangowing_images/Services_page.png');
+}
+
+.home-section--media-b .home-section__media {
+  background-image: linear-gradient(140deg, oklch(0.11 0.015 256 / 32%), oklch(0.11 0.015 256 / 86%)), url('/images/yangowing_images/custom_dashbaord_image1.png');
+}
+
+/* Projects listing polish */
+.projects-page-shell {
+  position: relative;
+  overflow: hidden;
+}
+
+.projects-page-shell::before {
+  content: "";
+  position: absolute;
+  top: -3.5rem;
+  right: -8rem;
+  width: min(48vw, 540px);
+  aspect-ratio: 16 / 10;
+  border-radius: 1.25rem;
+  border: 1px solid oklch(0.3 0.014 256 / 28%);
+  background-image: linear-gradient(135deg, oklch(0.11 0.015 256 / 22%), oklch(0.11 0.015 256 / 80%)), url('/images/yangowing_images/custom_dashbaord_image2.png');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.12;
+  transform: rotate(-4deg);
+  pointer-events: none;
+}
+
+.projects-page-intro {
+  position: relative;
+  border: 1px solid oklch(0.3 0.014 256 / 54%);
+  background:
+    linear-gradient(145deg, oklch(0.19 0.016 256 / 82%), oklch(0.145 0.016 256 / 94%)),
+    radial-gradient(circle at 10% 10%, oklch(0.68 0.195 224 / 10%), transparent 50%);
+  box-shadow: 0 18px 40px oklch(0 0 0 / 24%), inset 0 1px 0 oklch(1 0 0 / 6%);
+}
+
+/* Project detail hero media */
+.pd-badge--muted {
+  color: oklch(0.76 0.012 256);
+  background: oklch(0.22 0.014 256 / 62%);
+  border: 1px solid oklch(0.34 0.014 256 / 72%);
+}
+
+.pd-hero__media {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 8;
+  border-radius: 0.95rem;
+  overflow: hidden;
+  border: 1px solid oklch(0.32 0.014 256 / 58%);
+  background: oklch(0.12 0.015 256);
+  box-shadow: 0 14px 34px oklch(0 0 0 / 24%);
+}
+
+.pd-hero__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  transform: scale(1.01);
+}
+
+.pd-hero__media-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, oklch(0.11 0.015 256 / 10%) 12%, oklch(0.11 0.015 256 / 42%) 100%);
+  pointer-events: none;
+}
+
+@media (max-width: 767px) {
+  .projects-page-shell::before {
+    width: 75vw;
+    right: -6rem;
+    top: -4rem;
+    opacity: 0.09;
+  }
+
+  .home-section__media {
+    opacity: 0.08;
+  }
+}

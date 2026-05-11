@@ -102,6 +102,12 @@ const stats = [
 
 const techStack = ["Python", "Django", "FastAPI", "React.js", "PostgreSQL", "Redis", "Docker", "JWT"];
 
+const trustSignals = [
+  { icon: CheckCircle2, label: "Production-ready delivery" },
+  { icon: Star, label: "Backend architecture focus" },
+  { icon: Globe, label: "Remote collaboration friendly" },
+];
+
 type ExperienceTimelineItem = {
   id: number;
   role: string;
@@ -253,8 +259,9 @@ function ServicesSection({ services }: { services: ServiceCard[] }) {
   const list = services.length ? services : fallbackServices;
 
   return (
-    <section className="home-section section-shell" aria-labelledby="services-heading">
+    <section className="home-section home-section--media home-section--media-a section-shell" aria-labelledby="services-heading">
       <div className="home-section__inner" ref={ref}>
+        <div className="home-section__media" aria-hidden="true" />
 
         {/* Label */}
         <div className={`home-label-row ${visible ? "visible" : ""}`}>
@@ -388,8 +395,9 @@ function ProjectsSection({ projects }: { projects: ProjectApi[] }) {
   const list = (projects.length ? projects : fallbackProjects).slice(0, 3);
 
   return (
-    <section className="home-section section-shell" aria-labelledby="projects-heading">
+    <section className="home-section home-section--media home-section--media-b section-shell" aria-labelledby="projects-heading">
       <div className="home-section__inner" ref={ref}>
+        <div className="home-section__media" aria-hidden="true" />
 
         <div className={`home-label-row ${visible ? "visible" : ""}`}>
           <span className="home-label-pill"><Terminal size={11} /> Work</span>
@@ -763,6 +771,9 @@ export function HomePage() {
           <div className="hero-orb hero-orb--1" />
           <div className="hero-orb hero-orb--2" />
           <div className="hero-orb hero-orb--3" />
+          <div className="hero-showcase hero-showcase--1" />
+          <div className="hero-showcase hero-showcase--2" />
+          <div className="hero-showcase hero-showcase--3" />
           <div className="hero-grid" />
           <div className="hero-vignette" />
         </div>
@@ -800,6 +811,15 @@ export function HomePage() {
                 <Link to="/projects" className="btn-primary btn-lg">View Projects <ArrowRight size={15} /></Link>
                 <Link to="/resume" className="btn-secondary btn-lg"><Download size={15} /> Download CV</Link>
                 <Link to="/contact" className="btn-ghost btn-lg"><Mail size={15} /> Contact</Link>
+              </div>
+
+              <div className="hero-trust-strip" aria-label="Professional trust highlights">
+                {trustSignals.map(({ icon: Icon, label }) => (
+                  <span key={label} className="hero-trust-chip">
+                    <Icon size={12} />
+                    {label}
+                  </span>
+                ))}
               </div>
 
               <div className="hero-socials">
