@@ -28,14 +28,26 @@ class SeedProject:
     featured: bool = False
     preview_image_url: str = ""
     featured_image_url: str = ""
+    # Publication gate for seed content whose authenticity/status has not
+    # been verified yet (see docs/rebuild/CONTENT_TRUTH_INVENTORY.md and
+    # OPEN_DECISIONS.md). Seeded as a real Project row either way so it
+    # stays manageable in the admin, but excluded from every public
+    # queryset via the existing Project.status mechanism until verified.
+    published: bool = True
 
 
 def _download_remote_image(url: str, filename: str):
     if not url:
         return None
 
-    with urlopen(url) as response:  # nosec: trusted public image source for seed content
-        return ContentFile(response.read(), name=Path(filename).name)
+    try:
+        with urlopen(url, timeout=10) as response:  # nosec: trusted public image source for seed content
+            return ContentFile(response.read(), name=Path(filename).name)
+    except Exception:
+        # A seed-time image fetch failing (network hiccup, host down) must
+        # not fail the whole deploy build - the project record still gets
+        # created/updated without a preview image.
+        return None
 
 
 class Command(BaseCommand):
@@ -244,9 +256,16 @@ class Command(BaseCommand):
                 tools=["Django", "DRF", "React", "PostgreSQL", "Chart.js", "Tailwind CSS"],
                 live_url="https://insightboard-crm.vercel.app",
                 github_url="https://github.com/Shahriyar-Kh",
-                featured=True,
+                featured=False,
                 preview_image_url="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80",
                 featured_image_url="https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=1600&q=80",
+                # P01A stabilization (2026-08-27): hidden pending owner
+                # verification. Its images are generic Unsplash stock
+                # photos, not real screenshots, and its live_url returned
+                # HTTP 404 when checked live. Do not flip this to True
+                # without first replacing the imagery and confirming the
+                # project is real - see OPEN_DECISIONS.md blocker #5.
+                published=False,
             ),
         ]
 
@@ -259,10 +278,10 @@ class Command(BaseCommand):
                     "description": item.description,
                     "live_url": item.live_url,
                     "github_url": item.github_url,
-                    "status": Project.Status.PUBLISHED,
-                    "published_at": now,
+                    "status": Project.Status.PUBLISHED if item.published else Project.Status.DRAFT,
+                    "published_at": now if item.published else None,
                     "display_order": order,
-                    "featured": item.featured,
+                    "featured": item.featured and item.published,
                     "seo_title": f"{item.title} — Shahriyar Khan",
                     "seo_description": item.description,
                     "seo_keywords": ", ".join(item.tools),

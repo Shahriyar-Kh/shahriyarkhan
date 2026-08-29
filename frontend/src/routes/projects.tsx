@@ -6,7 +6,7 @@ import { assetUrl, fetchJson, fetchListJson } from "@/lib/api";
 import { Link } from "@/lib/navigation";
 import { useLiveDataRefresh } from "@/hooks/useLiveDataRefresh";
 
-const projects: ProjectApi[] = [
+export const projects: ProjectApi[] = [
   {
     id: 1,
     slug: "noteassist-ai-productivity-platform",

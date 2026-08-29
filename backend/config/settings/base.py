@@ -32,6 +32,12 @@ DEBUG = env_bool("DJANGO_DEBUG", False)
 ALLOWED_HOSTS = env_list("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost")
 
 PUBLIC_BASE_URL = os.getenv("PUBLIC_BASE_URL", "http://localhost:8000")
+# The public-facing site's canonical origin (the frontend), distinct from
+# PUBLIC_BASE_URL (this backend's own origin). Used to build sitemap <loc>
+# entries and the robots.txt Sitemap: pointer so both reference the domain
+# search engines actually crawl. Temporary canonical per P01A stabilization:
+# see docs/rebuild/OPEN_DECISIONS.md.
+PUBLIC_SITE_URL = os.getenv("PUBLIC_SITE_URL", "https://shahriyarkhan.vercel.app")
 ADMIN_URL_PATH = os.getenv("ADMIN_URL_PATH", "super-admin").strip("/")
 ADMIN_ALLOWED_USERNAMES = set(env_list("ADMIN_ALLOWED_USERNAMES", ""))
 ADMIN_ALLOWED_EMAILS = set(env_list("ADMIN_ALLOWED_EMAILS", ""))

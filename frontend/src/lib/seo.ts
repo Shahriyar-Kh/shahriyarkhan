@@ -1,3 +1,5 @@
+import { canonicalUrl } from "@/lib/site";
+
 type SeoInput = {
   title?: string;
   description?: string;
@@ -44,7 +46,7 @@ export function applySeo(seo: SeoInput) {
     document.title = seo.title;
   }
 
-  upsertLink("canonical", seo.canonicalUrl ?? window.location.href);
+  upsertLink("canonical", seo.canonicalUrl ?? canonicalUrl(window.location.pathname));
   upsertMeta("name", "description", seo.description);
   upsertMeta("name", "keywords", seo.keywords);
   upsertMeta("property", "og:type", "website");
@@ -52,6 +54,7 @@ export function applySeo(seo: SeoInput) {
   upsertMeta("property", "og:description", seo.ogDescription ?? seo.description);
   upsertMeta("property", "og:image", seo.ogImage);
   upsertMeta("property", "og:image:alt", seo.ogImageAlt);
+  upsertMeta("property", "og:url", seo.canonicalUrl ?? canonicalUrl(window.location.pathname));
   upsertMeta("name", "twitter:card", seo.ogImage ? "summary_large_image" : "summary");
   upsertMeta("name", "twitter:title", seo.twitterTitle ?? seo.title);
   upsertMeta("name", "twitter:description", seo.twitterDescription ?? seo.description);

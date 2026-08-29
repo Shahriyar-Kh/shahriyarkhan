@@ -4,6 +4,7 @@ import {
   Code2, Globe, Calendar, Layers, ArrowRight, ChevronLeft, ChevronRight,
 } from "lucide-react";
 import { applySeo } from "@/lib/seo";
+import { canonicalUrl } from "@/lib/site";
 import { assetUrl, fetchJson } from "@/lib/api";
 import { Link } from "@/lib/navigation";
 import { useLiveDataRefresh } from "@/hooks/useLiveDataRefresh";
@@ -32,7 +33,7 @@ type ProjectDetail = {
 type GalleryImage = { src: string; alt: string };
 
 // ─── Fallback data ────────────────────────────────────────────────────────────
-const projectFallbacks: Record<string, ProjectDetail> = {
+export const projectFallbacks: Record<string, ProjectDetail> = {
   "sk-learntrack-ai-learning-platform": {
     title: "SK-LearnTrack — AI Learning Platform",
     description: "Full-stack LMS using Django REST Framework and React with JWT authentication, student progress tracking, and OpenAI-powered AI-assisted learning features.",
@@ -215,7 +216,7 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
           ogDescription:   data.og_description   ?? data.description,
           ogImage:         assetUrl(data.featured_image ?? data.preview_image),
           ogImageAlt:      data.image_alt_text   ?? data.title,
-          canonicalUrl:    window.location.href,
+          canonicalUrl:    canonicalUrl(window.location.pathname),
         });
       })
       .catch(() => { if (!active) setRemoteStatus("error"); });
