@@ -4875,7 +4875,14 @@ button:active, a:active {
   aspect-ratio: 16 / 10;
   border-radius: 1.25rem;
   border: 1px solid oklch(0.3 0.014 256 / 28%);
-  background-image: linear-gradient(135deg, oklch(0.11 0.015 256 / 22%), oklch(0.11 0.015 256 / 80%)), url('/images/yangowing_images/custom_dashbaord_image2.png');
+  /* P01A5: was custom_dashbaord_image2.png - that screenshot shows apparent
+     real driver names and a phone number (see
+     docs/rebuild/P01A4_CONTENT_AND_MEDIA_AUDIT.md) and was excluded from
+     the public gallery in P01A4, but this CSS background-image reference
+     was missed and still served the file publicly. Swapped to the
+     aggregate-only, already-safe custom_dashbaord_image1.png, matching
+     the same decorative pattern already used a few rules above. */
+  background-image: linear-gradient(135deg, oklch(0.11 0.015 256 / 22%), oklch(0.11 0.015 256 / 80%)), url('/images/yangowing_images/custom_dashbaord_image1.png');
   background-size: cover;
   background-position: center;
   opacity: 0.12;

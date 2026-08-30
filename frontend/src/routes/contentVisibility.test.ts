@@ -1,3 +1,5 @@
+import { readFileSync, readdirSync } from "node:fs";
+import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import {
   experienceItems,
@@ -62,5 +64,34 @@ describe("Yango Wing Fleet's private registration screenshot stays excluded (P01
       yango.featured_image ?? "",
     ];
     expect(images.some((src) => src.includes("custom_dashbaord_image2"))).toBe(false);
+  });
+
+  it("is not referenced by any CSS background-image either (P01A5 gap fix)", () => {
+    // P01A4 only checked the TSX fallback data and missed a CSS
+    // background-image: url(...) reference to the same file in
+    // styles.css - this scans every source file under src/ (not just
+    // the known offender) so the same class of gap can't recur silently.
+    // Lines whose trimmed form starts with a comment marker (// or /*)
+    // are skipped, since the filename is expected to appear in the
+    // explanatory comments documenting this exclusion.
+    const offenders: string[] = [];
+    function scan(dir: string) {
+      for (const entry of readdirSync(dir, { withFileTypes: true })) {
+        if (entry.name === "node_modules" || entry.name.startsWith(".")) continue;
+        const full = resolve(dir, entry.name);
+        if (entry.isDirectory()) {
+          scan(full);
+        } else if (/\.(css|ts|tsx|html)$/.test(entry.name) && !entry.name.endsWith(".test.ts") && !entry.name.endsWith(".test.tsx")) {
+          const lines = readFileSync(full, "utf-8").split("\n");
+          for (const line of lines) {
+            const trimmed = line.trim();
+            if (trimmed.startsWith("//") || trimmed.startsWith("/*") || trimmed.startsWith("*")) continue;
+            if (line.includes("custom_dashbaord_image2")) offenders.push(full);
+          }
+        }
+      }
+    }
+    scan(resolve(__dirname, ".."));
+    expect(offenders).toEqual([]);
   });
 });
