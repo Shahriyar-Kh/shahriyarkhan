@@ -124,14 +124,24 @@ if (!yangoBlockMatch) {
 }
 
 // 5. CognoRise/InsightBoard visibility logic is untouched by this hotfix.
+let originMainResolvable = true;
+try {
+  execSync("git rev-parse --verify origin/main", { cwd: root, stdio: "pipe" });
+} catch {
+  originMainResolvable = false;
+}
+if (!originMainResolvable) {
+  console.log("SKIP: origin/main is not resolvable in this checkout (e.g. a shallow single-branch clone) - cannot diff against it");
+} else {
 const diffOutput = execSync(
-  `git diff --name-only origin/main -- src/routes/index.tsx backend 2>&1 || true`,
+  `git diff --name-only origin/main -- src/routes/index.tsx backend`,
   { cwd: root, encoding: "utf-8" }
 ).trim();
 if (diffOutput === "") {
   pass("no change to index.tsx or any backend file - CognoRise/InsightBoard visibility logic is unmodified by this hotfix");
 } else {
   fail(`unexpected change to content-visibility-relevant files: ${diffOutput}`);
+}
 }
 
 console.log("");
