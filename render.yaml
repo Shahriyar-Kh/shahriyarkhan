@@ -3,12 +3,16 @@ services:
     name: shahriyarkhan-backend
     runtime: python
     pythonVersion: 3.11
-    buildCommand: |
-      pip install --upgrade pip setuptools wheel
-      pip install -r backend/requirements/prod.txt
-      python backend/manage.py migrate --settings=config.settings.production
-      python backend/manage.py seed_insightboard_project --settings=config.settings.production
-      python backend/manage.py collectstatic --noinput --clear --settings=config.settings.production
+    # PRE-P01-DH1: delegated to a repo-owned, `set -Eeuo pipefail` script so
+    # a failed migration (or any other step) fails the whole build instead
+    # of being silently outrun by a later, unrelated command's exit code.
+    # See scripts/render-build.sh and docs/rebuild/PRE_P01_DH1_DEPLOYMENT_DIAGNOSIS.md.
+    #
+    # seed_insightboard_project intentionally no longer runs here: it
+    # recreates disputed, hidden portfolio content (see OPEN_DECISIONS.md
+    # #5) that must not be re-seeded by ordinary application deployment.
+    # The command itself is untouched and still runnable manually/via admin.
+    buildCommand: bash scripts/render-build.sh
     startCommand: gunicorn config.wsgi:application --chdir backend --bind 0.0.0.0:$PORT
     envVars:
       - key: DJANGO_SETTINGS_MODULE
