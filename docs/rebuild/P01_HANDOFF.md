@@ -18,6 +18,18 @@ P01 may now build on a production environment where the described incidents are 
 
 ---
 
+**CF-H1/CF-H2 update (2026-08-30): the contact-form incident flagged just above is now resolved in production.** The P01A.6 notice above correctly identified a new finding — the contact form returning an unhandled 500 after a successful database write — as independent of P01A's own work and unresolved at that time. It has since been fixed and deployed:
+
+- **CF-H1** (code fix): `apps/inquiries/api/serializers.py` no longer lets a notification-email failure propagate into the HTTP response. The database write and the notification send are now decoupled — a failing notification is caught, sanitize-logged (inquiry type, row id, exception class only — never the message body or any credential), and never turns a successful save into a 500. See `CFH1_BASELINE.md`, `CFH1_EMAIL_DIAGNOSIS.md`, `CFH1_HOTFIX_REPORT.md`, `CFH1_RELEASE_PLAN.md`.
+- **CF-H2** (production release): merged as PR #5 (`ec0a8e14c1ea00f426dae323c0262bfafdc95ca2`) and verified live — a single production `ContactMessage` submission and a single production `ServiceRequest` submission both returned HTTP 201. See `CFH2_RELEASE_BASELINE.md`, `CFH2_DEPLOYMENT_EVIDENCE.md`, `CFH2_PRODUCTION_VERIFICATION.md`.
+
+**Current factual state:**
+
+- Contact/service intake incident: **RESOLVED.** Production `ContactMessage` and `ServiceRequest` submissions now return successful responses (HTTP 201) even when the email notification path is unhealthy.
+- Email-notification delivery: **UNCONFIRMED — OWNER ACTION.** CF-H1/CF-H2 decoupled intake success from notification success; neither phase had Render dashboard, log, or mailbox access, so whether the underlying email send actually succeeds in production was never observed either way. **Do not describe it as broken — it was never confirmed broken, only never confirmed working.** The application's intake path does not depend on this being resolved. See `CFH2_PRODUCTION_VERIFICATION.md` §Step 12 for the prepared (not executed) owner checklist.
+
+---
+
 ## 1. Verified repository facts P01 can rely on
 
 - Repo root: `d:\Django Projects\shahriyarkhan-portfolio`; branch `main`; audited at commit `2d654dd85e60ca5bda9fb39bd8a097ccbe4809ce`, working tree dirty (see §4 for exactly what's uncommitted).
@@ -128,3 +140,5 @@ Proposed, not decided — P01 should confirm scope with the owner before treatin
 **Update (P01A, 2026-08-27):** the narrow P01A slice originally proposed here — diagnosing and code-fixing the two live production incidents on the current stack — has been completed; see [P01A_STABILIZATION_REPORT.md](P01A_STABILIZATION_REPORT.md) for the full fix, test coverage, and honest limitations (nothing was deployed, so neither fix is confirmed live yet).
 
 > **Next scope proposal**: (1) Deploy P01A's fixes to Render and Vercel, and run the post-deployment smoke-test checklist in [P01A_STABILIZATION_REPORT.md](P01A_STABILIZATION_REPORT.md) §16 — do not consider blockers #1/#2 resolved until these pass. (2) In parallel or after, get the owner's decisions on the remaining three launch blockers (permanent canonical domain, the CognoRise InfoTech date conflict, InsightBoard CRM's authenticity/status) plus the high-priority content questions in [OPEN_DECISIONS.md](OPEN_DECISIONS.md) — these gate honest copy, not just technical launch. Only once both of those are done should the full P01 platform-foundation phase (Next.js migration, new design system, CRM, admin operating system) begin.
+
+**Status update (2026-08-30, after P01A.6 + CF-H1 + CF-H2): step (1) above is complete.** P01A stabilization is **PRODUCTION VERIFIED — COMPLETE** (database incident RESOLVED, SPA direct-route incident RESOLVED, Yango sensitive-screenshot-in-current-deployment incident RESOLVED, contact/service intake incident RESOLVED — see the CF-H1/CF-H2 notice above). Step (2) — the owner decisions on the permanent domain, the CognoRise date conflict, and InsightBoard's status — remains open, alongside the other items tracked in [OPEN_DECISIONS.md](OPEN_DECISIONS.md), including the email-notification-delivery owner check and the separate Yango git-history remediation question. The full P01 platform-foundation phase (Next.js migration, new design system, CRM, admin operating system) has **not** begun and remains gated on those owner decisions, not on any further technical stabilization work.
