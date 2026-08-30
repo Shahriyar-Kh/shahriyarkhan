@@ -1,6 +1,13 @@
 from django.contrib import admin
 
-from .models import Education, Experience, Project, Service, Skill, SkillCategory, Technology
+from .models import Education, Experience, Project, ProjectImage, Service, Skill, SkillCategory, Technology
+
+
+class ProjectImageInline(admin.TabularInline):
+    model = ProjectImage
+    extra = 1
+    fields = ("image", "image_type", "alt_text", "caption", "display_order", "is_featured")
+    ordering = ("display_order",)
 
 
 @admin.register(Project)
@@ -11,6 +18,7 @@ class ProjectAdmin(admin.ModelAdmin):
     filter_horizontal = ("technologies",)
     prepopulated_fields = {"slug": ("title",)}
     actions = ("make_published", "make_draft")
+    inlines = [ProjectImageInline]
 
     @admin.action(description="Mark selected projects as published")
     def make_published(self, _request, queryset):
@@ -19,6 +27,14 @@ class ProjectAdmin(admin.ModelAdmin):
     @admin.action(description="Mark selected projects as draft")
     def make_draft(self, _request, queryset):
         queryset.update(status="draft")
+
+
+@admin.register(ProjectImage)
+class ProjectImageAdmin(admin.ModelAdmin):
+    list_display = ("project", "image_type", "display_order", "is_featured")
+    list_filter = ("image_type", "project")
+    search_fields = ("project__title", "alt_text", "caption")
+    ordering = ("project", "display_order")
 
 
 @admin.register(Experience)
