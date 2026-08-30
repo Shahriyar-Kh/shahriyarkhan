@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Link, RouterProvider, useLocation } from "@/lib/navigation";
+import { matchRoute } from "@/lib/routeMatch";
 import { HomePage } from "@/routes/index";
 import { AboutPage } from "@/routes/about";
 import { SkillsPage } from "@/routes/skills";
@@ -19,20 +20,18 @@ function AppRoutes() {
   }, [pathname]);
   // Scroll to top on route change
 
-  if (pathname === "/") return <HomePage />;
-  if (pathname === "/about") return <AboutPage />;
-  if (pathname === "/skills") return <SkillsPage />;
-  if (pathname === "/services") return <ServicesPage />;
-  if (pathname === "/projects") return <ProjectsPage />;
-  if (pathname === "/resume") return <ResumePage />;
-  if (pathname === "/contact") return <ContactPage />;
-
-  const projectMatch = pathname.match(/^\/projects\/([^/]+)$/);
-  if (projectMatch) {
-    return <ProjectDetailPage slug={decodeURIComponent(projectMatch[1])} />;
+  const match = matchRoute(pathname);
+  switch (match.name) {
+    case "home": return <HomePage />;
+    case "about": return <AboutPage />;
+    case "skills": return <SkillsPage />;
+    case "services": return <ServicesPage />;
+    case "projects": return <ProjectsPage />;
+    case "resume": return <ResumePage />;
+    case "contact": return <ContactPage />;
+    case "project-detail": return <ProjectDetailPage slug={match.slug} />;
+    default: return <NotFoundPage />;
   }
-
-  return <NotFoundPage />;
 }
 
 function NotFoundPage() {

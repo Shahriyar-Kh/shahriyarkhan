@@ -39,13 +39,13 @@ def robots_txt(_request):
     lines = [
         "User-agent: *",
         "Allow: /",
-        f"Sitemap: {settings.PUBLIC_BASE_URL.rstrip('/')}/sitemap.xml",
+        f"Sitemap: {settings.PUBLIC_SITE_URL.rstrip('/')}/sitemap.xml",
     ]
     return HttpResponse("\n".join(lines), content_type="text/plain")
 
 
 def sitemap_xml(_request):
-    base_url = settings.PUBLIC_BASE_URL.rstrip("/")
+    base_url = settings.PUBLIC_SITE_URL.rstrip("/")
     urls = [
         "/",
         "/about",

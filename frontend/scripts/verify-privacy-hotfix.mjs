@@ -1,28 +1,36 @@
 #!/usr/bin/env node
-// P01A5H emergency privacy hotfix — regression verification.
+// Privacy regression verification for the removed Yango screenshot.
 //
-// This branch is built directly on origin/main, which has no test
-// framework at all (no vitest, no test script). Installing one here
-// would mean importing test tooling from the broader P01A
-// stabilization PR into what is supposed to be the smallest possible
-// emergency hotfix, so this is a plain Node.js script instead: zero
-// new dependencies, run with `node scripts/verify-privacy-hotfix.mjs`
-// (optionally after `npm run build`, to also check dist/).
+// Originally written (P01A5H) for a standalone emergency-hotfix branch
+// built directly on origin/main, which had no test framework at all -
+// this stayed a plain Node.js script deliberately, rather than adding
+// vitest/jsdom, to keep that hotfix minimal. Now reconciled onto the
+// full P01A stabilization branch (P01A5R.1), which already has its own
+// richer vitest suite - kept as a standalone script anyway (still zero
+// new dependencies, still runnable stand-alone via
+// `node scripts/verify-privacy-hotfix.mjs`, optionally after
+// `npm run build` to also check dist/), but narrowed to what it does
+// that the vitest suite doesn't already cover more precisely:
 //
-// Proves:
-//   1. No source file references custom_dashbaord_image2.png outside
-//      an explanatory comment.
+//   1. No *application* source file references
+//      custom_dashbaord_image2.png outside an explanatory comment
+//      (test files are excluded from this scan - a test asserting the
+//      filename's absence, like contentVisibility.test.ts, is correct,
+//      not a violation).
 //   2. If dist/ exists, the built output contains neither the file
 //      itself nor a reference to it.
 //   3. Yango's fallback content still renders a non-empty, valid
 //      gallery (detail_images) after the removal.
 //   4. Every remaining Yango image path in source actually exists on
 //      disk under public/ (no broken image URL was introduced).
-//   5. CognoRise/InsightBoard visibility logic in index.tsx and the
-//      seed scripts is byte-for-byte unchanged from origin/main (this
-//      hotfix touches nothing related to either).
+//
+// CognoRise/InsightBoard visibility (this hotfix never touched either)
+// is verified by frontend/src/routes/contentVisibility.test.ts and the
+// backend's apps.portfolio.tests.HiddenDisputedContentExclusionTests -
+// both assert the actual behavior directly, which is more precise than
+// this script's earlier "no diff on index.tsx/backend" approximation.
 
-import { readFileSync, readdirSync, statSync, existsSync } from "node:fs";
+import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { resolve, join } from "node:path";
 import { execSync } from "node:child_process";
 
@@ -47,6 +55,8 @@ function scanForActiveReference(dir, exts) {
     const full = join(dir, entry.name);
     if (entry.isDirectory()) {
       offenders.push(...scanForActiveReference(full, exts));
+    } else if (entry.name.endsWith(".test.ts") || entry.name.endsWith(".test.tsx")) {
+      continue;
     } else if (exts.some((e) => entry.name.endsWith(e))) {
       const lines = readFileSync(full, "utf-8").split("\n");
       let inBlockComment = false;
@@ -123,27 +133,9 @@ if (!yangoBlockMatch) {
   }
 }
 
-// 5. CognoRise/InsightBoard visibility logic is untouched by this hotfix.
-let originMainResolvable = true;
-try {
-  execSync("git rev-parse --verify origin/main", { cwd: root, stdio: "pipe" });
-} catch {
-  originMainResolvable = false;
-}
-if (!originMainResolvable) {
-  console.log("SKIP: origin/main is not resolvable in this checkout (e.g. a shallow single-branch clone) - cannot diff against it");
-} else {
-const diffOutput = execSync(
-  `git diff --name-only origin/main -- src/routes/index.tsx backend`,
-  { cwd: root, encoding: "utf-8" }
-).trim();
-if (diffOutput === "") {
-  pass("no change to index.tsx or any backend file - CognoRise/InsightBoard visibility logic is unmodified by this hotfix");
-} else {
-  fail(`unexpected change to content-visibility-relevant files: ${diffOutput}`);
-}
-}
-
+console.log("");
+console.log("NOTE: CognoRise/InsightBoard visibility is verified by contentVisibility.test.ts");
+console.log("      and the backend's HiddenDisputedContentExclusionTests, not by this script.");
 console.log("");
 if (failures === 0) {
   console.log("ALL CHECKS PASSED");

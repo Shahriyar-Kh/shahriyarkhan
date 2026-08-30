@@ -4,6 +4,7 @@ import {
   Code2, Globe, Calendar, Layers, ArrowRight, ChevronLeft, ChevronRight,
 } from "lucide-react";
 import { applySeo, addSchemaMarkup } from "@/lib/seo";
+import { canonicalUrl } from "@/lib/site";
 import { assetUrl, fetchJson } from "@/lib/api";
 import { Link } from "@/lib/navigation";
 import { useLiveDataRefresh } from "@/hooks/useLiveDataRefresh";
@@ -33,19 +34,19 @@ type ProjectDetail = {
 type GalleryImage = { src: string; alt: string };
 
 // ─── Fallback data ────────────────────────────────────────────────────────────
-const projectFallbacks: Record<string, ProjectDetail> = {
+export const projectFallbacks: Record<string, ProjectDetail> = {
   "yango-wing-fleet-digital-registration-platform": {
     title: "Yango Wing Fleet — Digital Registration & Fleet Management Platform",
-    description: "Production-grade full-stack web platform for driver registration, fleet management, and admin operations. Features online rider registration, custom admin dashboard, real-time analytics, and JWT-based authentication.",
+    description: "Full-stack web platform for driver registration, fleet management, and admin operations. Features online rider registration, a custom admin dashboard, operational analytics, and JWT-based authentication.",
     live_url: "https://yango-wing-fleet.vercel.app",
     github_url: "https://github.com/Shahriyar-Kh/yango-wing-fleet",
     preview_image: "/images/yangowing_images/homepage.png",
     featured_image: "/images/yangowing_images/Landing_Preview_page.png",
-    ai_summary: "A production-ready fleet operations platform that unifies driver onboarding, admin workflows, and live operational insights in one system.",
-    overview: "Yango Wing Fleet is a full-stack registration and fleet operations platform built for real-world logistics workflows. It combines a conversion-focused public onboarding experience with a secure, high-utility admin dashboard for day-to-day operations.",
+    ai_summary: "A fleet operations platform that combines driver onboarding, admin workflows, and operational analytics in one system.",
+    overview: "Yango Wing Fleet is a full-stack registration and fleet operations platform built for logistics workflows. It combines a public onboarding experience with an authenticated admin dashboard for day-to-day operations.",
     problem: "Fleet teams needed one system to handle rider registrations, inquiries, offers, and reporting without relying on scattered forms and manual spreadsheets.",
     solution: "Implemented an API-first architecture with React and TanStack Router on the frontend, plus Django REST Framework on the backend. Added JWT-authenticated admin routes, polling-based dashboard refresh, and structured admin modules for registrations, offers, trip bonuses, and inquiries.",
-    outcome: "A production deployment on Vercel and Render that demonstrates enterprise-style architecture, reliable content operations, and a polished UX for both public users and internal staff.",
+    outcome: "A deployed platform on Vercel and Render with a clear separation between public registration flows and an authenticated admin dashboard for day-to-day fleet operations.",
     feature_bullets: [
       "Online registration workflows for Bike, Car, and Rickshaw drivers",
       "Custom admin dashboard for registration and inquiry operations",
@@ -61,10 +62,15 @@ const projectFallbacks: Record<string, ProjectDetail> = {
       "/images/yangowing_images/Rawalpindi_Registration.png",
       "/images/yangowing_images/Services_page.png",
       "/images/yangowing_images/custom_dashbaord_image1.png",
-      // custom_dashbaord_image2.png removed (P01A5H emergency privacy
-      // hotfix, 2026-08-30): the physical asset showed apparent real
-      // driver names and a phone number and has been deleted from
-      // frontend/public/ entirely, not just unreferenced here. See
+      // custom_dashbaord_image2.png excluded: its Registration Management
+      // table shows what appear to be real driver names and a phone
+      // number, with no permission to publish that data found in the
+      // repository (P01A4 content audit, 2026-08-30). Its reference was
+      // removed here first, then the physical asset was deleted from
+      // frontend/public/ entirely as a production privacy hotfix
+      // (P01A5H, 2026-08-30) after it was found still directly
+      // fetchable despite the earlier reference removal. See
+      // docs/rebuild/P01A4_CONTENT_AND_MEDIA_AUDIT.md and
       // docs/rebuild/P01A5H_PRIVACY_HOTFIX_REPORT.md.
     ],
     technologies: [
@@ -269,7 +275,7 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
           ogDescription:   data.og_description   ?? data.description,
           ogImage:         assetUrl(data.featured_image ?? data.preview_image),
           ogImageAlt:      data.image_alt_text   ?? data.title,
-          canonicalUrl:    window.location.href,
+          canonicalUrl:    canonicalUrl(window.location.pathname),
         });
 
         // Add Schema.org markup for the project
@@ -279,7 +285,7 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
           name: data.title,
           description: data.description,
           image: assetUrl(data.featured_image ?? data.preview_image),
-          url: window.location.href,
+          url: canonicalUrl(window.location.pathname),
           creator: {
             "@type": "Person",
             name: "Shahriyar Khan",

@@ -27,17 +27,7 @@ export function ProjectImageGallery({
 }: ProjectImageGalleryProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlay, setIsAutoPlay] = useState(true);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-  if (!images.length) {
-    return (
-      <div className="pig-empty">
-        <div className="pig-empty-placeholder">
-          <span>No gallery images available</span>
-        </div>
-      </div>
-    );
-  }
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const goToSlide = (index: number) => {
     setCurrentIndex(index % images.length);
@@ -62,8 +52,13 @@ export function ProjectImageGallery({
     timeoutRef.current = setTimeout(() => setIsAutoPlay(true), 2000);
   };
 
+  // Hooks must run unconditionally on every render, so the empty-images
+  // early return happens after these, not before - previously the early
+  // return sat between the useState/useRef calls above and the useEffect
+  // calls below, changing how many hooks ran depending on `images.length`
+  // (a react-hooks/rules-of-hooks violation flagged by lint).
   useEffect(() => {
-    if (!isAutoPlay) return;
+    if (!isAutoPlay || images.length === 0) return;
 
     const timer = setInterval(
       () => setCurrentIndex((p) => (p + 1) % images.length),
@@ -78,6 +73,16 @@ export function ProjectImageGallery({
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
   }, []);
+
+  if (!images.length) {
+    return (
+      <div className="pig-empty">
+        <div className="pig-empty-placeholder">
+          <span>No gallery images available</span>
+        </div>
+      </div>
+    );
+  }
 
   const current = images[currentIndex];
 
