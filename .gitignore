@@ -18,6 +18,12 @@ frontend/.nitro/
 frontend/*.local
 frontend/.wrangler/
 
+# Frontend environment files - never commit real values (P01A4). Only
+# frontend/.env.example (placeholders only) should be tracked.
+frontend/.env
+frontend/.env.*
+!frontend/.env.example
+
 # Root-level build artifacts (if any)
 dist/
 .output/
