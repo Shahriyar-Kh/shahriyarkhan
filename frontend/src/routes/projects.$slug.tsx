@@ -61,7 +61,11 @@ const projectFallbacks: Record<string, ProjectDetail> = {
       "/images/yangowing_images/Rawalpindi_Registration.png",
       "/images/yangowing_images/Services_page.png",
       "/images/yangowing_images/custom_dashbaord_image1.png",
-      "/images/yangowing_images/custom_dashbaord_image2.png"
+      // custom_dashbaord_image2.png removed (P01A5H emergency privacy
+      // hotfix, 2026-08-30): the physical asset showed apparent real
+      // driver names and a phone number and has been deleted from
+      // frontend/public/ entirely, not just unreferenced here. See
+      // docs/rebuild/P01A5H_PRIVACY_HOTFIX_REPORT.md.
     ],
     technologies: [
       { name: "React", slug: "react" },
