@@ -62,11 +62,16 @@ export const projectFallbacks: Record<string, ProjectDetail> = {
       "/images/yangowing_images/Rawalpindi_Registration.png",
       "/images/yangowing_images/Services_page.png",
       "/images/yangowing_images/custom_dashbaord_image1.png",
-      // custom_dashbaord_image2.png intentionally excluded (P01A4 content
-      // audit, 2026-08-30): its Registration Management table shows
-      // what appear to be real driver names and a phone number. No
-      // permission to publish that data was found in the repository.
-      // See docs/rebuild/P01A4_CONTENT_AND_MEDIA_AUDIT.md.
+      // custom_dashbaord_image2.png excluded: its Registration Management
+      // table shows what appear to be real driver names and a phone
+      // number, with no permission to publish that data found in the
+      // repository (P01A4 content audit, 2026-08-30). Its reference was
+      // removed here first, then the physical asset was deleted from
+      // frontend/public/ entirely as a production privacy hotfix
+      // (P01A5H, 2026-08-30) after it was found still directly
+      // fetchable despite the earlier reference removal. See
+      // docs/rebuild/P01A4_CONTENT_AND_MEDIA_AUDIT.md and
+      // docs/rebuild/P01A5H_PRIVACY_HOTFIX_REPORT.md.
     ],
     technologies: [
       { name: "React", slug: "react" },
