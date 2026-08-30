@@ -1,0 +1,98 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    name: Backend (Django)
+    runs-on: ubuntu-latest
+    env:
+      # Isolated, test-only SQLite database - never the live Render/Postgres
+      # database. DJANGO_SECRET_KEY is a non-secret placeholder used only
+      # for `manage.py check`/`test` under config.settings.development; it
+      # is never used against config.settings.production, which has its
+      # own fail-fast check (see apps/core/tests.py) and is not exercised
+      # against real infrastructure by this workflow.
+      USE_SQLITE: "1"
+      DJANGO_SECRET_KEY: ci-placeholder-secret-key-not-for-production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          # Matches render.yaml's pinned production runtime (pythonVersion: 3.11).
+          python-version: "3.11"
+          cache: "pip"
+          cache-dependency-path: |
+            backend/requirements/base.txt
+            backend/requirements/prod.txt
+
+      - name: Install backend dependencies
+        run: |
+          python -m pip install --upgrade pip setuptools wheel
+          pip install -r backend/requirements/prod.txt
+
+      - name: Django system check
+        working-directory: backend
+        run: python manage.py check
+
+      - name: Migration consistency check
+        working-directory: backend
+        run: python manage.py makemigrations --check --dry-run
+
+      - name: Backend test suite
+        working-directory: backend
+        run: python manage.py test apps.portfolio apps.site_config apps.resume_builder apps.core -v 2
+
+  frontend:
+    name: Frontend (Vite/React)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          # Matches frontend/package.json's "engines.node": ">=22.12.0".
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install frontend dependencies (reproducible)
+        working-directory: frontend
+        run: npm ci
+
+      - name: Frontend test suite
+        working-directory: frontend
+        run: npx vitest run
+
+      - name: Lint
+        working-directory: frontend
+        run: npm run lint
+
+      - name: Type check
+        working-directory: frontend
+        run: npx tsc --noEmit
+
+      - name: Production build
+        working-directory: frontend
+        # No VITE_API_BASE_URL is set: frontend/src/lib/api.ts already
+        # falls back to a same-origin-relative "" base when it is unset,
+        # which is this project's established safe build fallback - no
+        # invented or committed value is needed for the build to succeed.
+        run: npm run build
