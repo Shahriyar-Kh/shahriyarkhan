@@ -66,7 +66,10 @@ jobs:
 
       - name: Backend test suite
         working-directory: backend
-        run: python manage.py test apps.portfolio apps.site_config apps.resume_builder apps.core -v 2
+        # apps.inquiries added (CF-H1): its own contact/service-request
+        # intake-resilience tests were previously never exercised by CI at
+        # all, since this list predates that app having any tests.
+        run: python manage.py test apps.portfolio apps.site_config apps.resume_builder apps.core apps.inquiries -v 2
 
   frontend:
     name: Frontend (Vite/React)
