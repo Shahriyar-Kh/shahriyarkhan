@@ -14,7 +14,16 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Project
-        fields = "__all__"
+        # PRE-P01-G1 (Gallery Stage 1 - schema only): short_description and
+        # feature_bullets exist on the model as of this stage but are
+        # deliberately excluded here - with `fields = "__all__"`, a new
+        # model field is exposed automatically with zero serializer change,
+        # which would have silently broken this stage's "public API
+        # contract unchanged" requirement. Stage 2 removes this exclusion
+        # once the schema itself has been verified live. `images` (the
+        # ProjectImage reverse relation) is not a native model field, so
+        # `__all__` never included it and no exclusion is needed for it.
+        exclude = ("short_description", "feature_bullets")
 
 
 class AdminProjectSerializer(serializers.ModelSerializer):
@@ -22,7 +31,8 @@ class AdminProjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Project
-        fields = "__all__"
+        # See ProjectSerializer above for why this exclusion exists.
+        exclude = ("short_description", "feature_bullets")
 
     def create(self, validated_data):
         technologies = validated_data.pop("technologies", [])

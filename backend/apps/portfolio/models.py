@@ -23,12 +23,62 @@ class Project(TimeStampedModel, PublishableModel, OrderedModel, SEOMetadataModel
     alt_text = models.CharField(max_length=255, blank=True)
     ai_summary = models.TextField(blank=True)
     featured = models.BooleanField(default=False)
+    short_description = models.CharField(max_length=500, blank=True, help_text="Brief 1-sentence summary for cards (max 160 chars)")
+    feature_bullets = models.JSONField(default=list, blank=True, help_text="Key features as bullet points")
 
     class Meta:
         ordering = ("display_order", "-created_at")
 
     def __str__(self) -> str:
         return self.title
+
+
+class ProjectImage(TimeStampedModel):
+    """Multi-image gallery support for a project's detail page.
+
+    PRE-P01-G1 (Gallery Stage 1 - schema only): this model exists and is
+    migrated, but is deliberately not yet wired into any serializer, view,
+    or admin registration - see docs/rebuild/PRE_P01_G1_RELEASE_PLAN.md.
+    Stage 2 activates the API surface once this schema is verified live.
+    """
+
+    class ImageType(models.TextChoices):
+        DETAIL = "detail", "Detail Page"
+        PREVIEW = "preview", "Card Preview"
+        GALLERY = "gallery", "Gallery"
+
+    project = models.ForeignKey(
+        Project,
+        on_delete=models.CASCADE,
+        related_name="images",
+        help_text="The project this image belongs to",
+    )
+    image = models.ImageField(
+        upload_to="projects/gallery/%Y/%m/",
+        help_text="Image file (JPG, PNG, WebP recommended)",
+    )
+    image_type = models.CharField(
+        max_length=10,
+        choices=ImageType.choices,
+        default=ImageType.GALLERY,
+        help_text="Category of image",
+    )
+    alt_text = models.CharField(max_length=255, blank=True, help_text="Alt text for accessibility and SEO")
+    caption = models.CharField(max_length=255, blank=True, help_text="Optional caption shown with image")
+    display_order = models.PositiveIntegerField(default=0, help_text="Order in gallery")
+    is_featured = models.BooleanField(
+        default=False,
+        help_text="If True and type is preview, this becomes the card preview",
+    )
+
+    class Meta:
+        ordering = ("display_order", "-created_at")
+        verbose_name = "Project Image"
+        verbose_name_plural = "Project Images"
+        unique_together = (("project", "image"),)
+
+    def __str__(self) -> str:
+        return f"{self.project.title} — {self.get_image_type_display()}"
 
 
 class Experience(TimeStampedModel, OrderedModel, SEOMetadataModel):
