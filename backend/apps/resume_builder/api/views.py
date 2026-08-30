@@ -1,4 +1,5 @@
 from django.db.models import Count
+from django.http import Http404
 from rest_framework import generics, viewsets
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -16,7 +17,13 @@ class PublicDefaultResumeView(generics.RetrieveAPIView):
     permission_classes = (AllowAny,)
 
     def get_object(self):
-        return ResumeVersion.objects.filter(is_default=True, status=PublishableModel.Status.PUBLISHED).first()
+        instance = ResumeVersion.objects.filter(is_default=True, status=PublishableModel.Status.PUBLISHED).first()
+        if instance is None:
+            # No default resume configured yet is a valid (empty) business
+            # state, not a server error - return 404, not a 500 from
+            # serializing a None instance.
+            raise Http404("No published default resume is configured.")
+        return instance
 
 
 class PublicResumeBySlugView(generics.RetrieveAPIView):
@@ -30,7 +37,10 @@ class PublicResumeDownloadTrackView(APIView):
     permission_classes = (AllowAny,)
 
     def post(self, request, slug):
-        resume = ResumeVersion.objects.get(slug=slug)
+        try:
+            resume = ResumeVersion.objects.get(slug=slug)
+        except ResumeVersion.DoesNotExist:
+            raise Http404("No resume version matches this slug.")
         AnalyticsEvent.objects.create(
             event_type=AnalyticsEvent.EventType.RESUME_DOWNLOAD,
             page_path=f"/resume/{slug}",

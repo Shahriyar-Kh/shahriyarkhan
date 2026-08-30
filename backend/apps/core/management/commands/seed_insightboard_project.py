@@ -25,8 +25,13 @@ class ProjectSeed:
 
 
 def download_image(url: str, filename: str):
-    with urlopen(url) as response:  # nosec: trusted public image source for seed content
-        return ContentFile(response.read(), name=Path(filename).name)
+    try:
+        with urlopen(url, timeout=10) as response:  # nosec: trusted public image source for seed content
+            return ContentFile(response.read(), name=Path(filename).name)
+    except Exception:
+        # A seed-time image fetch failing must not fail the whole deploy
+        # build - see docs/rebuild/P01A_STABILIZATION_REPORT.md.
+        return None
 
 
 class Command(BaseCommand):
@@ -51,9 +56,14 @@ class Command(BaseCommand):
                 "description": seed.description,
                 "live_url": seed.live_url,
                 "github_url": seed.github_url,
-                "status": Project.Status.PUBLISHED,
-                "published_at": timezone.now(),
-                "featured": True,
+                # P01A stabilization (2026-08-27): hidden pending owner
+                # verification - this record still exists and is fully
+                # admin-manageable, but must not appear on any public
+                # endpoint until its authenticity, imagery, and demo
+                # status are confirmed. See OPEN_DECISIONS.md blocker #5.
+                "status": Project.Status.DRAFT,
+                "published_at": None,
+                "featured": False,
                 "seo_title": f"{seed.title} - Shahriyar Khan",
                 "seo_description": seed.description,
                 "seo_keywords": ", ".join(seed.tools),
@@ -71,16 +81,14 @@ class Command(BaseCommand):
             technologies.append(technology)
         project.technologies.set(technologies)
 
-        project.preview_image.save(
-            f"{slugify(seed.title)}-preview.jpg",
-            download_image(seed.preview_image_url, f"{slugify(seed.title)}-preview.jpg"),
-            save=False,
-        )
-        project.featured_image.save(
-            f"{slugify(seed.title)}-featured.jpg",
-            download_image(seed.featured_image_url, f"{slugify(seed.title)}-featured.jpg"),
-            save=False,
-        )
+        preview_file = download_image(seed.preview_image_url, f"{slugify(seed.title)}-preview.jpg")
+        if preview_file:
+            project.preview_image.save(preview_file.name, preview_file, save=False)
+
+        featured_file = download_image(seed.featured_image_url, f"{slugify(seed.title)}-featured.jpg")
+        if featured_file:
+            project.featured_image.save(featured_file.name, featured_file, save=False)
+
         project.save()
 
-        self.stdout.write(self.style.SUCCESS(f"Seeded project: {project.title}"))
+        self.stdout.write(self.style.SUCCESS(f"Seeded project (hidden/draft, pending verification): {project.title}"))

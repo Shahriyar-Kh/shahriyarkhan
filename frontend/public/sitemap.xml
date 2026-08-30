@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  P01A stabilization (2026-08-27): static sitemap for the temporary
+  canonical origin (https://shahriyarkhan.vercel.app), since the SPA has
+  no build-time or server-side sitemap generation yet. Lists only the
+  known, verified, indexable public routes from
+  docs/rebuild/ROUTE_MIGRATION_MAP.csv.
+
+  P01A4 reconciliation (2026-08-30): added the Yango Wing Fleet project
+  route - its live_url and github_url were verified reachable (HTTP 200)
+  before adding, unlike InsightBoard CRM below.
+
+  Deliberately excluded:
+  - InsightBoard CRM (/projects/insightboard-crm-sales-intelligence-dashboard)
+    - hidden pending verification, see OPEN_DECISIONS.md blocker #5.
+  - Any admin, API, or draft/private route.
+
+  This file is a stopgap for the current Vite SPA. The full rebuild
+  should generate this dynamically from published backend content.
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://shahriyarkhan.vercel.app/</loc></url>
+  <url><loc>https://shahriyarkhan.vercel.app/about</loc></url>
+  <url><loc>https://shahriyarkhan.vercel.app/skills</loc></url>
+  <url><loc>https://shahriyarkhan.vercel.app/services</loc></url>
+  <url><loc>https://shahriyarkhan.vercel.app/projects</loc></url>
+  <url><loc>https://shahriyarkhan.vercel.app/projects/yango-wing-fleet-digital-registration-platform</loc></url>
+  <url><loc>https://shahriyarkhan.vercel.app/projects/noteassist-ai-productivity-platform</loc></url>
+  <url><loc>https://shahriyarkhan.vercel.app/projects/sk-learntrack-ai-learning-platform</loc></url>
+  <url><loc>https://shahriyarkhan.vercel.app/projects/feelwise-emotion-detection-system</loc></url>
+  <url><loc>https://shahriyarkhan.vercel.app/projects/advanced-restaurant-management-system</loc></url>
+  <url><loc>https://shahriyarkhan.vercel.app/resume</loc></url>
+  <url><loc>https://shahriyarkhan.vercel.app/contact</loc></url>
+</urlset>

@@ -9,6 +9,8 @@ import {
 } from "lucide-react";
 import { fetchJson, fetchListJson, assetUrl } from "@/lib/api";
 import { applySeo, addSchemaMarkup } from "@/lib/seo";
+import { SITE_URL } from "@/lib/site";
+import { EXPERIENCES_ENDPOINT } from "@/lib/apiEndpoints";
 import { useLiveDataRefresh } from "@/hooks/useLiveDataRefresh";
 
 // ─── Typewriter ───────────────────────────────────────────────────────────────
@@ -92,10 +94,10 @@ function useReveal(threshold = 0.12) {
 }
 
 // ─── Constants ────────────────────────────────────────────────────────────────
-const stats = [
+export const stats = [
   { icon: Star,     value: 2,  suffix: "+", label: "Happy Clients",      sub: "Trusted by businesses & startups" },
   { icon: Code2,    value: 10, suffix: "+", label: "Projects Built",     sub: "End-to-end delivery" },
-  { icon: Server,   value: 4,  suffix: "",  label: "Real Roles",         sub: "Software + internship experience" },
+  { icon: Server,   value: 3,  suffix: "",  label: "Real Roles",         sub: "Software + internship experience" },
   { icon: Database, value: 4,  suffix: "+", label: "Core Data Layers",   sub: "PostgreSQL, MySQL, MongoDB, Redis" },
   { icon: Sparkles, value: 5,  suffix: "+", label: "Primary Stacks",     sub: "Python, Django, DRF, React, FastAPI" },
 ];
@@ -119,7 +121,8 @@ type ExperienceTimelineItem = {
   current?: boolean;
 };
 
-const experienceItems: ExperienceTimelineItem[] = [
+// Public, verified experience entries shown on the site.
+export const experienceItems: ExperienceTimelineItem[] = [
   {
     id: 1,
     role: "Software Developer",
@@ -163,6 +166,15 @@ const experienceItems: ExperienceTimelineItem[] = [
       "Built stronger habits around structured implementation, testing, and iteration.",
     ],
   },
+];
+
+// P01A stabilization (2026-08-27): hidden pending owner verification, not
+// deleted. Its dates (Oct-Dec 2024) overlap the Abasyn Incubation Center
+// role above, and it is absent from the resume page and backend seed data
+// entirely - see docs/rebuild/CONTENT_TRUTH_INVENTORY.md and
+// OPEN_DECISIONS.md blocker #4. Do not add this back into
+// `experienceItems` without first resolving that conflict with the owner.
+export const hiddenExperienceItemsPendingVerification: ExperienceTimelineItem[] = [
   {
     id: 4,
     role: "Python Development Intern",
@@ -197,7 +209,7 @@ type ServiceCard   = { id: number; slug: string; title: string; desc?: string; d
 type ExperienceApi = { id: number; role: string; company: string; start_date?: string; end_date?: string | null; current?: boolean; summary?: string; bullet_points?: string[] };
 
 // ─── Fallback data ────────────────────────────────────────────────────────────
-const fallbackProjects: ProjectApi[] = [
+export const fallbackProjects: ProjectApi[] = [
   { id: 1, slug: "noteassist-ai-productivity-platform",    title: "NoteAssist AI — Productivity Platform",   description: "Full-stack AI productivity app with JWT, RBAC, PostgreSQL, and Redis.",        tools: ["Django", "DRF", "React.js", "PostgreSQL", "Redis", "JWT"], preview_image: "/images/noteassisstai_homepage.png",  live: "https://noteassistai.vercel.app",           github: "https://github.com/Shahriyar-Kh", featured: true,  display_order: 1 },
   { id: 2, slug: "sk-learntrack-ai-learning-platform",     title: "SK-LearnTrack — AI Learning Platform",    description: "LMS with OpenAI-powered AI learning assistant and student progress tracking.", tools: ["Django", "DRF", "React", "PostgreSQL", "OpenAI"],            preview_image: "/images/sk-learntrack_homepage.png",   live: "https://sk-learntrack.vercel.app",          github: "https://github.com/Shahriyar-Kh", featured: true,  display_order: 2 },
   { id: 3, slug: "feelwise-emotion-detection-system",      title: "FeelWise — Emotion Detection System",     description: "Microservices AI system with FastAPI, Node.js gateway, and Chart.js visuals.", tools: ["FastAPI", "Python", "Node.js", "MongoDB", "JWT"],            preview_image: "/images/Feelwise_homepage.png",         live: "https://feelwise-emotion-detection.feelwise.workers.dev", github: "https://github.com/Shahriyar-Kh", featured: false, display_order: 3 },
@@ -722,7 +734,7 @@ export function HomePage() {
       fetchJson<PageSeo>("/api/v1/public/seo/pages/home/"),
       fetchListJson<ProjectApi>("/api/v1/public/portfolio/projects/"),
       fetchListJson<ServiceCard>("/api/v1/public/portfolio/services/"),
-      fetchListJson<ExperienceApi>("/api/v1/public/portfolio/experience/"),
+      fetchListJson<ExperienceApi>(EXPERIENCES_ENDPOINT),
     ]).then(([settingsR, seoR, projectsR, servicesR, expR]) => {
       if (!active) return;
       if (settingsR.status === "fulfilled") setSiteSettings(settingsR.value);
@@ -746,7 +758,7 @@ export function HomePage() {
         name: "Shahriyar Khan",
         jobTitle: "Software Engineer",
         description: "Software Engineer specializing in backend development, Python, Django, and full-stack applications",
-        url: window.location.origin,
+        url: SITE_URL,
         sameAs: [
           "https://linkedin.com/in/shahriyarkhan786",
           "https://github.com/Shahriyar-Kh",

@@ -6,12 +6,12 @@ import { assetUrl, fetchJson, fetchListJson } from "@/lib/api";
 import { Link } from "@/lib/navigation";
 import { useLiveDataRefresh } from "@/hooks/useLiveDataRefresh";
 
-const projects: ProjectApi[] = [
+export const projects: ProjectApi[] = [
   {
     id: 1,
     slug: "yango-wing-fleet-digital-registration-platform",
     title: "Yango Wing Fleet — Digital Registration & Fleet Management Platform",
-    description: "Production-grade full-stack web platform for driver registration, fleet management, and admin operations. Features online rider registration, custom admin dashboard, real-time analytics, and JWT-based authentication.",
+    description: "Full-stack web platform for driver registration, fleet management, and admin operations. Features online rider registration, a custom admin dashboard, operational analytics, and JWT-based authentication.",
     tools: ["React", "TanStack Router", "Vite", "Tailwind CSS", "Django", "DRF", "PostgreSQL", "JWT"],
     preview_image: "/images/yangowing_images/homepage.png",
     featured_image: "/images/yangowing_images/Landing_Preview_page.png",

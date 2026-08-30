@@ -1,3 +1,5 @@
+import { canonicalUrl } from "@/lib/site";
+
 type SeoInput = {
   title?: string;
   description?: string;
@@ -63,8 +65,10 @@ export function applySeo(seo: SeoInput) {
     document.title = seo.title;
   }
 
-  // Canonical and language
-  upsertLink("canonical", seo.canonicalUrl ?? window.location.href);
+  // Canonical and language - defaults to the fixed public origin (SITE_URL)
+  // rather than window.location.href, so a canonical never accidentally
+  // points at a Vercel preview URL or other non-canonical host.
+  upsertLink("canonical", seo.canonicalUrl ?? canonicalUrl(window.location.pathname));
   upsertMeta("name", "language", "en");
 
   // Basic metadata
@@ -81,7 +85,7 @@ export function applySeo(seo: SeoInput) {
   upsertMeta("property", "og:description", seo.ogDescription ?? seo.description);
   upsertMeta("property", "og:image", seo.ogImage);
   upsertMeta("property", "og:image:alt", seo.ogImageAlt);
-  upsertMeta("property", "og:url", seo.canonicalUrl ?? window.location.href);
+  upsertMeta("property", "og:url", seo.canonicalUrl ?? canonicalUrl(window.location.pathname));
 
   // Twitter Card
   upsertMeta("name", "twitter:card", seo.twitterImage || seo.ogImage ? "summary_large_image" : "summary");
