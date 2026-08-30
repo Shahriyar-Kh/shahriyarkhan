@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from apps.portfolio.models import Education, Experience, Project, ProjectImage, Service, Skill, SkillCategory, Technology
+from apps.portfolio.models import Education, Experience, Project, Service, Skill, SkillCategory, Technology
 
 
 class TechnologySerializer(serializers.ModelSerializer):
@@ -9,26 +9,8 @@ class TechnologySerializer(serializers.ModelSerializer):
         fields = ("id", "name", "slug")
 
 
-class ProjectImageSerializer(serializers.ModelSerializer):
-    """Read-only, nested under a project (public and admin project reads)."""
-
-    class Meta:
-        model = ProjectImage
-        fields = ("id", "image", "image_type", "alt_text", "caption", "display_order", "is_featured")
-
-
-class AdminProjectImageSerializer(serializers.ModelSerializer):
-    """Writable, for the standalone admin project-images CRUD endpoint - needs
-    `project` since a create request isn't nested under a project instance."""
-
-    class Meta:
-        model = ProjectImage
-        fields = ("id", "project", "image", "image_type", "alt_text", "caption", "display_order", "is_featured")
-
-
 class ProjectSerializer(serializers.ModelSerializer):
     technologies = TechnologySerializer(many=True, read_only=True)
-    images = ProjectImageSerializer(many=True, read_only=True)
 
     class Meta:
         model = Project
@@ -37,7 +19,6 @@ class ProjectSerializer(serializers.ModelSerializer):
 
 class AdminProjectSerializer(serializers.ModelSerializer):
     technologies = serializers.PrimaryKeyRelatedField(many=True, queryset=Technology.objects.all(), required=False)
-    images = ProjectImageSerializer(many=True, read_only=True)
 
     class Meta:
         model = Project

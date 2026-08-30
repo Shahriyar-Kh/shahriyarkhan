@@ -1,21 +1,11 @@
-import io
 from datetime import date
 
-from django.contrib.auth import get_user_model
-from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
-from PIL import Image
 from rest_framework import status
 from rest_framework.test import APITestCase
 
 from apps.core.models import PublishableModel
-from apps.portfolio.models import Experience, Project, ProjectImage, Service, Skill, SkillCategory
-
-
-def _tiny_png(name: str = "test.png") -> SimpleUploadedFile:
-    buffer = io.BytesIO()
-    Image.new("RGB", (1, 1), color="white").save(buffer, format="PNG")
-    return SimpleUploadedFile(name, buffer.getvalue(), content_type="image/png")
+from apps.portfolio.models import Experience, Project, Service, Skill, SkillCategory
 
 
 class PublicPortfolioEndpointsEmptyDatabaseTests(APITestCase):
@@ -174,130 +164,3 @@ class NoGenericServerErrorTests(APITestCase):
                     500,
                     f"{endpoint} returned a server error ({response.status_code})",
                 )
-
-
-class ProjectImageModelTests(APITestCase):
-    """Pre-P01 WIP recovery: relationship, ordering, and cascade behavior
-    of the ProjectImage gallery model."""
-
-    def setUp(self):
-        self.project = Project.objects.create(
-            title="Gallery Test Project",
-            slug="gallery-test-project",
-            description="A project used to test the image gallery.",
-            status=Project.Status.PUBLISHED,
-        )
-
-    def test_images_related_name_and_ordering(self):
-        second = ProjectImage.objects.create(project=self.project, image=_tiny_png("b.png"), display_order=2)
-        first = ProjectImage.objects.create(project=self.project, image=_tiny_png("a.png"), display_order=1)
-        ordered = list(self.project.images.all())
-        self.assertEqual(ordered, [first, second])
-
-    def test_cascade_delete_removes_images(self):
-        ProjectImage.objects.create(project=self.project, image=_tiny_png("c.png"))
-        self.project.delete()
-        self.assertEqual(ProjectImage.objects.count(), 0)
-
-
-class ProjectImagePublicApiTests(APITestCase):
-    """Pre-P01 WIP recovery: the public project endpoints must nest gallery
-    images so the already-shipped frontend gallery UI has data to render."""
-
-    def setUp(self):
-        self.project = Project.objects.create(
-            title="Gallery Public Project",
-            slug="gallery-public-project",
-            description="A published project with gallery images.",
-            status=Project.Status.PUBLISHED,
-        )
-        ProjectImage.objects.create(
-            project=self.project, image=_tiny_png("second.png"), display_order=2, caption="Second",
-        )
-        ProjectImage.objects.create(
-            project=self.project, image=_tiny_png("first.png"), display_order=1, caption="First",
-        )
-
-    def test_project_detail_includes_ordered_images(self):
-        response = self.client.get(f"/api/v1/public/portfolio/projects/{self.project.slug}/")
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        images = response.json()["images"]
-        self.assertEqual(len(images), 2)
-        self.assertEqual([img["caption"] for img in images], ["First", "Second"])
-        for img in images:
-            self.assertIn("image", img)
-            self.assertIn("image_type", img)
-
-    def test_project_list_includes_images(self):
-        response = self.client.get("/api/v1/public/portfolio/projects/")
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        result = next(p for p in response.json()["results"] if p["slug"] == self.project.slug)
-        self.assertEqual(len(result["images"]), 2)
-
-
-class AdminProjectImageApiTests(APITestCase):
-    """Pre-P01 WIP recovery: the admin project-images endpoint the
-    already-shipped AdminProjectForm.tsx uploads to."""
-
-    URL = "/api/v1/admin/portfolio/project-images/"
-
-    def setUp(self):
-        self.project = Project.objects.create(
-            title="Admin Gallery Project",
-            slug="admin-gallery-project",
-            description="A project managed via the admin gallery API.",
-            status=Project.Status.PUBLISHED,
-        )
-        self.admin_user = get_user_model().objects.create_superuser(
-            username="gallery-admin", email="gallery-admin@example.com", password="not-used-directly",
-        )
-
-    def test_unauthenticated_request_is_rejected(self):
-        response = self.client.post(self.URL, {"project": self.project.id, "image": _tiny_png()})
-        self.assertIn(response.status_code, (status.HTTP_401_UNAUTHORIZED, status.HTTP_403_FORBIDDEN))
-
-    def test_authenticated_admin_can_create_update_and_delete(self):
-        self.client.force_authenticate(user=self.admin_user)
-
-        create_response = self.client.post(
-            self.URL,
-            {
-                "project": self.project.id,
-                "image": _tiny_png(),
-                "image_type": "gallery",
-                "alt_text": "A gallery image",
-                "display_order": 0,
-            },
-        )
-        self.assertEqual(create_response.status_code, status.HTTP_201_CREATED, create_response.content)
-        image_id = create_response.json()["id"]
-        self.assertEqual(ProjectImage.objects.count(), 1)
-
-        update_response = self.client.patch(f"{self.URL}{image_id}/", {"caption": "Updated caption"})
-        self.assertEqual(update_response.status_code, status.HTTP_200_OK)
-        self.assertEqual(update_response.json()["caption"], "Updated caption")
-
-        delete_response = self.client.delete(f"{self.URL}{image_id}/")
-        self.assertEqual(delete_response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(ProjectImage.objects.count(), 0)
-
-    def test_project_id_query_param_filters_results(self):
-        other_project = Project.objects.create(
-            title="Other Project", slug="other-project", description="Another project.",
-        )
-        ProjectImage.objects.create(project=self.project, image=_tiny_png("x.png"))
-        ProjectImage.objects.create(project=other_project, image=_tiny_png("y.png"))
-
-        self.client.force_authenticate(user=self.admin_user)
-        response = self.client.get(self.URL, {"project_id": self.project.id})
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        results = response.json()["results"] if isinstance(response.json(), dict) and "results" in response.json() else response.json()
-        self.assertEqual(len(results), 1)
-        self.assertEqual(results[0]["project"], self.project.id)
-
-    def test_invalid_image_upload_is_rejected(self):
-        self.client.force_authenticate(user=self.admin_user)
-        not_an_image = SimpleUploadedFile("not-an-image.png", b"this is not image data", content_type="image/png")
-        response = self.client.post(self.URL, {"project": self.project.id, "image": not_an_image})
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(ProjectImage.objects.count(), 0)
