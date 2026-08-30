@@ -106,3 +106,11 @@ jobs:
         # which is this project's established safe build fallback - no
         # invented or committed value is needed for the build to succeed.
         run: npm run build
+
+      - name: Privacy regression check
+        working-directory: frontend
+        # Absorbed from the P01A5H emergency hotfix's standalone
+        # hotfix-verify.yml (superseded by this workflow once
+        # reconciled, P01A5R.1) - proves the removed Yango screenshot
+        # stays out of source and the build output.
+        run: node scripts/verify-privacy-hotfix.mjs
