@@ -4,7 +4,16 @@ on:
   pull_request:
     branches: [main]
   push:
-    branches: [main]
+    branches:
+      - main
+      # Temporary bootstrap trigger (P01A.3): this workflow has never
+      # existed on `main`, and GitHub will not run `workflow_dispatch`
+      # for a workflow that isn't yet on the default branch. Listing the
+      # stabilization branch here lets a plain `push` prove the workflow
+      # actually runs against this exact branch commit before merge.
+      # Remove this branch name once the workflow lands on `main` and a
+      # normal PR/dispatch run has been observed there.
+      - fix/p01a-stabilization-clean
   workflow_dispatch:
 
 permissions:
