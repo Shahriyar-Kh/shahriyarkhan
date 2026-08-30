@@ -1,6 +1,9 @@
 import os
+import platform
+import stat
 import subprocess
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -10,6 +13,7 @@ from django.test import TestCase
 from apps.portfolio.models import Project, Service
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
+REPO_ROOT = BASE_DIR.parent
 
 
 class HealthAndWellKnownEndpointTests(TestCase):
@@ -134,3 +138,151 @@ class ProductionSettingsFailFastTests(unittest.TestCase):
             },
         )
         self.assertEqual(result.returncode, 0, result.stderr)
+
+
+RENDER_YAML_PATH = REPO_ROOT / "render.yaml"
+BUILD_SCRIPT_PATH = REPO_ROOT / "scripts" / "render-build.sh"
+
+
+def _strip_comment_lines(text: str) -> str:
+    return "\n".join(line for line in text.splitlines() if not line.strip().startswith("#"))
+
+
+def _resolve_bash() -> str:
+    # On this repo's Windows dev machines, a plain "bash" on PATH can
+    # resolve to the WSL launcher shim (C:\Windows\System32\bash.exe)
+    # instead of Git for Windows' real bash, depending on how the calling
+    # process's PATH is searched - purely a local-environment ambiguity,
+    # never a factor on Render (Linux) or GitHub Actions' ubuntu-latest
+    # runners, where "bash" is unambiguous.
+    if platform.system() == "Windows":
+        for candidate in (r"C:\Program Files\Git\bin\bash.exe", r"C:\Program Files\Git\usr\bin\bash.exe"):
+            if Path(candidate).exists():
+                return candidate
+    return "bash"
+
+
+BASH = _resolve_bash()
+
+
+class RenderDeploymentConfigTests(unittest.TestCase):
+    """PRE-P01-DH1: static checks on the Render deployment configuration
+    itself, so a future edit to render.yaml or scripts/render-build.sh
+    can't silently reintroduce the code-before-schema race that caused the
+    PRE-P01 gallery-recovery incident (see
+    docs/rebuild/PRE_P01_DH1_DEPLOYMENT_DIAGNOSIS.md)."""
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.render_yaml_text = RENDER_YAML_PATH.read_text()
+        cls.build_script_text = BUILD_SCRIPT_PATH.read_text()
+
+    def test_render_yaml_invokes_repository_build_script(self):
+        self.assertIn("bash scripts/render-build.sh", self.render_yaml_text)
+
+    def test_build_script_has_valid_bash_syntax(self):
+        result = subprocess.run(
+            [BASH, "-n", str(BUILD_SCRIPT_PATH)],
+            capture_output=True,
+            text=True,
+            timeout=30,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_build_script_has_fail_fast_options(self):
+        self.assertRegex(self.build_script_text, r"set\s+-\S*e\S*")
+
+    def test_migration_runs_before_static_collection(self):
+        migrate_pos = self.build_script_text.index("manage.py migrate --noinput")
+        collectstatic_pos = self.build_script_text.index("manage.py collectstatic")
+        self.assertLess(migrate_pos, collectstatic_pos)
+
+    def test_migration_uses_noinput(self):
+        self.assertIn("manage.py migrate --noinput", self.build_script_text)
+
+    def test_post_migration_verification_exists(self):
+        self.assertIn("manage.py migrate --check", self.build_script_text)
+
+    def test_insightboard_seed_absent_from_automatic_build(self):
+        # Comments are allowed to *mention* the command (explaining why it
+        # was removed) - only an active invocation is actually forbidden.
+        self.assertNotIn("seed_insightboard_project", _strip_comment_lines(self.render_yaml_text))
+        self.assertNotIn("seed_insightboard_project", _strip_comment_lines(self.build_script_text))
+
+    def test_shell_tracing_not_enabled(self):
+        code_lines = (
+            line.split("#", 1)[0]
+            for line in self.build_script_text.splitlines()
+            if not line.strip().startswith("#")
+        )
+        set_lines = [line for line in code_lines if line.strip().startswith("set ")]
+        self.assertTrue(set_lines, "expected at least one `set` options line in the build script")
+        for line in set_lines:
+            self.assertNotRegex(line, r"-\w*x\w*", f"shell tracing (-x) must not be enabled: {line!r}")
+
+    def test_no_secret_looking_values_in_build_script(self):
+        suspicious = ("password", "secret", "api_key", "apikey", "token", "-----BEGIN")
+        lowered = self.build_script_text.lower()
+        for term in suspicious:
+            self.assertNotIn(term, lowered, f"found suspicious term {term!r} in build script")
+
+    def test_start_command_remains_valid_gunicorn_command(self):
+        self.assertIn(
+            "startCommand: gunicorn config.wsgi:application --chdir backend --bind 0.0.0.0:$PORT",
+            self.render_yaml_text,
+        )
+
+
+class RenderBuildScriptFailFastExecutionTests(unittest.TestCase):
+    """PRE-P01-DH1: proves the fail-fast behavior dynamically, using stub
+    `pip`/`python` executables on PATH rather than touching any real
+    package index, database, or production service."""
+
+    def _write_stub(self, bin_dir: Path, name: str, body: str) -> None:
+        path = bin_dir / name
+        path.write_text(f"#!/usr/bin/env bash\n{body}\n")
+        path.chmod(path.stat().st_mode | stat.S_IEXEC | stat.S_IXGRP | stat.S_IXOTH)
+
+    def test_simulated_migration_failure_stops_before_collectstatic(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            bin_dir = tmp_path / "bin"
+            bin_dir.mkdir()
+            log_path = tmp_path / "calls.log"
+
+            # `pip`: always succeeds, just records that it ran.
+            self._write_stub(
+                bin_dir, "pip",
+                f'echo "pip $*" >> "{log_path}"\nexit 0',
+            )
+            # `python`: records every manage.py subcommand it's called
+            # with, and simulates the real incident by failing the
+            # non-`--check` `migrate` invocation - exactly the step this
+            # script's `set -e` is meant to catch before anything later
+            # (collectstatic) can run against a half-migrated database.
+            self._write_stub(
+                bin_dir, "python",
+                f'''echo "python $*" >> "{log_path}"
+if [[ "$*" == *"manage.py migrate --noinput"* ]]; then
+  exit 1
+fi
+exit 0''',
+            )
+
+            env = os.environ.copy()
+            env["PATH"] = f"{bin_dir}{os.pathsep}{env['PATH']}"
+
+            result = subprocess.run(
+                [BASH, str(BUILD_SCRIPT_PATH)],
+                cwd=str(REPO_ROOT),
+                env=env,
+                capture_output=True,
+                text=True,
+                timeout=30,
+            )
+
+            self.assertNotEqual(result.returncode, 0, "build script must fail when migrate fails")
+            calls = log_path.read_text() if log_path.exists() else ""
+            self.assertIn("manage.py migrate --noinput", calls)
+            self.assertNotIn("collectstatic", calls, "collectstatic must never run after a failed migration")
