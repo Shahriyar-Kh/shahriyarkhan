@@ -180,7 +180,12 @@ export function SkillsPage() {
 
   const categories = useMemo<SkillCategory[]>(() => {
     if (skillsData.length > 0) {
-      const grouped = new Map<string, SkillCategory & { skills: { name: string; level: number; order: number }[] }>();
+      // A distinct local type, not an intersection with SkillCategory: the
+      // grouping step needs a per-skill `order` to sort by before the final
+      // .map() strips it back down to SkillCategory's { name, level } shape.
+      type GroupedSkill = { name: string; level: number; order: number };
+      type GroupedCategory = { title: string; slug: string; order: number; skills: GroupedSkill[] };
+      const grouped = new Map<string, GroupedCategory>();
 
       skillsData
         .filter((skill) => skill.published)
