@@ -2,6 +2,22 @@
 
 Audit date: 2026-08-27 (P00); updated 2026-08-27 (P01A). This document is the bridge from P00 (evidence-gathering) and P01A (narrow current-stack stabilization, see [P01A_STABILIZATION_REPORT.md](P01A_STABILIZATION_REPORT.md)) to P01 (the full platform-foundation phase). It does not authorize any code change — P01 should re-confirm anything time-sensitive (especially the live-status checks in §1) before acting on it, since production state can change between audits, and P01A's fixes have not yet been deployed.
 
+---
+
+**P01A.6 update (2026-08-30): P01A's fixes are now deployed and production-verified.** Everything below this notice describes the state *before* deployment (2026-08-27) and is preserved as the historical record it always was — it is not being rewritten. The current, deployed reality is:
+
+- PR #2 merged to `main` as `b8ecbf2332aa581f780dd185068da8ae5b943f20` and confirmed live in production (`docs/rebuild/P01A6_PRODUCTION_SMOKE_REPORT.md`, `docs/rebuild/P01A6_FINAL_STABILIZATION_REPORT.md`).
+- The database incident (§1, §2 blocker #1) is **RESOLVED** — root cause was strongly consistent with the Supabase project having been paused; recovery followed the owner's manual resume (`docs/rebuild/P01A5R_DATABASE_DIAGNOSIS.md`). Not Render-log-confirmed as causation; no log access was available.
+- The SPA-routing incident (§2 blocker #2) is **RESOLVED** — real production nested-route checks now pass.
+- The temporary canonical domain (§2 blocker #3) remains **`https://shahriyarkhan.vercel.app`**, confirmed live and consistent across canonical tags/JSON-LD/OG/sitemap/robots. The *permanent* domain decision is still open.
+- CognoRise (§2 blocker #4) and InsightBoard (§2 blocker #5) remain hidden in production, confirmed live — the underlying factual questions are still open, unchanged.
+- A separate, already-deployed emergency privacy hotfix (PR #3) removed a sensitive Yango screenshot from the public asset tree before PR #2 merged; PR #2 preserves that removal (`docs/rebuild/P01A5H_PRIVACY_HOTFIX_REPORT.md`).
+- **New finding from this phase, not previously known:** the contact form (`POST /api/v1/public/inquiries/contact/`) returns an unhandled 500 in production, caused by an unguarded synchronous email-send in `apps/inquiries/api/serializers.py` — the exact risk this document's own P00 audit already flagged in §3, now observed actually occurring. Not caused by, or fixed by, any P01A work. See `docs/rebuild/P01A6_PRODUCTION_SMOKE_REPORT.md` for full detail. **This should be resolved before treating outbound lead capture as reliable**, independent of when the P01 platform-foundation phase begins.
+
+P01 may now build on a production environment where the described incidents are fixed and deployed — re-confirm current state before assuming it hasn't drifted since 2026-08-30, per this document's own original caution above.
+
+---
+
 ## 1. Verified repository facts P01 can rely on
 
 - Repo root: `d:\Django Projects\shahriyarkhan-portfolio`; branch `main`; audited at commit `2d654dd85e60ca5bda9fb39bd8a097ccbe4809ce`, working tree dirty (see §4 for exactly what's uncommitted).
