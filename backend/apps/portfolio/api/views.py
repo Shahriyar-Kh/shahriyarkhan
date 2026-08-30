@@ -4,6 +4,7 @@ from apps.accounts.permissions import IsPortfolioAdmin
 from apps.core.models import PublishableModel
 from apps.portfolio.api.serializers import (
     AdminExperienceSerializer,
+    AdminProjectImageSerializer,
     AdminProjectSerializer,
     AdminServiceSerializer,
     EducationSerializer,
@@ -12,7 +13,7 @@ from apps.portfolio.api.serializers import (
     ServiceSerializer,
     SkillSerializer,
 )
-from apps.portfolio.models import Education, Experience, Project, Service, Skill
+from apps.portfolio.models import Education, Experience, Project, ProjectImage, Service, Skill
 
 
 class PublicProjectListView(generics.ListAPIView):
@@ -57,6 +58,22 @@ class AdminProjectViewSet(viewsets.ModelViewSet):
     filterset_fields = ("status", "featured")
     search_fields = ("title", "description", "slug")
     ordering_fields = ("display_order", "created_at", "updated_at")
+
+
+class AdminProjectImageViewSet(viewsets.ModelViewSet):
+    permission_classes = (IsPortfolioAdmin,)
+    queryset = ProjectImage.objects.all()
+    serializer_class = AdminProjectImageSerializer
+    filterset_fields = ("project", "image_type")
+    search_fields = ("project__title", "alt_text", "caption")
+    ordering_fields = ("display_order", "created_at")
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        project_id = self.request.query_params.get("project_id")
+        if project_id:
+            qs = qs.filter(project_id=project_id)
+        return qs
 
 
 class AdminExperienceViewSet(viewsets.ModelViewSet):
