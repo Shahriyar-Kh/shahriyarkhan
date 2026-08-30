@@ -125,7 +125,7 @@ No Vercel, Render, or Cloudflare deployment was triggered, promoted, or configur
 
 ## 17. Rollback/recovery notes
 
-- This branch (`fix/p01a-stabilization-integrated`) has 4 local commits (plus a 5th, documentation-only commit to follow), not pushed at the time of writing this report, not merged. Safe to delete locally with no effect on `main`, the original dirty workspace, or PR #1.
+- This branch (`fix/p01a-stabilization-integrated`) has 4 local commits as of the end of P01A.4 (`d92cd5b`, `4010ce2`, `b859009`, `c35b443` — the documentation commit is the 4th and last of this phase, not a pending 5th), pushed and opened as PR #2, not merged. **Correction (P01A.5):** an earlier draft of this note said a 5th documentation commit was still to follow; by the time this branch was finalized and pushed, the documentation commit was already the 4th and final one of this phase. (P01A.5 itself later added a 5th commit fixing a screenshot-exposure gap this report's own audit missed — see `P01A5_PRE_MERGE_READINESS_REPORT.md`.) Safe to delete locally with no effect on `main`, the original dirty workspace, or PR #1.
 - PR #1 (`fix/p01a-stabilization-clean`) remains open, draft, and untouched — it is not superseded automatically; the owner decides.
 - The original dirty workspace (`d:\Django Projects\shahriyarkhan-portfolio`) was not touched by any command in this phase — confirmed via `git status --short` before and after.
 - If this branch needs to be abandoned: `git worktree remove ../shahriyarkhan-p01a-integrated` and delete the local/remote branch — no effect on any other worktree or branch.
