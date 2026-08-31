@@ -242,6 +242,20 @@
   border: 1px solid var(--color-border);
 }
 
+/* Used only by the hero role-rotator's crossfade (components/sections/
+ * role-rotator.tsx) - the one repeating timer on the site. Reduced-motion
+ * users never receive this class at all (the component renders a static
+ * comma-separated list instead), so no reduced-motion override is needed
+ * here beyond the global guard above. */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 @utility gradient-text {
   background-image: linear-gradient(135deg, var(--color-primary), var(--color-accent));
   background-clip: text;

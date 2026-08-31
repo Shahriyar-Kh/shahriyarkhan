@@ -1,13 +1,16 @@
 import Link from "next/link";
+import { getSiteSettings } from "@/lib/api";
 import { ExternalLink } from "@/components/ui/external-link";
 import { Icon } from "@/components/ui/icon";
 import { PRIMARY_NAV } from "@/content/nav";
 import { CONTACT_FALLBACKS, OWNER_NAME, SOCIAL_LINKS } from "@/content/site";
 
-// Upgraded in a later commit to prefer SiteSettings.footer_text /
-// public_email from the live API, falling back to these constants when
-// the field is empty or the fetch fails - see lib/api/site.ts.
-export function SiteFooter() {
+export async function SiteFooter() {
+  // Next dedupes this against any other getSiteSettings() call made
+  // during the same request (e.g. the homepage's own Promise.all).
+  const result = await getSiteSettings();
+  const footerText = result.ok && result.data.footer_text ? result.data.footer_text : null;
+  const email = (result.ok && result.data.public_email) || CONTACT_FALLBACKS.email;
   const year = new Date().getFullYear();
 
   return (
@@ -16,8 +19,8 @@ export function SiteFooter() {
         <div className="max-w-sm">
           <p className="font-heading text-body-sm font-semibold text-ink-primary">{OWNER_NAME}</p>
           <p className="mt-2 text-caption-sm text-ink-tertiary">
-            Python and Django engineering for REST APIs, authenticated business platforms, and deployed
-            web products.
+            {footerText ??
+              "Python and Django engineering for REST APIs, authenticated business platforms, and deployed web products."}
           </p>
         </div>
 
@@ -37,6 +40,7 @@ export function SiteFooter() {
             href={SOCIAL_LINKS.github}
             aria-label="GitHub"
             className="text-ink-tertiary hover:text-ink-primary"
+            data-analytics-event="outbound_github"
           >
             <Icon.Github size={18} />
           </ExternalLink>
@@ -44,10 +48,11 @@ export function SiteFooter() {
             href={SOCIAL_LINKS.linkedin}
             aria-label="LinkedIn"
             className="text-ink-tertiary hover:text-ink-primary"
+            data-analytics-event="outbound_linkedin"
           >
             <Icon.Linkedin size={18} />
           </ExternalLink>
-          <a href={`mailto:${CONTACT_FALLBACKS.email}`} aria-label="Email" className="text-ink-tertiary hover:text-ink-primary">
+          <a href={`mailto:${email}`} aria-label="Email" className="text-ink-tertiary hover:text-ink-primary">
             <Icon.Mail size={18} />
           </a>
         </div>

@@ -1,11 +1,14 @@
 import type { Metadata, Viewport } from "next";
 import { JetBrains_Mono, Manrope, Sora } from "next/font/google";
 import "./globals.css";
+import { AnalyticsListener } from "@/components/analytics/analytics-listener";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { ScrollProgress } from "@/components/motif/scroll-progress";
+import { JsonLd } from "@/components/seo/json-ld";
 import { SkipLink } from "@/components/ui/skip-link";
 import { SITE_URL } from "@/content/site";
+import { personSchema, websiteSchema } from "@/lib/json-ld";
 
 const sora = Sora({
   subsets: ["latin"],
@@ -53,6 +56,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={`${sora.variable} ${manrope.variable} ${jetbrainsMono.variable}`}
     >
       <body className="font-body">
+        <JsonLd data={personSchema()} />
+        <JsonLd data={websiteSchema()} />
+        <AnalyticsListener />
         <SkipLink />
         <ScrollProgress />
         <SiteHeader />
