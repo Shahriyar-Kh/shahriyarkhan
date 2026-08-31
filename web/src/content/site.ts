@@ -24,6 +24,11 @@ export const SOCIAL_LINKS = {
   whatsapp: "https://wa.me/923110924560",
 } as const;
 
+/** Used by lib/format.ts's isDistinctRepoUrl() to detect when a
+ * project's github_url is just this generic profile link, not its own
+ * repository. */
+export const GITHUB_PROFILE_URL = SOCIAL_LINKS.github;
+
 export const RESUME_PDF_PATH = "/resume/Shahriyar_Khan_Software_Engineer.pdf";
 
 export function canonicalUrl(pathname: string): string {
