@@ -212,9 +212,19 @@ REST_FRAMEWORK = {
     "PAGE_SIZE": 12,
 }
 
+
+# The default below is a local-development fallback only: production sets
+# CORS_ALLOWED_ORIGINS as an environment variable, which replaces this list
+# entirely. http://localhost:3000 (the Next.js `next dev` / `next start`
+# default port) is added in P01 so the new `web/` app can exercise the public
+# contact and service-request intake endpoints locally without a CORS error.
+# Purely additive - http://localhost:5173 (the existing Vite app) is unchanged,
+# and no deployed origin is affected.
 CORS_ALLOWED_ORIGINS = [
     origin.strip()
-    for origin in os.getenv("CORS_ALLOWED_ORIGINS", "http://localhost:5173").split(",")
+    for origin in os.getenv(
+        "CORS_ALLOWED_ORIGINS", "http://localhost:5173,http://localhost:3000"
+    ).split(",")
     if origin.strip()
 ]
 CORS_ALLOW_CREDENTIALS = env_bool("CORS_ALLOW_CREDENTIALS", True)

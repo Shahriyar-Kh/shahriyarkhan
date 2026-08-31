@@ -1,0 +1,78 @@
+import { render, screen } from "@testing-library/react";
+import type { ReactNode } from "react";
+import { describe, expect, it, vi } from "vitest";
+
+vi.mock("next/link", () => ({
+  default: ({ href, children, ...rest }: { href: string; children?: ReactNode }) => (
+    <a href={href} {...rest}>
+      {children}
+    </a>
+  ),
+}));
+vi.mock("next/navigation", () => ({
+  usePathname: () => "/",
+}));
+vi.mock("next/image", () => ({
+  default: ({ alt, ...rest }: { src: string; alt: string }) => <img alt={alt} {...rest} />,
+}));
+
+import { HomeView } from "@/components/views/home-view";
+import type { Education, Experience, Project, Service, Skill } from "@/lib/api/types";
+
+const PROJECT: Project = {
+  id: 1,
+  title: "Yango Wing Fleet",
+  slug: "yango-wing-fleet-digital-registration-fleet-management-platform",
+  description: "A fleet registration platform.",
+  technologies: [{ id: 1, name: "Django", slug: "django" }],
+  live_url: "https://example.com",
+  github_url: "https://github.com/Shahriyar-Kh",
+  preview_image: null,
+  featured_image: null,
+  alt_text: "",
+  ai_summary: "",
+  featured: true,
+  status: "published",
+  published_at: "2026-01-01T00:00:00Z",
+  display_order: 0,
+  seo_title: "",
+  seo_description: "",
+  seo_keywords: "",
+  og_title: "",
+  og_description: "",
+  image_alt_text: "",
+  created_at: "2026-01-01T00:00:00Z",
+  updated_at: "2026-01-01T00:00:00Z",
+};
+
+describe("HomeView", () => {
+  it("renders every section's heading with live-ish data", () => {
+    const experiences: Experience[] = [];
+    const education: Education[] = [];
+    const services: Service[] = [];
+    const skills: Skill[] = [];
+
+    render(
+      <HomeView
+        projects={[PROJECT]}
+        experiences={experiences}
+        education={education}
+        services={services}
+        skills={skills}
+      />,
+    );
+
+    expect(screen.getByRole("heading", { level: 1, name: "Shahriyar Khan" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Selected work" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "How the systems fit together" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Common questions" })).toBeInTheDocument();
+    expect(screen.getAllByText("Yango Wing Fleet").length).toBeGreaterThan(0);
+  });
+
+  it("renders honest empty/unavailable states when every list is null or empty, never fake data", () => {
+    render(<HomeView projects={null} experiences={null} education={null} services={[]} skills={null} />);
+
+    expect(screen.getAllByText(/temporarily unavailable/i).length).toBeGreaterThan(0);
+    expect(screen.getByText(/No published services yet\./i)).toBeInTheDocument();
+  });
+});
