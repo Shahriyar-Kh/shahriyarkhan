@@ -128,8 +128,17 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          # Matches web/package.json's "engines.node": ">=20.9.0".
-          node-version: "20"
+          # Matches web/package.json's "engines.node" and web/.nvmrc exactly.
+          # Node 20 previously here was too old for this dependency tree:
+          # jsdom@30 requires ^22.22.2 || ^24.15.0 || >=26.0.0, undici@8.10
+          # requires >=22.19.0, and @testing-library/jest-dom@7 requires
+          # >=22 - under Node 20 every Vitest worker failed before running
+          # a single test ("webidl.util.markAsUncloneable is not a
+          # function", from undici's CacheStorage). 22.22.2 is the oldest
+          # version in the Node 22 LTS line that satisfies jsdom's range,
+          # and matches ../frontend/package.json's own existing "engines.
+          # node": ">=22.12.0" convention (the 22.x line, not 24.x).
+          node-version-file: "web/.nvmrc"
           cache: "npm"
           cache-dependency-path: web/package-lock.json
 

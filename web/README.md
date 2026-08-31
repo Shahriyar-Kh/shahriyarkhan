@@ -8,9 +8,22 @@ See `../docs/rebuild/P01_ARCHITECTURE.md` for the full architecture, and `P01_BR
 `P01_DESIGN_RESEARCH.md`, `P01_MOTION_MAP.md`, `P01_SEO_STRATEGY.md` for the design system this
 implements.
 
+## Runtime requirement
+
+**Node 22.22.2** (see `.nvmrc`, matched exactly in `.github/workflows/ci.yml`'s `web` job and in
+`package.json`'s `engines.node`). This is a hard requirement, not a suggestion: `jsdom@30` (used by
+the test suite) requires `^22.22.2 || ^24.15.0 || >=26.0.0`, and `undici@8.10` requires
+`>=22.19.0`. Under an older Node (this app previously ran CI on Node 20), every test worker fails
+before running a single test, with `TypeError: webidl.util.markAsUncloneable is not a function`.
+22.22.2 was chosen over the 24.x line to match `../frontend/package.json`'s own existing
+`"engines.node": ">=22.12.0"` convention.
+
+If using `nvm`: `nvm use` (reads `.nvmrc`). If using `fnm`: `fnm use`.
+
 ## Local development
 
 ```bash
+nvm use                      # or fnm use - see "Runtime requirement" above
 npm ci
 cp .env.example .env.local   # then edit if needed - the defaults already point at the real backend
 npm run dev
