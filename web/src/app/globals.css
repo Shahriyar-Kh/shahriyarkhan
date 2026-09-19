@@ -1,0 +1,334 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------
+ * Raw tokens. Palette ported byte-for-byte from frontend/src/styles.css
+ * (57-121) and styles-premium-enhancements.css (22-103) for visual
+ * continuity with the live site - this is a rebuild, not a rebrand.
+ * See docs/rebuild/P01_BRAND_DIRECTION.md for the full rationale.
+ *
+ * Two deliberate deviations from the legacy file, both documented there:
+ *   1. The ink-hierarchy scale is renamed --ink-* (legacy .text-primary
+ *      collided with Tailwind's own text-primary utility generated from
+ *      --color-primary, the blue - fragile, cascade-order-dependent).
+ *   2. --glass / --glass-border are dropped entirely, not ported-and-
+ *      unused, so glassmorphism can't be reached for later.
+ * ------------------------------------------------------------------- */
+:root {
+  --radius: 0.75rem;
+
+  --background: oklch(0.112 0.018 252);
+  --foreground: oklch(0.955 0.008 255);
+  --card: oklch(0.155 0.018 256);
+  --card-foreground: oklch(0.955 0.008 255);
+  --popover: oklch(0.155 0.018 256);
+  --popover-foreground: oklch(0.955 0.008 255);
+  --primary: oklch(0.68 0.195 224);
+  --primary-foreground: oklch(0.112 0.018 252);
+  --secondary: oklch(0.2 0.018 256);
+  --secondary-foreground: oklch(0.82 0.01 255);
+  --muted: oklch(0.188 0.014 256);
+  --muted-foreground: oklch(0.58 0.018 258);
+  --accent: oklch(0.68 0.22 178);
+  --accent-foreground: oklch(0.112 0.018 252);
+  --destructive: oklch(0.62 0.22 26);
+  --destructive-foreground: oklch(0.955 0.008 255);
+  --border: oklch(0.24 0.014 256);
+  --input: oklch(0.2 0.014 256);
+  --ring: oklch(0.68 0.195 224);
+  --surface: oklch(0.148 0.016 256);
+  --surface-foreground: oklch(0.88 0.01 255);
+
+  /* Ink hierarchy - see deviation (1) above. */
+  --ink-primary: oklch(0.96 0.006 255);
+  --ink-secondary: oklch(0.8 0.01 255);
+  --ink-tertiary: oklch(0.68 0.012 256);
+  --ink-hint: oklch(0.58 0.01 258);
+
+  --elevation-xs: 0 2px 4px oklch(0 0 0 / 12%);
+  --elevation-sm: 0 4px 8px oklch(0 0 0 / 16%);
+  --elevation-md: 0 8px 16px oklch(0 0 0 / 20%);
+  --elevation-lg: 0 16px 32px oklch(0 0 0 / 24%);
+  --elevation-xl: 0 24px 48px oklch(0 0 0 / 28%);
+  --elevation-2xl: 0 32px 64px oklch(0 0 0 / 32%);
+
+  --glow-xs: 0 0 12px oklch(0.68 0.195 224 / 6%);
+  --glow-sm: 0 0 20px oklch(0.68 0.195 224 / 8%);
+  --glow-md: 0 0 32px oklch(0.68 0.195 224 / 12%);
+  --glow-lg: 0 0 48px oklch(0.68 0.195 224 / 16%);
+
+  --motion-fast: 160ms;
+  --motion-base: 300ms;
+  --motion-slow: 540ms;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-smooth: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-surface: var(--surface);
+  --color-surface-foreground: var(--surface-foreground);
+
+  --color-ink-primary: var(--ink-primary);
+  --color-ink-secondary: var(--ink-secondary);
+  --color-ink-tertiary: var(--ink-tertiary);
+  --color-ink-hint: var(--ink-hint);
+
+  --shadow-elevation-xs: var(--elevation-xs);
+  --shadow-elevation-sm: var(--elevation-sm);
+  --shadow-elevation-md: var(--elevation-md);
+  --shadow-elevation-lg: var(--elevation-lg);
+  --shadow-elevation-xl: var(--elevation-xl);
+  --shadow-elevation-2xl: var(--elevation-2xl);
+  --shadow-glow-xs: var(--glow-xs);
+  --shadow-glow-sm: var(--glow-sm);
+  --shadow-glow-md: var(--glow-md);
+  --shadow-glow-lg: var(--glow-lg);
+
+  --font-heading: var(--font-sora), system-ui, sans-serif;
+  --font-body: var(--font-manrope), system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+@theme {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+
+  /* Type ramp - exact values from styles-premium-enhancements.css 108-201. */
+  --text-display-lg: 3.5rem;
+  --text-display-lg--line-height: 1.05;
+  --text-display-lg--letter-spacing: -0.03em;
+  --text-display-lg--font-weight: 800;
+  --text-display-md: 2.6rem;
+  --text-display-md--line-height: 1.1;
+  --text-display-md--letter-spacing: -0.025em;
+  --text-display-md--font-weight: 800;
+  --text-display-sm: 2rem;
+  --text-display-sm--line-height: 1.15;
+  --text-display-sm--letter-spacing: -0.02em;
+  --text-display-sm--font-weight: 700;
+  --text-headline-lg: 1.875rem;
+  --text-headline-lg--line-height: 1.15;
+  --text-headline-lg--letter-spacing: -0.018em;
+  --text-headline-lg--font-weight: 700;
+  --text-headline-md: 1.5rem;
+  --text-headline-md--line-height: 1.2;
+  --text-headline-md--letter-spacing: -0.015em;
+  --text-headline-md--font-weight: 700;
+  --text-headline-sm: 1.25rem;
+  --text-headline-sm--line-height: 1.25;
+  --text-headline-sm--letter-spacing: -0.01em;
+  --text-headline-sm--font-weight: 600;
+  --text-body-lg: 1.125rem;
+  --text-body-lg--line-height: 1.75;
+  --text-body: 1rem;
+  --text-body--line-height: 1.75;
+  --text-body-sm: 0.9375rem;
+  --text-body-sm--line-height: 1.65;
+  --text-caption: 0.875rem;
+  --text-caption--line-height: 1.6;
+  --text-caption-sm: 0.8125rem;
+  --text-caption-sm--line-height: 1.55;
+  --text-label-lg: 0.875rem;
+  --text-label-lg--letter-spacing: 0.12em;
+  --text-label-lg--font-weight: 700;
+  --text-label: 0.8125rem;
+  --text-label--letter-spacing: 0.14em;
+  --text-label--font-weight: 700;
+}
+
+/* ---------------------------------------------------------------------
+ * Base layer
+ * ------------------------------------------------------------------- */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-body);
+    /* One hairline blueprint grid + one very low-alpha vignette, replacing
+     * the legacy body's four stacked radial gradients (styles.css 144-150)
+     * - exactly the "gradient blob" the brand direction's anti-template
+     * rules ban. See components/motif/blueprint-grid.tsx for the reusable
+     * component version of this same pattern used inside page content. */
+    background-image:
+      repeating-linear-gradient(0deg, oklch(0.955 0.008 255 / 3%) 0px, oklch(0.955 0.008 255 / 3%) 1px, transparent 1px, transparent 96px),
+      repeating-linear-gradient(90deg, oklch(0.955 0.008 255 / 3%) 0px, oklch(0.955 0.008 255 / 3%) 1px, transparent 1px, transparent 96px),
+      radial-gradient(ellipse 80% 50% at 50% -10%, oklch(0.68 0.195 224 / 8%), transparent);
+    background-attachment: fixed;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    letter-spacing: -0.02em;
+    line-height: 1.18;
+  }
+
+  p {
+    line-height: 1.75;
+  }
+
+  ::selection {
+    background-color: var(--color-primary);
+    color: var(--color-primary-foreground);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 2px;
+  }
+}
+
+/* Global reduced-motion guard - the legacy app has none. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ---------------------------------------------------------------------
+ * A short list of composite utilities worth keeping as real utility
+ * classes. Everything else in this app uses plain Tailwind utilities -
+ * the legacy CSS is 6,158 lines across two files; this file is not.
+ * ------------------------------------------------------------------- */
+@utility section-shell {
+  margin-inline: auto;
+  max-width: 80rem;
+  padding-inline: 1rem;
+
+  @media (min-width: 640px) {
+    padding-inline: 1.5rem;
+  }
+
+  @media (min-width: 1024px) {
+    padding-inline: 2rem;
+  }
+}
+
+@utility surface-elevated {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+}
+
+/* Used only by the hero role-rotator's crossfade (components/sections/
+ * role-rotator.tsx) - the one repeating timer on the site. Reduced-motion
+ * users never receive this class at all (the component renders a static
+ * comma-separated list instead), so no reduced-motion override is needed
+ * here beyond the global guard above. */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@utility gradient-text {
+  background-image: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+/* ---------------------------------------------------------------------
+ * The signature scroll-driven experience: progressive architecture
+ * data-flow reveal (see components/motif/system-map*.tsx and
+ * docs/rebuild/P01_MOTION_MAP.md for the full mechanics/reasoning).
+ *
+ * Load-bearing property: the authored base state (no attributes present)
+ * IS the complete, final diagram. Hiding anything requires BOTH
+ * (prefers-reduced-motion: no-preference) AND [data-enhanced="true"], so:
+ *   - JS disabled            -> data-enhanced never appears -> never hidden
+ *   - prefers-reduced-motion -> this block never applies    -> never hidden
+ *   - IO never fires (bot/old browser) -> the JS fallback branch sets
+ *     data-active itself -> never stuck hidden
+ * Nothing is ever gated behind an animation completing.
+ * ------------------------------------------------------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  /* data-enhanced/data-active live on SystemMapActivation's own wrapping
+   * div, one level above the actual [data-system-map] svg - hence the
+   * descendant combinator throughout, rather than requiring every
+   * attribute on one element. */
+  [data-enhanced="true"]:not([data-active="true"]) [data-system-map] path[data-run] {
+    stroke-dashoffset: 1;
+  }
+
+  [data-enhanced="true"]:not([data-active="true"]) [data-system-map] [data-node] {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+
+  [data-enhanced="true"] [data-system-map] path[data-run] {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset var(--motion-slow) var(--ease-out);
+  }
+
+  [data-enhanced="true"] [data-system-map] [data-node] {
+    transform-origin: center;
+    transition:
+      opacity var(--motion-base) var(--ease-out),
+      transform var(--motion-base) var(--ease-out);
+  }
+
+  [data-system-map] [data-layer="2"] {
+    transition-delay: 120ms;
+  }
+
+  [data-system-map] [data-layer="3"] {
+    transition-delay: 240ms;
+  }
+
+  [data-system-map] [data-layer="4"] {
+    transition-delay: 360ms;
+  }
+}
+
+/* Below 768px the map renders complete and static outright - no
+ * transition, no dependency on the observer ever firing on small,
+ * often-touch-scrolled viewports. */
+@media (max-width: 767px) {
+  [data-system-map] path[data-run] {
+    stroke-dashoffset: 0 !important;
+    transition: none !important;
+  }
+
+  [data-system-map] [data-node] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
